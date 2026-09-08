@@ -1,0 +1,30 @@
+{
+ "source": "qvc/workbench/analogue.py (L2 diagnostics)",
+ "c_s_um_ps": 0.10634872135972892,
+ "hbar_over_mstar_um2_ps": 0.00011667974000610258,
+ "vortex_only": {
+  "rho_h_um": 0.00021942857142857143,
+  "kappa_ps_inv": 484.66214161334796,
+  "T_H_mK": 589185.5770995382,
+  "horizon_inside_core": true
+ },
+ "drain_1p2": {
+  "rho_h_um": 0.0600004020641252,
+  "kappa_ps_inv": 1.7725593797542842,
+  "T_H_mK": 2154.8339171432503
+ },
+ "h_ein1": {
+  "overlap_plus": 0.0,
+  "overlap_cross": 0.0
+ },
+ "goldstone_params": {
+  "c_LA_m_s": 21400.0,
+  "c_TA_m_s": 13600.0,
+  "a_nm": 50.0,
+  "torsion_zeta": 0.08,
+  "magnon_gap_meV": 0.05,
+  "c_magnon_m_s": 8000.0,
+  "conv_meV_per_m_s_nm_inv": 0.0006582119569
+ },
+ "T_star_mK": 118.7
+}

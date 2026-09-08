@@ -1,0 +1,24 @@
+% Toroidal Bessel mode sum F(x)
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=6.0cm,
+  xlabel={$x=2\pi r/R$},
+  ylabel={$F(x)=\sum_{n=1}^{\infty} K_0(nx)$},
+  xmin=0.15, xmax=2.4,
+  ymin=0, ymax=4.2,
+  legend style={draw=none, at={(0.98,0.98)}, anchor=north east, font=\footnotesize},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiBlue, thick]
+  table[x index=0, y index=1, skip first n=1] {data/F_bessel.dat};
+\addlegendentry{$F(x)$ (Bessel)}
+\addplot[oiVerm, densely dashed]
+  coordinates {(1.0053,0) (1.0053,4.2)};
+\addlegendentry{fat torus $x\approx 1.005$}
+\addplot[only marks, mark=*, mark size=2.6pt, oiVerm]
+  coordinates {(1.0053, 0.58068)};
+\addlegendentry{$F=\Flock$ (not $0.596$)}
+\end{axis}
+\end{tikzpicture}

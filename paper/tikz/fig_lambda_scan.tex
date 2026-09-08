@@ -1,0 +1,29 @@
+% Participation scan on the physical fold branch
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=6.2cm,
+  xlabel={participation $\lambda$},
+  ylabel={$\Delta(\lambda)$ (meV)},
+  xmin=0.02, xmax=0.90,
+  ymin=0.08, ymax=0.62,
+  legend style={draw=none, at={(0.02,0.02)}, anchor=south west, font=\footnotesize},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiBlue, thick]
+  table[x index=0, y index=3, skip first n=1] {data/lambda_scan.dat};
+\addlegendentry{physical branch}
+\addplot[oiOrange, densely dashed]
+  coordinates {(\lstar,0.08) (\lstar,0.62)};
+\addlegendentry{$\lambda^\star=\lstar$}
+\addplot[oiVerm, densely dashed]
+  coordinates {(\lfold,0.08) (\lfold,0.62)};
+\addlegendentry{$\lambda_{\mathrm{fold}}=\lfold$}
+\addplot[only marks, mark=square*, mark size=2.5pt, oiOrange]
+  coordinates {(\lstar, 0.232)};
+\addplot[oiGreen, densely dotted]
+  coordinates {(0.02,0.109) (0.90,0.109)};
+\node[font=\scriptsize, oiGreen!50!black, anchor=west] at (axis cs:0.04,0.125) {$\Delta_c=\Deltac$ (max static \redmax)};
+\end{axis}
+\end{tikzpicture}

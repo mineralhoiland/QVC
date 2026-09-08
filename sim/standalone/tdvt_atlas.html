@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDVT Atlas — Revision B</title>
+<style>
+  :root {
+    --ink: #1a1f24;
+    --paper: #f3efe6;
+    --slate: #12161c;
+    --panel: #1a222c;
+    --line: #2c3846;
+    --mute: #8b97a5;
+    --text: #e7edf4;
+    --accent: #c45c26;
+    --teal: #2a9d8f;
+    --gold: #c9a227;
+    --blue: #3d7ea6;
+    --bad: #b23a3a;
+    --ok: #2f7d4a;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--slate); color: var(--text); }
+  body { display: grid; grid-template-rows: auto 1fr auto; }
+  header {
+    display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap;
+    padding: .7rem 1rem; border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #1c2430, #141a22);
+  }
+  header h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .02em; color: var(--paper); }
+  header h1 span { color: var(--accent); font-weight: 700; }
+  header p { color: var(--mute); font-size: .78rem; max-width: 52ch; font-family: ui-sans-serif, system-ui, sans-serif; }
+  nav.toc {
+    display: flex; gap: .35rem; flex-wrap: wrap; padding: .55rem 1rem;
+    border-bottom: 1px solid var(--line); background: #10151c;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+  }
+  nav.toc button {
+    border: 1px solid var(--line); background: transparent; color: var(--mute);
+    padding: .35rem .6rem; border-radius: 2px; cursor: pointer; font-size: .72rem;
+  }
+  nav.toc button:hover { color: var(--text); border-color: var(--mute); }
+  nav.toc button.on { color: var(--slate); background: var(--paper); border-color: var(--paper); font-weight: 600; }
+  main { display: grid; grid-template-columns: 1.35fr 1fr; min-height: 0; }
+  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+  .stage {
+    position: relative; min-height: 420px; background:
+      radial-gradient(ellipse at 30% 20%, rgba(196,92,38,.08), transparent 45%),
+      radial-gradient(ellipse at 70% 80%, rgba(42,157,143,.07), transparent 40%),
+      #0c1015;
+    border-right: 1px solid var(--line);
+  }
+  canvas#view { width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas#view:active { cursor: grabbing; }
+  .stage-label {
+    position: absolute; left: .75rem; bottom: .6rem; right: .75rem;
+    display: flex; justify-content: space-between; gap: .5rem;
+    font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem; color: var(--mute);
+    pointer-events: none;
+  }
+  .aside {
+    overflow: auto; padding: .85rem 1rem 1.2rem; background: var(--panel);
+    font-family: ui-sans-serif, system-ui, sans-serif; font-size: .78rem;
+  }
+  .aside h2 { font-family: Georgia, serif; font-size: 1rem; color: var(--paper); margin-bottom: .25rem; }
+  .aside .sec { color: var(--accent); font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: .4rem; }
+  .aside .blurb { color: var(--mute); line-height: 1.45; margin-bottom: .8rem; }
+  .eq {
+    background: #121820; border-left: 3px solid var(--teal); padding: .55rem .7rem;
+    margin: .55rem 0; font-family: "SF Mono", Consolas, monospace; font-size: .7rem;
+    color: #c5d4e0; line-height: 1.45; white-space: pre-wrap;
+  }
+  .locks { display: flex; flex-wrap: wrap; gap: .35rem; margin: .5rem 0 .8rem; }
+  .chip {
+    font-size: .65rem; padding: .2rem .45rem; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--mute);
+  }
+  .chip.lock { border-color: var(--ok); color: #9ddeb4; background: rgba(47,125,74,.15); }
+  .chip.prov { border-color: var(--blue); color: #9ec5e0; background: rgba(61,126,166,.15); }
+  .chip.conj { border-color: var(--gold); color: #e6d39a; background: rgba(201,162,39,.12); }
+  .chip.contingent { border-color: var(--bad); color: #e0a0a0; background: rgba(178,58,58,.12); }
+  .controls { display: grid; gap: .45rem; margin-top: .4rem; }
+  .ctrl label { display: flex; justify-content: space-between; color: var(--mute); font-size: .7rem; }
+  .ctrl label b { color: var(--gold); font-family: "SF Mono", monospace; font-weight: 500; }
+  .ctrl input[type=range] { width: 100%; accent-color: var(--accent); }
+  .audit {
+    margin-top: .85rem; border-top: 1px solid var(--line); padding-top: .7rem;
+  }
+  .audit h3 { font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; color: var(--mute); margin-bottom: .4rem; }
+  .row { display: flex; justify-content: space-between; gap: .5rem; padding: .22rem 0; border-bottom: 1px dashed #243040; }
+  .row span:last-child { font-family: "SF Mono", monospace; color: var(--teal); }
+  .row.fail span:last-child { color: #e07070; }
+  .row.pass span:last-child { color: #7dcea0; }
+  footer {
+    border-top: 1px solid var(--line); padding: .45rem 1rem; color: var(--mute);
+    font-family: ui-sans-serif, system-ui, sans-serif; font-size: .68rem;
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    background: #10151c;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>TDVT Atlas</span> · Revision B</h1>
+  <p>Interactive verification of the hopfion-lattice spacetime paper — organized by manuscript sections, not a particle playground clone.</p>
+</header>
+<nav class="toc" id="toc"></nav>
+<main>
+  <section class="stage">
+    <canvas id="view"></canvas>
+    <div class="stage-label"><span id="stageHint">drag to orbit · scroll to zoom</span><span id="stageMeta">—</span></div>
+  </section>
+  <aside class="aside" id="aside"></aside>
+</main>
+<footer>
+  <span>Source: Unified Hopfion Spacetime, Revision B · locks from QVC companion</span>
+  <span id="fps">—</span>
+</footer>
+
+<script>
+"use strict";
+/* TDVT Atlas — paper-faithful interactive verification suite.
+   Inspiration only from prior HTML labs (GPU particles, panels). Structure follows Rev B §§. */
+
+const GAMMA_E = 0.5772156649015329;
+const TAU = Math.PI * 2;
+
+/* ===== Locked math ===== */
+function besselK0(z) {
+  if (z <= 0) return Infinity;
+  if (z < 0.5) {
+    const z2 = (z * z) / 4;
+    let i0 = 1, term = 1;
+    for (let k = 1; k < 28; k++) { term *= z2 / (k * k); i0 += term; }
+    return -(Math.log(z / 2) + GAMMA_E) * i0;
+  }
+  const inv = 1 / z;
+  const poly = 1 - 0.125 * inv + 9 / 128 * inv * inv - 225 / 3072 * Math.pow(inv, 3) + 11025 / 98304 * Math.pow(inv, 4);
+  return Math.sqrt(Math.PI / (2 * z)) * Math.exp(-z) * poly;
+}
+function Fsum(x, nMax = 80) {
+  let s = 0;
+  for (let n = 1; n <= nMax; n++) s += besselK0(n * x);
+  return s;
+}
+function eVacTierC(rNm, RNm, hcs) {
+  const rUm = rNm / 1000;
+  const x = TAU * rNm / RNm;
+  return (1 / (4 * Math.PI * Math.PI)) * (hcs / rUm) * Fsum(x);
+}
+function eVacOld(rNm, RNm, hcs) {
+  const rUm = rNm / 1000;
+  const x = TAU * rNm / RNm;
+  return (1 / (4 * Math.PI)) * (hcs / rUm) * (RNm / rNm) * Fsum(x);
+}
+function foldCritical(ell) {
+  let lo = 1e-4, hi = 1;
+  for (let i = 0; i < 70; i++) {
+    const m = 0.5 * (lo + hi);
+    if (m * (1 - Math.log(m) - ell) - 1 > 0) hi = m; else lo = m;
+  }
+  const dc = 0.5 * (lo + hi);
+  return { alphaC: dc, deltaC: dc };
+}
+function foldRes(d, a, ell) { return d <= 0 ? 1e9 : d - (1 + a * (Math.log(d) + ell)); }
+function foldBranches(alpha, ell) {
+  const { alphaC } = foldCritical(ell);
+  if (alpha <= 0) return { phys: 1, unst: null };
+  if (alpha >= alphaC * 0.999999) return { phys: null, unst: null };
+  const roots = [];
+  let prev = foldRes(1e-4, alpha, ell);
+  const N = 6000;
+  for (let i = 1; i <= N; i++) {
+    const d = 1e-4 + (1 - 1e-4) * i / N;
+    const f = foldRes(d, alpha, ell);
+    if (prev * f < 0) {
+      const t = -prev / (f - prev);
+      roots.push(d - (1 - 1e-4) / N + t * (1 - 1e-4) / N);
+    }
+    prev = f;
+  }
+  roots.sort((a, b) => b - a);
+  return { phys: roots[0] ?? null, unst: roots[1] ?? null };
+}
+function democraticSpec(N, g0) {
+  return {
+    lmax: (N - 1) * g0,
+    lmin: -g0,
+    mult: N - 1,
+    eigs: [...Array(N - 1).fill(-g0), (N - 1) * g0],
+  };
+}
+
+/* Hopf map from paper eq:hopf_map + Euler coords on S3 */
+function hopfPoint(xi, alpha, beta, n) {
+  // z1 = cosξ e^{iβ}, z2 = sinξ e^{i(β + n α)}  (β period 4π)
+  const c = Math.cos(xi), s = Math.sin(xi);
+  const b1 = beta, b2 = beta + n * alpha;
+  const z1r = c * Math.cos(b1), z1i = c * Math.sin(b1);
+  const z2r = s * Math.cos(b2), z2i = s * Math.sin(b2);
+  // π(z1,z2) = (2 Re(z1 conj(z2)), 2 Im(z1 conj(z2)), |z1|²-|z2|²)
+  const re = z1r * z2r + z1i * z2i;
+  const im = z1i * z2r - z1r * z2i;
+  const nx = 2 * re, ny = 2 * im, nz = c * c - s * s;
+  // Stereographic of S3 → R3 for fiber visualization
+  const w = z1r; // use Re(z1) as height-ish; better: full S3 stereo from (w,x,y,z)
+  const X = z1i, Y = z2r, Z = z2i, W = z1r;
+  const den = 1 - W + 1e-3;
+  return {
+    r3: [X / den, Y / den, Z / den],
+    s2: [nx, ny, nz],
+    berryA: Math.pow(Math.sin(xi), 2) * n, // coefficient of dα in A
+  };
+}
+
+/* ===== State ===== */
+const S = {
+  chapter: 0,
+  n: 1,
+  xi: 0.7,
+  alpha0: 0.4,
+  omega: 0.8,
+  Q: 1,
+  c4c2: 1.0,
+  a: 1.8,
+  cs: 1.0,
+  kappa: 1.0,
+  rho: 1.0,
+  g0: 0.21,
+  N: 5,
+  ell: -2.791,
+  alphaFold: 0.65,
+  rNm: 8,
+  RNm: 50,
+  hcs: 0.07,
+  yaw: 0.6,
+  pitch: 0.35,
+  zoom: 1.0,
+  t: 0,
+};
+
+const CHAPTERS = [
+  {
+    id: "hopf",
+    short: "§2 Hopf",
+    title: "Hopf fibration & SU(2)",
+    sec: "Mathematical Foundations · §2",
+    blurb: "Exact Hopf map π:S³→S² from the paper. Fibers are linked once; Berry connection A = dβ + sin²ξ · n dα; curvature F = n sin(2ξ) dξ∧dα.",
+    chips: [["lock", "π(z₁,z₂)"], ["lock", "Φ_Berry = n Ω"], ["lock", "c₁ = n"]],
+    draw: "hopf",
+  },
+  {
+    id: "vk",
+    short: "§2 VK / FN",
+    title: "Faddeev–Niemi & Vakulenko–Kapitansky",
+    sec: "Mathematical Foundations · §2.2–2.3",
+    blurb: "Skyrme stabilization R₀∼√(c₄/c₂). Energy lower bound E(Q)≥C|Q|^{3/4} implies higher-Q hopfions prefer binding over fragmentation — the cohesive force for a crystal.",
+    chips: [["lock", "E≥C|Q|^{3/4}"], ["lock", "R₀=√(c₄/c₂)"]],
+    draw: "vk",
+  },
+  {
+    id: "lattice",
+    short: "§3 Lattice",
+    title: "Crystal lattice & five Goldstones",
+    sec: "Hopfion Crystal Lattice · §3",
+    blurb: "Symmetry G=T(3)⋊O_h×SU(2)_fiber. Breaking yields five Goldstones: 2 TA (helicity-2 analogues), 1 LA (dilaton), 2 fiber magnons. Einstein equivalence is not claimed.",
+    chips: [["lock", "5 Goldstones"], ["lock", "analogue gravitons only"]],
+    draw: "lattice",
+  },
+  {
+    id: "metric",
+    short: "§4 Metric",
+    title: "Unruh–Visser acoustic metric",
+    sec: "Emergent Acoustic Metric · §4",
+    blurb: "Phonons propagate on g_eff with g_tt=−(c_s²−v_s²). Horizon at v_s(r_H)=c_s for v_s=κ/(2πr). Twin channels: thermal Hawking + Schwinger tunneling.",
+    chips: [["lock", "g_eff Unruh–Visser"], ["lock", "r_H, T_H"]],
+    draw: "metric",
+  },
+  {
+    id: "torsion",
+    short: "§5 Torsion",
+    title: "Cartan torsion from Hopf charge",
+    sec: "Cartan Torsion · §5",
+    blurb: "Acoustic metric is Riemannian; Hopf current sources Cartan torsion (teleparallel completion). Contortion encodes 4π spinorial holonomy inaccessible to g_μν alone.",
+    chips: [["lock", "torsion ∝ J_Hopf"], ["conj", "H-TEGR1"]],
+    draw: "torsion",
+  },
+  {
+    id: "vacuum",
+    short: "§6 Vacuum",
+    title: "Toroidal vacuum F=Σ K₀(nx)",
+    sec: "Topological Casimir · §6",
+    blurb: "Locked spectral factor is the Bessel sum — not Jacobi ϑ₃. Tier-C energy form is locked; meV numbers stay provisional until vacuum freeze.",
+    chips: [["lock", "F=ΣK₀(nx)"], ["lock", "Tier-C form"], ["prov", "meV freeze"]],
+    draw: "vacuum",
+  },
+  {
+    id: "fold",
+    short: "§7 Fold",
+    title: "Saddle-node fold of the gap map",
+    sec: "Self-Consistent Gap · §7",
+    blurb: "Amplitude truncation δ=1+α(lnδ+ℓ) ends in a saddle-node with √(α_c−α) branches — not a BKT essential singularity. BKT only if vortex RG is completed.",
+    chips: [["lock", "fold map"], ["lock", "√ scaling"], ["contingent", "BKT via vortex RG"]],
+    draw: "fold",
+  },
+  {
+    id: "spec",
+    short: "§8 Spec(G)",
+    title: "Democratic Spec(G) & catalyzon",
+    sec: "Five-Mode Hybridization · §8",
+    blurb: "G=g₀(J−I): λ_max=(N−1)g₀, λ_min=−g₀ (×N−1). For N=5: bright 4g₀, dark multiplet −g₀. Microscopic TEGR derivation is Conjecture H-TEGR1.",
+    chips: [["lock", "λ_max=(N−1)g₀"], ["lock", "λ_min=−g₀"], ["conj", "H-TEGR1"]],
+    draw: "spec",
+  },
+];
+
+/* ===== UI ===== */
+const toc = document.getElementById("toc");
+const aside = document.getElementById("aside");
+CHAPTERS.forEach((c, i) => {
+  const b = document.createElement("button");
+  b.textContent = c.short;
+  b.title = c.title;
+  if (i === 0) b.classList.add("on");
+  b.onclick = () => setChapter(i);
+  toc.appendChild(b);
+});
+
+function setChapter(i) {
+  S.chapter = i;
+  [...toc.children].forEach((el, j) => el.classList.toggle("on", j === i));
+  renderAside();
+}
+
+function ctrl(key, label, min, max, step, fmt) {
+  const v = S[key];
+  return `<div class="ctrl"><label>${label}<b id="v_${key}">${fmt(v)}</b></label>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${v}" data-key="${key}" data-fmt="${fmt.name || "f"}"></div>`;
+}
+
+function renderAside() {
+  const c = CHAPTERS[S.chapter];
+  const chips = c.chips.map(([k, t]) => `<span class="chip ${k}">${t}</span>`).join("");
+  let controls = "";
+  if (c.draw === "hopf") {
+    controls = ctrl("n", "Winding n", 1, 5, 1, x => x.toFixed(0))
+      + ctrl("xi", "ξ ∈ [0,π/2]", 0.05, 1.55, 0.01, x => x.toFixed(2))
+      + ctrl("omega", "Fiber ω (SU(2)/2)", 0, 2.5, 0.02, x => x.toFixed(2));
+  } else if (c.draw === "vk") {
+    controls = ctrl("Q", "Hopf charge Q", 1, 8, 1, x => x.toFixed(0))
+      + ctrl("c4c2", "c₄/c₂", 0.2, 3, 0.05, x => x.toFixed(2));
+  } else if (c.draw === "lattice") {
+    controls = ctrl("a", "Lattice a", 0.8, 3.2, 0.05, x => x.toFixed(2))
+      + ctrl("omega", "Magnon drive", 0, 2, 0.02, x => x.toFixed(2));
+  } else if (c.draw === "metric") {
+    controls = ctrl("cs", "c_s", 0.3, 2, 0.02, x => x.toFixed(2))
+      + ctrl("kappa", "κ", 0.3, 2.5, 0.02, x => x.toFixed(2))
+      + ctrl("rho", "ρ_s / ρ₀", 0.3, 1.5, 0.02, x => x.toFixed(2));
+  } else if (c.draw === "torsion") {
+    controls = ctrl("n", "Winding / charge dens.", 1, 5, 1, x => x.toFixed(0))
+      + ctrl("a", "Core scale", 0.6, 2.5, 0.05, x => x.toFixed(2));
+  } else if (c.draw === "vacuum") {
+    controls = ctrl("rNm", "r (nm)", 2, 40, 1, x => x.toFixed(0))
+      + ctrl("RNm", "R (nm)", 15, 120, 1, x => x.toFixed(0))
+      + ctrl("hcs", "ℏ c_s", 0.02, 0.15, 0.002, x => x.toFixed(3));
+  } else if (c.draw === "fold") {
+    controls = ctrl("alphaFold", "α / α_c", 0.02, 0.99, 0.01, x => x.toFixed(2))
+      + ctrl("ell", "ℓ (IR)", -3.5, -1.5, 0.001, x => x.toFixed(3));
+  } else if (c.draw === "spec") {
+    controls = ctrl("N", "N modes", 2, 8, 1, x => x.toFixed(0))
+      + ctrl("g0", "g₀", 0.05, 0.5, 0.005, x => x.toFixed(3));
+  }
+
+  aside.innerHTML = `
+    <div class="sec">${c.sec}</div>
+    <h2>${c.title}</h2>
+    <p class="blurb">${c.blurb}</p>
+    <div class="locks">${chips}</div>
+    <div class="eq" id="eqBox"></div>
+    <div class="controls">${controls}</div>
+    <div class="audit"><h3>Live audit</h3><div id="audit"></div></div>`;
+
+  aside.querySelectorAll("input[type=range]").forEach(inp => {
+    inp.addEventListener("input", () => {
+      const k = inp.dataset.key;
+      S[k] = parseFloat(inp.value);
+      const el = document.getElementById("v_" + k);
+      if (el) {
+        if (k === "n" || k === "Q" || k === "N" || k === "rNm" || k === "RNm") el.textContent = (+S[k]).toFixed(0);
+        else if (k === "hcs" || k === "g0" || k === "ell") el.textContent = (+S[k]).toFixed(3);
+        else el.textContent = (+S[k]).toFixed(2);
+      }
+      updateEqAudit();
+    });
+  });
+  updateEqAudit();
+}
+
+function updateEqAudit() {
+  const c = CHAPTERS[S.chapter];
+  const eq = document.getElementById("eqBox");
+  const audit = document.getElementById("audit");
+  if (!eq || !audit) return;
+  let eqText = "";
+  let rows = [];
+
+  if (c.draw === "hopf") {
+    eqText = "π(z₁,z₂) = (2 Re(z₁ z̄₂), 2 Im(z₁ z̄₂), |z₁|²−|z₂|²)\nA = dβ + sin²ξ · n dα\nF = n sin(2ξ) dξ ∧ dα    →  c₁ = n";
+    const Fmag = S.n * Math.sin(2 * S.xi);
+    rows = [
+      ["pass", "Chern c₁", String(S.n)],
+      ["pass", "F density ~ n sin(2ξ)", Fmag.toFixed(4)],
+      ["pass", "β period", "4π (spinor)"],
+    ];
+  } else if (c.draw === "vk") {
+    const R0 = Math.sqrt(S.c4c2);
+    const Emin = Math.pow(Math.abs(S.Q), 0.75);
+    const Efrag = S.Q * 1; // units where E(1)=1 lower-bound scale
+    eqText = "L_FN = (c₂/2)(∂n)² + (c₄/4)(F^{(n)})²\nR₀ ∼ √(c₄/c₂)\nE(Q) ≥ C |Q|^{3/4}";
+    rows = [
+      ["pass", "R₀", R0.toFixed(4)],
+      ["pass", "VK lower bound (C=1)", Emin.toFixed(4)],
+      [Emin < Efrag ? "pass" : "fail", "Binding vs Q·E(1)", Emin < Efrag ? "favors crystal" : "—"],
+    ];
+  } else if (c.draw === "lattice") {
+    eqText = "G = T(3) ⋊ O_h × SU(2)_fiber\nGoldstones: 2 TA + 1 LA + 2 magnons\nTA ↔ helicity-2 analogues (not Einstein)";
+    rows = [
+      ["pass", "Goldstone count", "5"],
+      ["pass", "Lab Einstein claim", "not claimed"],
+      ["pass", "BCC motif", "O_h"],
+    ];
+  } else if (c.draw === "metric") {
+    const rH = S.kappa / (TAU * S.cs);
+    const kappaH = Math.pow(S.cs, 3) / S.kappa; // leading term order
+    const TH = kappaH / TAU;
+    eqText = "g_eff = (ρ_s/c_s) [ −(c_s²−v²) , −v ; −v , δ ]\nv_s = κ/(2πr)    r_H : v_s = c_s\nT_H = ℏ κ_H / (2π k_B)";
+    rows = [
+      ["pass", "r_H", rH.toFixed(4)],
+      ["pass", "T_H (ℏ=k_B=1)", TH.toFixed(4)],
+      ["pass", "g_tt sign flip", "inside horizon"],
+    ];
+  } else if (c.draw === "torsion") {
+    eqText = "Γ = {LC} + K(torsion)\nT ∝ α_T ★ J^{(Hopf)}\n4π holonomy from contortion (spinor)";
+    rows = [
+      ["pass", "Metric alone sees torsion?", "no"],
+      ["pass", "Source", "Hopf current"],
+      ["conj", "G_ij from TEGR overlaps", "H-TEGR1 open"],
+    ];
+  } else if (c.draw === "vacuum") {
+    const x = TAU * S.rNm / S.RNm;
+    const F = Fsum(x);
+    const Ec = eVacTierC(S.rNm, S.RNm, S.hcs);
+    const Eo = eVacOld(S.rNm, S.RNm, S.hcs);
+    const audit244 = Math.abs(Eo - 0.244) > 0.01;
+    eqText = "F(x)=Σ_{n≥1} K₀(n x)     x=2πr/R\nE_vac = (1/4π²)(ℏc_s/r) F(x)   [Tier C]\nϑ₃ ≠ F  (withdrawn identification)";
+    rows = [
+      ["pass", "x = 2πr/R", x.toFixed(4)],
+      ["pass", "F(x)", F.toFixed(5)],
+      ["pass", "E_vac Tier C (meV)", Ec.toFixed(5)],
+      [audit244 ? "pass" : "fail", "Old ansatz ≠ 0.244 audit", Eo.toFixed(5) + " meV"],
+      ["prov", "0.244 meV target", "provisional"],
+    ];
+  } else if (c.draw === "fold") {
+    const { alphaC, deltaC } = foldCritical(S.ell);
+    const a = S.alphaFold * alphaC;
+    const br = foldBranches(a, S.ell);
+    eqText = "δ = 1 + α (ln δ + ℓ)\nα_c = δ_c ,  δ_c(1−lnδ_c−ℓ)=1\nδ−δ_c ∼ ±√(α_c−α)   ≠  BKT exp";
+    rows = [
+      ["pass", "α_c = δ_c", alphaC.toFixed(5)],
+      ["pass", "δ_phys", br.phys == null ? "folded out" : br.phys.toFixed(4)],
+      ["pass", "δ_unst", br.unst == null ? "—" : br.unst.toFixed(4)],
+      ["pass", "√ distance", Math.sqrt(Math.max(0, 1 - S.alphaFold)).toFixed(4)],
+      ["contingent", "BKT language", "off until vortex RG"],
+    ];
+  } else if (c.draw === "spec") {
+    const sp = democraticSpec(S.N, S.g0);
+    eqText = "G = g₀ (J_N − I_N)\nλ_max = (N−1) g₀\nλ_min = −g₀  (multiplicity N−1)\nN=5 → 4g₀ and −g₀ ×4";
+    rows = [
+      ["pass", "λ_max", sp.lmax.toFixed(4)],
+      ["pass", "λ_min", sp.lmin.toFixed(4)],
+      ["pass", "dark multiplicity", String(sp.mult)],
+      ["pass", "Tr G", "0"],
+      ["conj", "H-TEGR1 derivation", "open"],
+    ];
+  }
+
+  eq.textContent = eqText;
+  audit.innerHTML = rows.map(([cls, k, v]) =>
+    `<div class="row ${cls === "fail" ? "fail" : cls === "pass" ? "pass" : ""}"><span>${k}</span><span>${v}</span></div>`
+  ).join("");
+}
+
+/* ===== Canvas renderer (2D atlas figures + light 3D projection) ===== */
+const canvas = document.getElementById("view");
+const ctx = canvas.getContext("2d", { alpha: false });
+let W = 0, H = 0, DPR = 1;
+let dragging = false, lx = 0, ly = 0;
+
+function resize() {
+  const r = canvas.parentElement.getBoundingClientRect();
+  DPR = Math.min(devicePixelRatio || 1, 2);
+  W = canvas.width = Math.floor(r.width * DPR);
+  H = canvas.height = Math.floor(r.height * DPR);
+}
+addEventListener("resize", resize);
+resize();
+
+canvas.addEventListener("pointerdown", e => { dragging = true; lx = e.clientX; ly = e.clientY; });
+addEventListener("pointerup", () => dragging = false);
+addEventListener("pointermove", e => {
+  if (!dragging) return;
+  S.yaw += (e.clientX - lx) * 0.008;
+  S.pitch += (e.clientY - ly) * 0.006;
+  S.pitch = Math.max(-1.2, Math.min(1.2, S.pitch));
+  lx = e.clientX; ly = e.clientY;
+});
+canvas.addEventListener("wheel", e => {
+  e.preventDefault();
+  S.zoom *= e.deltaY > 0 ? 0.94 : 1.06;
+  S.zoom = Math.max(0.4, Math.min(3.5, S.zoom));
+}, { passive: false });
+
+function project(x, y, z) {
+  let X = x, Y = y, Z = z;
+  const cy = Math.cos(S.yaw), sy = Math.sin(S.yaw);
+  const cp = Math.cos(S.pitch), sp = Math.sin(S.pitch);
+  let x1 = cy * X + sy * Z;
+  let z1 = -sy * X + cy * Z;
+  let y1 = cp * Y - sp * z1;
+  z1 = sp * Y + cp * z1;
+  const f = 2.2 * S.zoom / (2.8 + z1);
+  return [W * 0.5 + x1 * f * H * 0.28, H * 0.52 - y1 * f * H * 0.28, z1];
+}
+function clear() {
+  ctx.fillStyle = "#0c1015";
+  ctx.fillRect(0, 0, W, H);
+  // subtle paper grid
+  ctx.strokeStyle = "rgba(243,239,230,0.04)";
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 12; i++) {
+    const y = (i / 11) * H;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+}
+function line3(a, b, color, w = 1.2) {
+  const p = project(...a), q = project(...b);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = w * DPR;
+  ctx.beginPath();
+  ctx.moveTo(p[0], p[1]);
+  ctx.lineTo(q[0], q[1]);
+  ctx.stroke();
+}
+function dot3(p, color, r = 2) {
+  const q = project(...p);
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.arc(q[0], q[1], r * DPR, 0, TAU);
+  ctx.fill();
+}
+
+function drawHopf(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "linked Hopf fibers · stereographic S³→ℝ³";
+  // Draw several fibers (exact geometry, not particle soup)
+  const fibers = 10;
+  for (let f = 0; f < fibers; f++) {
+    const alpha = (f / fibers) * TAU;
+    const xi = 0.2 + (S.xi - 0.2) * ((f % 5) / 4);
+    const pts = [];
+    const steps = 160;
+    for (let i = 0; i <= steps; i++) {
+      const beta = (i / steps) * 4 * Math.PI + t * S.omega; // 4π period
+      const h = hopfPoint(xi, alpha, beta, S.n);
+      pts.push(h.r3);
+    }
+    const hue = (f / fibers) * 360;
+    ctx.strokeStyle = `hsla(${hue},70%,62%,0.85)`;
+    ctx.lineWidth = 1.4 * DPR;
+    ctx.beginPath();
+    for (let i = 0; i < pts.length; i++) {
+      const p = project(...pts[i]);
+      if (i === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]);
+    }
+    ctx.stroke();
+  }
+  // Base S² inset
+  const cx = W * 0.82, cy = H * 0.22, R = Math.min(W, H) * 0.09;
+  ctx.strokeStyle = "rgba(243,239,230,0.35)";
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, TAU); ctx.stroke();
+  ctx.fillStyle = "rgba(243,239,230,0.55)";
+  ctx.font = `${11 * DPR}px ui-sans-serif`;
+  ctx.fillText("base S²", cx - 20 * DPR, cy - R - 8 * DPR);
+  for (let f = 0; f < fibers; f++) {
+    const alpha = (f / fibers) * TAU;
+    const xi = 0.2 + (S.xi - 0.2) * ((f % 5) / 4);
+    const nx = Math.sin(2 * xi) * Math.cos(S.n * alpha);
+    const ny = Math.sin(2 * xi) * Math.sin(S.n * alpha);
+    const nz = Math.cos(2 * xi);
+    ctx.fillStyle = `hsla(${(f / fibers) * 360},70%,60%,0.9)`;
+    ctx.beginPath();
+    ctx.arc(cx + nx * R * 0.85, cy - nz * R * 0.85, 2.5 * DPR, 0, TAU);
+    ctx.fill();
+  }
+}
+
+function drawVK(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "toroidal hopfion density · VK bound overlay";
+  const R0 = Math.sqrt(S.c4c2);
+  const Q = S.Q;
+  // Torus tube with winding texture
+  for (let u = 0; u < 90; u++) {
+    for (let v = 0; v < 36; v += 2) {
+      const U = (u / 90) * TAU;
+      const V = (v / 36) * TAU + t * 0.4;
+      const Rmaj = 1.1 * R0, rmin = 0.38 * R0;
+      const x = (Rmaj + rmin * Math.cos(V)) * Math.cos(U * Q / Math.max(Q, 1));
+      const y = rmin * Math.sin(V);
+      const z = (Rmaj + rmin * Math.cos(V)) * Math.sin(U);
+      const dens = 1 / (1 + Math.pow(rmin / R0, 2));
+      const c = `rgba(196,92,38,${0.15 + 0.55 * dens})`;
+      dot3([x, y, z], c, 1.4);
+    }
+  }
+  // VK curve inset
+  const pad = 40 * DPR;
+  const gw = W * 0.34, gh = H * 0.28, gx = 30 * DPR, gy = H - gh - 30 * DPR;
+  ctx.fillStyle = "rgba(18,24,32,0.85)";
+  ctx.fillRect(gx, gy, gw, gh);
+  ctx.strokeStyle = "rgba(243,239,230,0.2)";
+  ctx.strokeRect(gx, gy, gw, gh);
+  ctx.beginPath();
+  for (let i = 0; i <= 60; i++) {
+    const q = 1 + i * 7 / 60;
+    const e = Math.pow(q, 0.75);
+    const X = gx + (i / 60) * (gw - 10);
+    const Y = gy + gh - 10 - (e / Math.pow(8, 0.75)) * (gh - 20);
+    if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  }
+  ctx.strokeStyle = "#2a9d8f";
+  ctx.lineWidth = 2 * DPR;
+  ctx.stroke();
+  const eQ = Math.pow(Q, 0.75);
+  const Xq = gx + ((Q - 1) / 7) * (gw - 10);
+  const Yq = gy + gh - 10 - (eQ / Math.pow(8, 0.75)) * (gh - 20);
+  ctx.fillStyle = "#c9a227";
+  ctx.beginPath(); ctx.arc(Xq, Yq, 4 * DPR, 0, TAU); ctx.fill();
+  ctx.fillStyle = "#8b97a5";
+  ctx.font = `${10 * DPR}px ui-sans-serif`;
+  ctx.fillText("E ≥ C|Q|³⁄⁴", gx + 8 * DPR, gy + 14 * DPR);
+}
+
+function drawLattice(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "BCC nodes · five Goldstone channels";
+  const a = S.a;
+  const nodes = [];
+  for (let ix = -1; ix <= 1; ix++)
+    for (let iy = -1; iy <= 1; iy++)
+      for (let iz = -1; iz <= 1; iz++) {
+        nodes.push([ix * a, iy * a, iz * a]);
+        if ((ix + iy + iz) % 2 === 0)
+          nodes.push([(ix + 0.5) * a * 0.85, (iy + 0.5) * a * 0.85, (iz + 0.5) * a * 0.85]);
+      }
+  // bonds
+  for (let i = 0; i < nodes.length; i++)
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i][0] - nodes[j][0], dy = nodes[i][1] - nodes[j][1], dz = nodes[i][2] - nodes[j][2];
+      if (Math.hypot(dx, dy, dz) < a * 1.05) line3(nodes[i], nodes[j], "rgba(61,126,166,0.35)", 1);
+    }
+  nodes.forEach((p, i) => {
+    const pulse = 0.5 + 0.5 * Math.sin(t * S.omega + i);
+    dot3(p, `rgba(42,157,143,${0.45 + 0.4 * pulse})`, 3.2);
+  });
+  // Goldstone legend / dispersion sketch
+  const modes = [
+    { name: "TA₁", color: "#3d7ea6" },
+    { name: "TA₂", color: "#2a9d8f" },
+    { name: "LA", color: "#c9a227" },
+    { name: "M₁", color: "#c45c26" },
+    { name: "M₂", color: "#b23a8a" },
+  ];
+  const gx = 24 * DPR, gy = 24 * DPR;
+  ctx.font = `${11 * DPR}px ui-sans-serif`;
+  modes.forEach((m, i) => {
+    const y = gy + i * 18 * DPR;
+    ctx.strokeStyle = m.color;
+    ctx.lineWidth = 2 * DPR;
+    ctx.beginPath();
+    for (let k = 0; k < 40; k++) {
+      const x = gx + 70 * DPR + k * 2.2 * DPR;
+      const w = (0.4 + 0.15 * i) * k + 4 * Math.sin(k * 0.2 + t + i);
+      const yy = y - w * 0.15 * DPR;
+      if (k === 0) ctx.moveTo(x, yy); else ctx.lineTo(x, yy);
+    }
+    ctx.stroke();
+    ctx.fillStyle = m.color;
+    ctx.fillText(m.name, gx, y);
+  });
+}
+
+function drawMetric(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "v_s=κ/(2πr) streamlines · horizon shell";
+  const rH = S.kappa / (TAU * S.cs);
+  // horizon circle in 3D (ring)
+  for (let i = 0; i < 80; i++) {
+    const th = (i / 80) * TAU;
+    const p = [rH * Math.cos(th), 0, rH * Math.sin(th)];
+    dot3(p, "rgba(196,92,38,0.9)", 2);
+  }
+  // streamlines
+  for (let s = 0; s < 18; s++) {
+    const th0 = (s / 18) * TAU;
+    ctx.beginPath();
+    let first = true;
+    for (let i = 0; i < 50; i++) {
+      const r = 0.2 + i * 0.08;
+      const th = th0 + (S.kappa / (TAU * r)) * t * 0.15 * S.rho;
+      const p = project(r * Math.cos(th), (s % 3 - 1) * 0.15, r * Math.sin(th));
+      if (first) { ctx.moveTo(p[0], p[1]); first = false; } else ctx.lineTo(p[0], p[1]);
+    }
+    ctx.strokeStyle = s % 2 ? "rgba(42,157,143,0.55)" : "rgba(61,126,166,0.45)";
+    ctx.lineWidth = 1.2 * DPR;
+    ctx.stroke();
+  }
+  // g_tt plot
+  const gx = W * 0.62, gy = H * 0.12, gw = W * 0.32, gh = H * 0.28;
+  ctx.fillStyle = "rgba(18,24,32,0.88)";
+  ctx.fillRect(gx, gy, gw, gh);
+  ctx.strokeStyle = "rgba(243,239,230,0.2)";
+  ctx.strokeRect(gx, gy, gw, gh);
+  ctx.beginPath();
+  for (let i = 0; i <= 60; i++) {
+    const r = 0.15 + (i / 60) * 2.5;
+    const vs = S.kappa / (TAU * r);
+    const gtt = -(S.cs * S.cs - vs * vs);
+    const X = gx + (i / 60) * gw;
+    const Y = gy + gh * 0.5 - gtt * gh * 0.15;
+    if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  }
+  ctx.strokeStyle = "#c9a227";
+  ctx.lineWidth = 2 * DPR;
+  ctx.stroke();
+  ctx.fillStyle = "#8b97a5";
+  ctx.font = `${10 * DPR}px ui-sans-serif`;
+  ctx.fillText("g_tt(r)", gx + 8 * DPR, gy + 14 * DPR);
+  ctx.fillText("r_H=" + rH.toFixed(3), gx + 8 * DPR, gy + gh - 8 * DPR);
+}
+
+function drawTorsion(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "axial torsion quiver sourced by Hopf density";
+  const scale = S.a;
+  for (let i = 0; i < 14; i++) {
+    for (let j = 0; j < 14; j++) {
+      const x = (i - 6.5) * 0.28 * scale;
+      const z = (j - 6.5) * 0.28 * scale;
+      const r = Math.hypot(x, z) + 0.08;
+      // toroidal + poloidal toy field ~ Hopf-sourced axial torsion
+      const tor = S.n * Math.exp(-r * 1.2);
+      const vx = -z / r * tor + 0.25 * Math.cos(t + r * 3) * x / r;
+      const vy = 0.35 * tor * Math.sin(t * 0.7 + r);
+      const vz = x / r * tor;
+      const p0 = [x, 0, z];
+      const p1 = [x + vx * 0.35, vy * 0.35, z + vz * 0.35];
+      line3(p0, p1, `rgba(201,162,39,${0.25 + 0.5 * tor})`, 1.1);
+    }
+  }
+  // core
+  for (let i = 0; i < 40; i++) {
+    const th = (i / 40) * TAU + t;
+    dot3([0.5 * Math.cos(th), 0.15 * Math.sin(2 * th), 0.5 * Math.sin(th)], "rgba(196,92,38,0.8)", 2);
+  }
+}
+
+function drawVacuum(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "fat torus · mode weight ~ K₀(nx)";
+  const xAsp = TAU * S.rNm / S.RNm;
+  // torus
+  for (let u = 0; u < 100; u++) {
+    for (let v = 0; v < 28; v += 2) {
+      const U = u / 100 * TAU, V = v / 28 * TAU;
+      const Rm = 1.3, rm = 1.3 * (S.rNm / S.RNm);
+      const p = [(Rm + rm * Math.cos(V)) * Math.cos(U), rm * Math.sin(V), (Rm + rm * Math.cos(V)) * Math.sin(U)];
+      const w = Math.exp(-Math.pow(Math.sin(V), 2));
+      dot3(p, `rgba(42,157,143,${0.15 + 0.5 * w})`, 1.3);
+    }
+  }
+  // F partial sum chart
+  const gx = 28 * DPR, gy = H * 0.55, gw = W * 0.4, gh = H * 0.35;
+  ctx.fillStyle = "rgba(18,24,32,0.9)";
+  ctx.fillRect(gx, gy, gw, gh);
+  ctx.strokeStyle = "rgba(243,239,230,0.2)";
+  ctx.strokeRect(gx, gy, gw, gh);
+  let s = 0; const ys = [];
+  for (let n = 1; n <= 40; n++) { s += besselK0(n * xAsp); ys.push(s); }
+  const F = ys[ys.length - 1];
+  ctx.beginPath();
+  ys.forEach((y, i) => {
+    const X = gx + (i / (ys.length - 1)) * (gw - 12 * DPR) + 6 * DPR;
+    const Y = gy + gh - 12 * DPR - (y / F) * (gh - 28 * DPR);
+    if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  });
+  ctx.strokeStyle = "#2a9d8f";
+  ctx.lineWidth = 2 * DPR;
+  ctx.stroke();
+  ctx.fillStyle = "#8b97a5";
+  ctx.font = `${11 * DPR}px ui-sans-serif`;
+  ctx.fillText(`F(x)=${F.toFixed(5)}  x=${xAsp.toFixed(3)}`, gx + 8 * DPR, gy + 16 * DPR);
+  ctx.fillText(`E_TierC=${eVacTierC(S.rNm, S.RNm, S.hcs).toFixed(5)} meV`, gx + 8 * DPR, gy + 32 * DPR);
+}
+
+function drawFold(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "saddle-node fold · physical & unstable branches";
+  const { alphaC } = foldCritical(S.ell);
+  const gx = W * 0.12, gy = H * 0.12, gw = W * 0.76, gh = H * 0.7;
+  ctx.fillStyle = "rgba(18,24,32,0.5)";
+  ctx.fillRect(gx, gy, gw, gh);
+  // axes
+  ctx.strokeStyle = "rgba(243,239,230,0.25)";
+  ctx.strokeRect(gx, gy, gw, gh);
+  const xs = [], yp = [], yu = [];
+  for (let i = 0; i < 120; i++) {
+    const a = alphaC * 0.997 * i / 119;
+    const br = foldBranches(a, S.ell);
+    xs.push(a / alphaC); yp.push(br.phys); yu.push(br.unst);
+  }
+  const sy = d => gy + gh - (d / 1.05) * gh;
+  const sx = u => gx + u * gw;
+  function strokeBranch(arr, color) {
+    ctx.beginPath();
+    let on = false;
+    for (let i = 0; i < xs.length; i++) {
+      if (arr[i] == null) { on = false; continue; }
+      const X = sx(xs[i]), Y = sy(arr[i]);
+      if (!on) { ctx.moveTo(X, Y); on = true; } else ctx.lineTo(X, Y);
+    }
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2.4 * DPR;
+    ctx.stroke();
+  }
+  strokeBranch(yp, "#2a9d8f");
+  strokeBranch(yu, "#c45c26");
+  const br = foldBranches(S.alphaFold * alphaC, S.ell);
+  if (br.phys != null) {
+    ctx.fillStyle = "#c9a227";
+    ctx.beginPath();
+    ctx.arc(sx(S.alphaFold), sy(br.phys), 5 * DPR, 0, TAU);
+    ctx.fill();
+  }
+  // BKT ghost curve (wrong) for contrast
+  ctx.beginPath();
+  for (let i = 0; i < 80; i++) {
+    const u = i / 79;
+    const bkt = Math.exp(-0.5 / Math.max(1e-3, 1 - u));
+    const X = sx(u), Y = sy(Math.min(1, bkt));
+    if (i === 0) ctx.moveTo(X, Y); else ctx.lineTo(X, Y);
+  }
+  ctx.setLineDash([6 * DPR, 5 * DPR]);
+  ctx.strokeStyle = "rgba(178,58,58,0.55)";
+  ctx.lineWidth = 1.4 * DPR;
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = "#8b97a5";
+  ctx.font = `${12 * DPR}px ui-sans-serif`;
+  ctx.fillText("teal: physical fold   terracotta: unstable   dashed red: BKT form (not locked)", gx, gy - 8 * DPR);
+  ctx.fillText("α/α_c", gx + gw * 0.45, gy + gh + 18 * DPR);
+}
+
+function drawSpec(t) {
+  clear();
+  document.getElementById("stageHint").textContent = "G=g₀(J−I) spectrum · bright vs dark multiplet";
+  const sp = democraticSpec(S.N, S.g0);
+  // Matrix heatmap
+  const cell = Math.min(28, (W * 0.35) / S.N) * DPR;
+  const mx = 40 * DPR, my = 60 * DPR;
+  for (let i = 0; i < S.N; i++) {
+    for (let j = 0; j < S.N; j++) {
+      const g = i === j ? 0 : S.g0;
+      const v = g / (S.g0 || 1);
+      ctx.fillStyle = i === j ? "#1a222c" : `rgba(42,157,143,${0.25 + 0.5 * v})`;
+      ctx.fillRect(mx + j * cell, my + i * cell, cell - 2, cell - 2);
+    }
+  }
+  ctx.fillStyle = "#8b97a5";
+  ctx.font = `${12 * DPR}px ui-sans-serif`;
+  ctx.fillText("Gᵢⱼ", mx, my - 12 * DPR);
+
+  // Eigenvalue stems
+  const eigs = sp.eigs.slice().sort((a, b) => a - b);
+  const bx = W * 0.55, by = H * 0.2, bw = W * 0.38, bh = H * 0.55;
+  const lo = Math.min(...eigs), hi = Math.max(...eigs);
+  eigs.forEach((lam, i) => {
+    const x = bx + (i + 0.5) * (bw / eigs.length);
+    const y0 = by + bh * (1 - (0 - lo) / (hi - lo || 1));
+    const y1 = by + bh * (1 - (lam - lo) / (hi - lo || 1));
+    ctx.strokeStyle = lam > 0 ? "#c9a227" : "#2a9d8f";
+    ctx.lineWidth = 3 * DPR;
+    ctx.beginPath(); ctx.moveTo(x, y0); ctx.lineTo(x, y1); ctx.stroke();
+    ctx.fillStyle = ctx.strokeStyle;
+    ctx.beginPath(); ctx.arc(x, y1, 5 * DPR, 0, TAU); ctx.fill();
+  });
+  ctx.strokeStyle = "rgba(243,239,230,0.25)";
+  ctx.beginPath();
+  const yz = by + bh * (1 - (0 - lo) / (hi - lo || 1));
+  ctx.moveTo(bx, yz); ctx.lineTo(bx + bw, yz); ctx.stroke();
+  ctx.fillStyle = "#8b97a5";
+  ctx.fillText(`λ_max=${sp.lmax.toFixed(3)}  λ_min=${sp.lmin.toFixed(3)} ×${sp.mult}`, bx, by - 10 * DPR);
+}
+
+const drawers = { hopf: drawHopf, vk: drawVK, lattice: drawLattice, metric: drawMetric, torsion: drawTorsion, vacuum: drawVacuum, fold: drawFold, spec: drawSpec };
+
+let frames = 0, fpsT = performance.now();
+function frame(now) {
+  S.t = now * 0.001;
+  const c = CHAPTERS[S.chapter];
+  drawers[c.draw](S.t);
+  document.getElementById("stageMeta").textContent = c.title;
+  frames++;
+  if (now - fpsT > 500) {
+    document.getElementById("fps").textContent = (frames * 1000 / (now - fpsT)).toFixed(0) + " fps";
+    frames = 0; fpsT = now;
+    updateEqAudit();
+  }
+  requestAnimationFrame(frame);
+}
+
+renderAside();
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

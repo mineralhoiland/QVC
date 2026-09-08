@@ -1,0 +1,27 @@
+% Villain spin-wave g(r) at primary λ* stiffness (C3/C1)
+\begin{tikzpicture}
+\begin{axis}[
+  name=gplot,
+  width=0.92\linewidth,
+  height=5.6cm,
+  xmode=log,
+  ymode=log,
+  xlabel={$r/a$},
+  ylabel={$g(r)$},
+  xmin=1, xmax=64,
+  ymin=1e-3, ymax=1.2,
+  legend style={draw=none, at={(0.02,0.02)}, anchor=south west, font=\footnotesize, cells={anchor=west}},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiBlue, thick]
+  table[x index=0, y index=1, skip first n=1] {data/g_r_scaling.dat};
+\addlegendentry{spin-wave at $\lambda^\star$}
+\addplot[oiOrange, thick, dashed]
+  table[x index=0, y index=2, skip first n=1] {data/g_r_scaling.dat};
+\addlegendentry{$\eta=1/4$ (KT target)}
+\addplot[oiVerm, densely dotted]
+  table[x index=0, y index=3, skip first n=1] {data/g_r_scaling.dat};
+\addlegendentry{plasma toy}
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDVT Hybrid Showcase — Processor · Lattice · Acoustic Geometry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Figtree:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #07060d;
+    --ink: #100e18;
+    --rule: #2a2436;
+    --ivory: #e8dcc8;
+    --mute: #8a7f72;
+    --gold: #c9a227;
+    --wine: #a33d5c;
+    --teal: #3d8a7a;
+    --sky: #5a8fbf;
+    --okabe-blu: #0072B2;
+    --okabe-org: #E69F00;
+    --okabe-ver: #D55E00;
+    --okabe-grn: #009E73;
+    --okabe-sky: #56B4E9;
+    --okabe-yel: #F0E442;
+    --okabe-pnk: #CC79A7;
+    font-family: Figtree, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--void); color: var(--ivory); overflow: hidden; }
+  body { display: grid; grid-template-rows: auto auto 1fr auto; }
+  header {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 1rem;
+    padding: .42rem 1.1rem .38rem; border-bottom: 1px solid var(--rule);
+    background: linear-gradient(180deg, #12101a, #0c0a12);
+  }
+  header h1 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.28rem; font-weight: 600; letter-spacing: .04em;
+  }
+  header h1 em { font-style: italic; color: var(--gold); font-weight: 500; }
+  header .meta { font-family: "IBM Plex Mono", monospace; font-size: .62rem; color: var(--mute); }
+  .pills { display: flex; gap: .28rem; flex-wrap: wrap; }
+  .pill {
+    font-family: "IBM Plex Mono", monospace; font-size: .56rem; letter-spacing: .08em;
+    border: 1px solid var(--rule); padding: .14rem .4rem; color: var(--mute); text-transform: uppercase;
+  }
+  .pill.lock { color: var(--teal); border-color: #1e4a40; }
+  .pill.l2 { color: var(--okabe-sky); border-color: #2a4a62; }
+  .pill.open { color: var(--wine); border-color: #5a2034; }
+  nav.tabs {
+    display: flex; overflow-x: auto; border-bottom: 1px solid var(--rule); background: #0b0912;
+  }
+  nav.tabs button {
+    background: transparent; border: 0; border-bottom: 2px solid transparent;
+    color: var(--mute); padding: .46rem .78rem; cursor: pointer; white-space: nowrap;
+    font: 500 .74rem Figtree, sans-serif; letter-spacing: .03em;
+  }
+  nav.tabs button:hover { color: var(--ivory); }
+  nav.tabs button.on { color: var(--gold); border-bottom-color: var(--gold); }
+  nav.overlays {
+    display: flex; align-items: center; gap: .35rem; flex-wrap: wrap;
+    padding: .32rem .7rem .36rem; border-bottom: 1px solid var(--rule); background: #0e0c16;
+  }
+  nav.overlays .lab {
+    font-family: "IBM Plex Mono", monospace; font-size: .56rem; color: var(--mute);
+    letter-spacing: .1em; text-transform: uppercase; margin-right: .15rem;
+  }
+  nav.overlays button.ov {
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; letter-spacing: .04em;
+    background: transparent; color: var(--mute); border: 1px solid var(--rule);
+    padding: .16rem .4rem; cursor: pointer;
+  }
+  nav.overlays button.ov.on { color: #140e08; }
+  nav.overlays button.ov.on[data-f="0"] { background: #5a8fbf; border-color: #5a8fbf; }
+  nav.overlays button.ov.on[data-f="1"] { background: #E69F00; border-color: #E69F00; }
+  nav.overlays button.ov.on[data-f="2"] { background: #D55E00; border-color: #D55E00; }
+  nav.overlays button.ov.on[data-f="3"] { background: #56B4E9; border-color: #56B4E9; }
+  nav.overlays button.ov.on[data-f="4"] { background: #009E73; border-color: #009E73; }
+  nav.overlays button.ov.on[data-f="5"] { background: #F0E442; border-color: #F0E442; color: #1a1408; }
+  nav.overlays button.ov.on[data-f="6"] { background: #c9a27a; border-color: #c9a27a; color: #1a1408; }
+  nav.overlays button.ov.on[data-f="7"] { background: #a33d5c; border-color: #a33d5c; }
+  nav.overlays button.util {
+    font-size: .68rem; background: #16131f; color: var(--ivory); border: 1px solid var(--rule);
+    padding: .16rem .4rem; cursor: pointer;
+  }
+  nav.overlays button.util.on { border-color: var(--gold); color: var(--gold); }
+  .workspace { display: grid; grid-template-columns: 1fr 340px; min-height: 0; }
+  body.wide .workspace { grid-template-columns: 1fr; }
+  body.wide .plaque { display: none; }
+  @media (max-width: 1080px) { .workspace { grid-template-columns: 1fr; } }
+  .stage {
+    position: relative; min-height: 0;
+    background:
+      radial-gradient(ellipse at 42% 38%, #1a1630 0%, transparent 52%),
+      radial-gradient(ellipse at 70% 70%, #12182a 0%, var(--void) 62%);
+  }
+  canvas#gpu { width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas#gpu:active { cursor: grabbing; }
+  #err {
+    display: none; position: absolute; left: 16px; right: 16px; top: 52px; z-index: 30;
+    background: #2a1018; border: 1px solid var(--wine); color: #f3d0d8;
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; padding: .6rem .7rem;
+    white-space: pre-wrap; max-height: 42%; overflow: auto;
+  }
+  .caption {
+    pointer-events: none; position: absolute; left: 18px; top: 16px; max-width: 42%;
+  }
+  .caption h2 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 1.35rem; font-weight: 500; color: var(--ivory);
+  }
+  .caption p { font-size: .72rem; color: var(--mute); margin-top: .18rem; line-height: 1.4; max-width: 36rem; }
+  .legend {
+    pointer-events: none; position: absolute; right: 16px; top: 16px;
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; color: var(--mute);
+    text-align: right; line-height: 1.55;
+  }
+  .legend b { font-weight: 500; }
+  canvas#bits {
+    pointer-events: none; position: absolute; left: 16px; bottom: 16px; z-index: 4;
+    width: 280px; height: 86px; opacity: 0.92;
+  }
+  .arm {
+    position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 8;
+    background: var(--gold); color: #1a1408; border: 0; padding: .45rem .9rem; cursor: pointer;
+    font: 600 .78rem Figtree, sans-serif; letter-spacing: .06em;
+  }
+  .arm.hidden { display: none; }
+  .plaque {
+    overflow: auto; border-left: 1px solid var(--rule); background: var(--ink);
+    padding: .7rem .75rem 1.2rem;
+  }
+  .plaque h3 {
+    font-family: "Cormorant Garamond", Georgia, serif; font-size: 1.05rem; font-weight: 600;
+  }
+  .eq {
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; color: #d4c6a8;
+    background: #0a0810; border-left: 2px solid var(--gold); padding: .42rem .48rem;
+    white-space: pre-wrap; line-height: 1.45; margin: .4rem 0 .5rem;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: .24rem; margin-bottom: .48rem; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace; font-size: .54rem; padding: .1rem .34rem;
+    border: 1px solid var(--rule); color: var(--mute);
+  }
+  .chip.lock { color: var(--teal); border-color: #1e4a40; }
+  .chip.l2 { color: var(--okabe-sky); border-color: #2a4a62; }
+  .chip.open { color: var(--wine); border-color: #5a2034; }
+  .chip.art { color: var(--gold); border-color: #5a4810; }
+  .btns, .presets { display: flex; flex-wrap: wrap; gap: .26rem; margin-bottom: .42rem; }
+  .btns button, .presets button {
+    background: #16131f; color: var(--ivory); border: 1px solid var(--rule);
+    padding: .22rem .44rem; cursor: pointer; font-size: .72rem;
+  }
+  .btns button:hover, .presets button:hover { border-color: var(--gold); color: var(--gold); }
+  .ctrl { margin-bottom: .32rem; }
+  .ctrl label {
+    display: flex; justify-content: space-between; font-size: .68rem; color: var(--mute);
+  }
+  .ctrl b { color: var(--ivory); font-family: "IBM Plex Mono", monospace; font-size: .62rem; font-weight: 500; }
+  input[type=range] { width: 100%; accent-color: var(--gold); }
+  table.ids { width: 100%; border-collapse: collapse; margin-top: .2rem; }
+  table.ids td {
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; padding: .12rem 0;
+    border-bottom: 1px solid #1c1824; color: var(--mute);
+  }
+  table.ids td:last-child { color: var(--ivory); text-align: right; }
+  .hint { font-size: .68rem; color: var(--mute); margin-top: .35rem; min-height: 2.2em; }
+  .score {
+    display: grid; grid-template-columns: 1fr 200px 260px; gap: 0; border-top: 1px solid var(--rule);
+    background: #0a0810; height: 108px;
+  }
+  canvas#spec, canvas#wave, canvas#roll { display: block; width: 100%; height: 108px; }
+  .score .read {
+    display: none;
+  }
+  .couple {
+    font-family: "IBM Plex Mono", monospace; font-size: .56rem; color: var(--gold);
+    margin: .15rem 0 .4rem; min-height: 1.3em;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>TDVT <em>Hybrid Showcase</em></h1>
+    <div class="meta">Processor branch rendered as particles · analogue spacetime · locked identities only</div>
+  </div>
+  <div class="pills">
+    <span class="pill lock">L1 algebra</span>
+    <span class="pill l2">L2 analogue</span>
+    <span class="pill open">L3 ontology off</span>
+    <span class="pill" id="nPill">524,288 pts</span>
+  </div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<nav class="overlays" id="overlays"></nav>
+<div class="workspace">
+  <div class="stage" id="stage">
+    <canvas id="gpu"></canvas>
+    <div id="err"></div>
+    <div class="caption">
+      <h2 id="title">Orrery</h2>
+      <p id="blurb"></p>
+    </div>
+    <div class="legend" id="legend"></div>
+    <canvas id="bits" width="560" height="172"></canvas>
+    <button class="arm" id="arm">Enable listening</button>
+  </div>
+  <aside class="plaque">
+    <h3 id="plaqueTitle">Cabinet</h3>
+    <div class="eq" id="eq"></div>
+    <div class="chips" id="chips"></div>
+    <p class="couple" id="couple"></p>
+    <div class="presets" id="presets"></div>
+    <div class="btns">
+      <button id="btnKick">Kick field</button>
+      <button id="btnSol">Nucleate soliton</button>
+      <button id="btnDark">Write dark</button>
+      <button id="btnPump">Pump DCE</button>
+      <button id="btnDump">Non-adiabatic dump</button>
+      <button id="btnHide">Hide plaque (H)</button>
+      <button id="btnMute">Mute (M)</button>
+    </div>
+    <div id="sliders"></div>
+    <table class="ids" id="ids"></table>
+    <p class="hint" id="hint">Drag to orbit · 1–9 galleries · O overlay · space pause. Listening maps locked parameters to arpeggios, notes, and Φ₀ percussion.</p>
+  </aside>
+</div>
+<footer class="score">
+  <canvas id="spec" width="1200" height="108"></canvas>
+  <canvas id="wave" width="200" height="108"></canvas>
+  <canvas id="roll" width="520" height="108"></canvas>
+</footer>
+<script src="vendor-umd/three.min.js"></script>
+<script src="vendor-umd/OrbitControls.js"></script>
+<script>
+(function () {
+  "use strict";
+  function showErr(msg) {
+    var el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = String(msg);
+  }
+  window.onerror = function (m, s, l, c, e) { showErr((m || "error") + "\n" + (s || "") + ":" + l); };
+  if (!window.THREE || !THREE.OrbitControls) {
+    showErr("Need vendor-umd/three.min.js and OrbitControls.js beside this file.\nOpen the HTML from sim-suites/standalone/ (double-click is fine).");
+    return;
+  }
+
+  var LOCK = {
+    F: 0.58068, Evac: 0.1287, hcs: 0.07, Dex: 0.600, Dstar: 0.2324,
+    lstar: 0.7628, lfold: 0.8475, Dc: 0.109, ac: 0.1818, ell: -2.7958,
+    g0: 0.0982, Astar: 0.9117, aH: 8, Tstar: 118.7, rnm: 8, Rnm: 50,
+    Epair: 0.1963, nReg: 5
+  };
+  var TAU = Math.PI * 2;
+  var GALLERIES = [
+    { id: "orrery", name: "I  Orrery",
+      blurb: "Eight families at once: hopf fibers, BCC hopfions, acoustic horizon, Josephson cavity, SSH soliton, Helmert pentamer, WC helix, torsion stream. Spatial cabinet — not a single field equation.",
+      eq: "G=g₀(J−I)    Spec: λ_max=(N−1)g₀, λ_min=−g₀ (mult. N−1)\nQ_H=1/N    k=2N    θ=π/(2N) abelian, not universal TQC\n(r,R)=(8,50) nm    F=0.58068    E_vac=0.1287 meV",
+      chips: [["lock","democratic Spec(G)"],["lock","Q_H=1/N"],["l2","Unruh–Visser analogue"],["open","L3 off"]],
+      look: [4.8, 2.6, 5.4] },
+    { id: "hopf", name: "II  Hopf S³",
+      blurb: "Stereographic Hopf map π(z₁,z₂). Fiber color is the S² base; linking is geometric, not a tesseract ontology.",
+      eq: "π: S³→S²    (z₁,z₂)↦(2z₁z̄₂, |z₁|²−|z₂|²)\nQ_H = linking / k² = 1/N on L(N,1)",
+      chips: [["lock","Hopf fibration"],["lock","Q_H=1/N"],["art","S³ total space"]],
+      look: [0.2, 2.8, 4.2] },
+    { id: "lattice", name: "III  Hopfion lattice",
+      blurb: "BCC hopfion crystal, Q-wound tubes, five Goldstone channels (2 TA + 1 LA + 2 magnons). FeGe racetrack is a later module, not in the pentamer die.",
+      eq: "G = T(3) ⋊ O_h × SU(2)_fiber\nVK/FN bound E ≥ C|Q|^{3/4}    a_H ∼ 8 nm",
+      chips: [["lock","5 Goldstones"],["l2","hopfion crystal"],["open","H-HOPF1 later"]],
+      look: [3.4, 2.2, 3.6] },
+    { id: "horizon", name: "IV  Acoustic horizon",
+      blurb: "Unruh–Visser analogue: v_s = κ/(2πr), c_s² = r²/(r²+ξ²). Vermillion is the sonic surface |v−c_s|→0. T*=118.7 mK is a Schwinger diagnostic, not a Hawking duality.",
+      eq: "g_eff Unruh–Visser    v_s=κ/(2πr)\nT* = 118.7 mK from E_pair=0.1963 meV  — matching, not duality",
+      chips: [["l2","acoustic geometry"],["lock","T* Schwinger"],["open","H-EIN1/2 fail"]],
+      look: [3.6, 1.4, 0.2] },
+    { id: "cavity", name: "V  Josephson cavity",
+      blurb: "TE-like standing wave in a 3D cavity. DCE pump is self-limited at A*/A_c^fold = 0.9117. Catalyst, not a source. Graphene JJ bolometer 32 GHz sits next to E_vac/h ≈ 31.1 GHz as a band coincidence.",
+      eq: "dA/dt = Λ(Δ) A ℒ(δω) − loss\nA*/A_c^fold = 0.9117 resonant · 0.8800 detuned\nE_vac/h ≈ 31.1 GHz  ≠  QVC observation",
+      chips: [["lock","DCE self-limit"],["l2","H-VT1 cavity"],["lock","coincidence ≠ detection"]],
+      look: [0.1, 1.8, 4.4] },
+    { id: "ssh", name: "VI  SSH solitons",
+      blurb: "Josephson SSH shuttle: dimerized chain, topological edge/soliton occupancy. Non-adiabatic dump is the falsifier. Plaquette θ=π/(2N) is abelian.",
+      eq: "H_SSH = t₁ ∑ c†_{2i}c_{2i−1} + t₂ ∑ c†_{2i+1}c_{2i} + h.c.\nadiabatic shuttle ∩ ringdown  ·  dump ⇒ fidelity collapse",
+      chips: [["l2","H-SSH1"],["lock","θ=π/(2N) abelian"],["open","not universal TQC"]],
+      look: [0.2, 1.1, 4.0] },
+    { id: "register", name: "VII  Dark register",
+      blurb: "Hardware pentamer N=5. Bright mode λ_max=4g₀; four-fold Helmert dark subspace at −g₀. CS N may move θ and Hall; island count stays five.",
+      eq: "λ_max = 4 g₀ = 0.3928 meV    λ_min = −g₀ (×4)\nQ_H=1/N    δσ_xy = e²/(2Nh) under that normalization",
+      chips: [["lock","H-DARK1 N=5"],["lock","Helmert sum-zero"],["lock","Hall 1/(2N)"]],
+      look: [-4.0, 1.6, 1.2] },
+    { id: "helix", name: "VIII  Flux helix",
+      blurb: "WC helix / vortex-jet interconnect. Major radius locked to R=50 nm. Φ₀ beads are clock clicks, not gravitons.",
+      eq: "R = 50 nm locked    Φ₀ clock ∩ adiabatic shuttle\nH-FLUX1 WC helix · H-CLK1 ringdown",
+      chips: [["lock","R=50 nm"],["l2","H-FLUX1"],["lock","TA ≠ gravitons"]],
+      look: [2.8, 2.4, 2.8] },
+    { id: "torsion", name: "IX  Torsion analogue",
+      blurb: "Axial torsion stream S^r ∼ α_T Q / r². TEGR language is analogue (H-TEGR1 open). Sakharov does not recover Newton G.",
+      eq: "S^r ∼ α_T Q /(4π r²) exp(−r²/ξ²)\nH-EIN1/H-EIN2 FAIL — TA phonons are not gravitons",
+      chips: [["open","H-TEGR1"],["open","Einstein not claimed"],["l2","torsion stream"]],
+      look: [0.4, 3.2, 4.6] }
+  ];
+  var FAM = ["Hopf", "Lattice", "Horizon", "Cavity", "SSH", "Register", "Helix", "Torsion"];
+  var PRESETS = {
+    "Full orrery": { tab: 0, mask: 255, stack: 0, count: 524288, Q: 1, flow: 1.12, pump: 0.55, lam: LOCK.lstar, fege: 0 },
+    "Clock ∩ shuttle": { tab: 5, mask: 80, stack: 1, t2t1: 2.4, count: 524288 },
+    "Write path": { tab: 6, mask: 48, stack: 1, dark: 1, count: 524288 },
+    "Sonic cavity": { tab: 4, mask: 12, stack: 1, flow: 1.28, pump: 0.9117, count: 524288 },
+    "Linked crystal": { tab: 2, mask: 3, stack: 1, Q: 2, link: 1.0, count: 524288 },
+    "Dark + DCE": { tab: 6, mask: 40, stack: 1, dark: 1, pump: 0.88, count: 524288 },
+    "Hall staircase": { tab: 6, mask: 160, stack: 1, N: 5, dark: 1, count: 524288 },
+    "Fiber lock": { tab: 1, mask: 1, stack: 0, Q: 1, fourD: 1, count: 524288 },
+    "Pentamer dark": { tab: 6, mask: 32, stack: 0, N: 5, g0: LOCK.g0, dark: 1, count: 524288 },
+    "Fold edge": { tab: 4, mask: 8, stack: 0, lam: 0.84, pump: 0.88, count: 393216 },
+    "1,048,576": { tab: 0, mask: 255, stack: 0, count: 1048576, Q: 1 }
+  };
+  var P = {
+    tab: 0, mask: 255, stack: 0, count: 524288, speed: 0.85, running: true, mute: false, mix: 0.7,
+    Q: 1, N: 5, g0: LOCK.g0, lam: LOCK.lstar, flow: 1.12, xi: 0.35,
+    lattice: 1.48, link: 0.75, twist: 1.0, alphaT: 0.28, pump: 0.42,
+    t2t1: 2.2, point: 1.05, glow: 0.62, fourD: 1, fege: 0, dark: 0.55, crush: 0.35, arp: 0.88
+  };
+  var S = {
+    soliton: 7.5, A: 0.42, pulse: 0, dump: 0, fidelity: 1, clock: 0,
+    step: 0, lastStep: -1, word: 16, bits: [0, 0, 0, 0, 1],
+    lastNote: "—", lastPerc: "—"
+  };
+  function bitOn(mask, b) { return ((mask | 0) >> (b | 0)) & 1; }
+  function overlayCount(mask) {
+    var n = 0, m = mask | 0;
+    while (m) { n += m & 1; m >>= 1; }
+    return n;
+  }
+  function coupleText() {
+    var m = P.mask | 0;
+    var hits = [];
+    if (bitOn(m, 6) && bitOn(m, 4)) hits.push("Φ₀ clock ∩ SSH: soliton snaps to 16ths");
+    if (bitOn(m, 4) && bitOn(m, 5)) hits.push("soliton writes island i mod 5");
+    if (bitOn(m, 2) && bitOn(m, 3)) hits.push("horizon Doppler stretches cavity partials");
+    if (bitOn(m, 3) && bitOn(m, 5)) hits.push("DCE A* gates the bright 4f₀ bit");
+    if (bitOn(m, 0) && bitOn(m, 1)) hits.push("Hopf linking beats the BCC tubes");
+    if (bitOn(m, 5) && bitOn(m, 7)) hits.push("Helmert word on torsion stream (Hall analogue)");
+    if (bitOn(m, 6) && bitOn(m, 5)) hits.push("clock clicks the pentamer bit");
+    if (!hits.length) return overlayCount(m) > 1 ? "overlays coincident or cabinet — no locked coupling identity" : "solo family";
+    return hits.join(" · ");
+  }
+
+  var vert = [
+    "attribute vec4 aSeed;",
+    "attribute float aRand;",
+    "uniform float uTime,uSpeed,uMode,uQ,uN,uG0,uLam,uFlow,uXi,uLattice,uLink;",
+    "uniform float uTwist,uAlphaT,uPump,uPointSize,uGlow,uPulse,uSoliton,uDark,uDump,uT2,uFeGe,uFourD;",
+    "uniform float uMask,uSpread,uStack,uWord,uStep;",
+    "varying vec3 vColor;",
+    "varying float vAlpha;",
+    "#define PI 3.14159265",
+    "#define TAU 6.2831853",
+    "float maskBit(float mask, float b){",
+    "  return step(0.5, mod(floor(mask/pow(2.0,b)+0.0001), 2.0));",
+    "}",
+    "vec3 pal(float h, float s, float v){",
+    "  vec4 K=vec4(1.,2./3.,1./3.,3.);",
+    "  vec3 p=abs(fract(h+K.xyz)*6.-K.w);",
+    "  return v*mix(vec3(1.),clamp(p-K.xxx,0.,1.),s);",
+    "}",
+    "vec3 hopfStereo(float eta,float phi,float psi){",
+    "  float ce=cos(eta*0.5), se=sin(eta*0.5);",
+    "  float x=ce*cos(psi), y=ce*sin(psi), z=se*cos(phi), w=se*sin(phi);",
+    "  float d=max(1.05-w,0.12);",
+    "  vec3 p=vec3(x,y,z)/d;",
+    "  float L=length(p);",
+    "  if(L>3.5) p*=3.5*(1.+0.35*log(L/3.5))/L;",
+    "  return p;",
+    "}",
+    "vec3 hopfionTube(float u,float v,float R,float r,float Q,float t){",
+    "  float ang=u*TAU*Q+t;",
+    "  float tube=v*TAU+t*0.37;",
+    "  float rr=r*(0.85+0.15*sin(3.*tube+ang));",
+    "  return vec3((R+rr*cos(tube))*cos(ang), rr*sin(tube), (R+rr*cos(tube))*sin(ang));",
+    "}",
+    "void main(){",
+    "  float t=uTime*uSpeed;",
+    "  float idx=aSeed.w;",
+    "  float fam=mod(idx,8.0);",
+    "  if(maskBit(uMask, fam)<0.5){",
+    "    vColor=vec3(0.); vAlpha=0.;",
+    "    gl_Position=vec4(2.,2.,2.,1.);",
+    "    gl_PointSize=0.;",
+    "    return;",
+    "  }",
+    "  float eta=aSeed.x, phi=aSeed.y, psi=aSeed.z+t*0.22*uQ;",
+    "  vec3 pos=vec3(0.); vec3 col=vec3(1.); float alpha=0.2;",
+    "  vec3 gallery=vec3(0.);",
+    "  if(uSpread>0.5 && uStack<0.5){",
+    "    if(fam<0.5) gallery=vec3(0.,2.55,0.);",
+    "    else if(fam<1.5) gallery=vec3(0.,0.,0.);",
+    "    else if(fam<2.5) gallery=vec3(3.35,0.05,0.2);",
+    "    else if(fam<3.5) gallery=vec3(0.1,0.15,-3.2);",
+    "    else if(fam<4.5) gallery=vec3(0.,-0.35,3.05);",
+    "    else if(fam<5.5) gallery=vec3(-3.35,0.1,0.15);",
+    "    else if(fam<6.5) gallery=vec3(2.15,1.55,2.15);",
+    "    else gallery=vec3(-2.2,1.7,-2.1);",
+    "  }",
+    "  if(fam<0.5){",
+    "    if(uFourD>0.5){ psi+=0.31*t; phi+=0.31*t*0.618; }",
+    "    pos=hopfStereo(eta,phi,psi)*0.62;",
+    "    float qbit=step(0.0, cos(psi*max(1.,uQ)));",
+    "    col=mix(pal(fract(0.58+0.5*phi/TAU),0.55,0.4), pal(fract(0.58+0.5*phi/TAU),0.88,0.95), qbit);",
+    "    alpha=0.10+0.22*qbit;",
+    "  } else if(fam<1.5){",
+    "    float id=mod(floor(idx/8.),27.);",
+    "    vec3 site=vec3(mod(id,3.)-1., mod(floor(id/3.),3.)-1., mod(floor(id/9.),3.)-1.)*uLattice;",
+    "    if(mod(id,2.)>0.5) site+=vec3(0.5*uLattice);",
+    "    vec3 local=hopfionTube(fract(eta/PI+t*0.02), fract(phi/TAU+aRand), 0.38, 0.14, max(1.,uQ), t+id*0.11);",
+    "    float fiber=step(0.72,aRand);",
+    "    pos=(site+local+normalize(site+vec3(0.001))*0.12*uLink*fiber)*0.42;",
+    "    float gbit=step(0.5, fract(id*0.37+uStep*0.07));",
+    "    col=mix(vec3(0.35,0.22,0.04), pal(fract(0.11+id*0.037),0.88,0.95), max(fiber,gbit));",
+    "    alpha=0.12+0.22*fiber+0.12*gbit;",
+    "    if(uFeGe>0.5){ pos.x+=0.55*sin(t*0.7+pos.z*2.); col=mix(col,vec3(0.85,0.55,0.2),0.35); }",
+    "  } else if(fam<2.5){",
+    "    vec3 tube=hopfionTube(eta/PI, phi/TAU, 1.08, 0.32, max(1.,uQ), t*0.16);",
+    "    float rad=length(tube.xz);",
+    "    float vs=uFlow/(rad+0.08);",
+    "    float cs=sqrt(rad*rad/(rad*rad+uXi*uXi));",
+    "    float nearH=exp(-abs(vs-cs)*7.0);",
+    "    float hbit=step(0.45, nearH);",
+    "    vec3 flow=-normalize(tube+vec3(0.001))*clamp(vs,0.,2.2)*0.22;",
+    "    vec3 az=normalize(vec3(-tube.z,0.,tube.x)+vec3(0.001));",
+    "    pos=(tube+flow*(t*0.1+aRand)+az*0.08*sin(t*2.4+rad*6.))*0.58;",
+    "    col=mix(vec3(0.05,0.28,0.42), vec3(0.84,0.37,0.02), max(nearH,hbit));",
+    "    alpha=0.10+0.55*hbit+0.2*nearH;",
+    "  } else if(fam<3.5){",
+    "    vec3 q=vec3((aRand-0.5)*2.2, (fract(eta)-0.5)*1.4, (fract(phi/TAU)-0.5)*2.6);",
+    "    float wx=sin(PI*(q.x+1.1)/2.2);",
+    "    float wz=sin(PI*(q.z+1.3)/2.6);",
+    "    float stand=abs(wx*wz);",
+    "    float sbit=step(0.35, stand);",
+    "    q.y*=0.35+0.65*stand;",
+    "    float lim=min(uPump,0.9117);",
+    "    q*=1.0+0.12*lim*sin(t*8.2+stand*6.);",
+    "    if(maskBit(uMask,2.0)>0.5) q*=1.0+0.08*uFlow*sin(t*3.0);",
+    "    pos=q*0.72;",
+    "    col=mix(vec3(0.12,0.28,0.38), mix(vec3(0.34,0.71,0.91), vec3(0.94,0.89,0.26), clamp(lim,0.,1.)), sbit);",
+    "    alpha=0.06+0.42*sbit*(0.4+lim);",
+    "  } else if(fam<4.5){",
+    "    float site=mod(floor(idx/8.),16.0);",
+    "    float x=(site/15.0)*3.4-1.7;",
+    "    x+=0.05*sign(mod(site,2.0)-0.5)*(uT2-1.0);",
+    "    float env=exp(-pow((site-uSoliton)*0.48,2.0));",
+    "    float sbit=step(0.28, env);",
+    "    if(maskBit(uMask,6.0)>0.5) { sbit=step(0.5, 1.0-abs(site-uStep)); env=sbit; }",
+    "    float y=(aRand-0.5)*0.18*(1.0-0.75*sbit);",
+    "    float z=(fract(phi/TAU)-0.5)*0.14;",
+    "    pos=vec3(x,y+0.18*sbit,z)*0.85;",
+    "    pos.x+=uDump*0.9*(aRand-0.5);",
+    "    col=mix(vec3(0.02,0.18,0.14), vec3(0.94,0.89,0.26), sbit);",
+    "    alpha=0.08+0.62*sbit;",
+    "  } else if(fam<5.5){",
+    "    float isl=mod(floor(idx/8.),5.0);",
+    "    float ang=isl*TAU/5.0 + t*0.05;",
+    "    vec3 c=vec3(cos(ang),0.,sin(ang))*0.95;",
+    "    vec3 g=(vec3(aRand,fract(eta),fract(phi/TAU))-0.5)*0.36;",
+    "    float onB=maskBit(uWord, isl);",
+    "    float bright=1.0-uDark;",
+    "    vec3 tang=normalize(vec3(-c.z,0.,c.x));",
+    "    pos=c+g*(0.35+0.55*onB)+tang*(1.0-onB)*0.22*sin(eta*3.);",
+    "    if(maskBit(uMask,4.0)>0.5){",
+    "      float wr=exp(-pow(isl*3.2-uSoliton,2.0)*0.4);",
+    "      pos*=1.0+0.22*wr; onB=max(onB, step(0.4,wr));",
+    "    }",
+    "    pos*=0.92;",
+    "    col=mix(vec3(0.22,0.10,0.18), mix(vec3(0.80,0.48,0.66), vec3(0.94,0.89,0.26), bright), onB);",
+    "    alpha=0.08+0.5*onB;",
+    "  } else if(fam<6.5){",
+    "    float u=fract(idx*0.00167+t*0.04);",
+    "    float ang=u*TAU*3.0;",
+    "    float R=0.55, pitch=1.85;",
+    "    pos=vec3(R*cos(ang), (u-0.5)*pitch, R*sin(ang));",
+    "    pos+=vec3(aRand-0.5,fract(eta)-0.5,fract(phi/TAU)-0.5)*0.07;",
+    "    float bead=step(0.82, 1.0-abs(fract(u*16.0)-uStep/16.0)*2.0);",
+    "    col=mix(vec3(0.28,0.20,0.12), vec3(0.95,0.82,0.45), bead);",
+    "    alpha=0.10+0.55*bead;",
+    "  } else {",
+    "    float r=0.18+2.4*aRand;",
+    "    float Sr=uAlphaT*uQ/(4.*PI*max(r*r,0.03))*exp(-(r*0.55)*(r*0.55));",
+    "    float th=phi+t*uTwist*(0.3+2.2*abs(Sr));",
+    "    float z=(fract(eta)-0.5)*3.0+0.16*sin(th*uQ);",
+    "    pos=vec3(r*cos(th),z,r*sin(th))*0.55;",
+    "    float tbit=step(0.12, abs(Sr));",
+    "    col=mix(vec3(0.18,0.05,0.10), pal(fract(0.92+0.1*abs(Sr)*8.),0.8,0.9), tbit);",
+    "    alpha=0.08+0.34*tbit;",
+    "  }",
+    "  pos+=gallery;",
+    "  pos+=normalize(pos+vec3(0.001))*uPulse*0.18*sin(idx*0.01);",
+    "  vColor=col;",
+    "  vAlpha=alpha*smoothstep(14.,0.5,length(pos));",
+    "  vec4 mv=modelViewMatrix*vec4(pos,1.);",
+    "  gl_Position=projectionMatrix*mv;",
+    "  gl_PointSize=max(1.6, min(6.4, uPointSize*(210./max(1.4, -mv.z))));",
+    "}"
+  ].join("\n");
+
+  var frag = [
+    "varying vec3 vColor;",
+    "varying float vAlpha;",
+    "uniform float uGlow;",
+    "void main(){",
+    "  vec2 uv=gl_PointCoord*2.-1.;",
+    "  float d=dot(uv,uv);",
+    "  if(d>1.) discard;",
+    "  float core=exp(-d*4.6);",
+    "  float halo=exp(-d*1.55)*uGlow*0.34;",
+    "  float a=(core*0.85+halo)*vAlpha;",
+    "  if(a<0.018) discard;",
+    "  gl_FragColor=vec4(vColor*(0.52+0.75*core), a);",
+    "}"
+  ].join("\n");
+
+  var canvas = document.getElementById("gpu");
+  var stage = document.getElementById("stage");
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, powerPreference: "high-performance" });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setClearColor(0x07060d, 1);
+  renderer.sortObjects = false;
+  if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.LinearEncoding || 3000;
+  var scene = new THREE.Scene();
+  var camera = new THREE.PerspectiveCamera(52, 1, 0.06, 80);
+  camera.position.set(4.8, 2.6, 5.4);
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.055;
+  controls.minDistance = 0.8;
+  controls.maxDistance = 28;
+  controls.target.set(0, 0.2, 0);
+
+  var MAX = 1048576;
+  var seed = new Float32Array(MAX * 4);
+  var rand = new Float32Array(MAX);
+  var dummy = new Float32Array(MAX * 3);
+  var gld = 0.61803398875;
+  var seededN = 0;
+  function ensureSeeded(n) {
+    n = Math.min(MAX, Math.max(0, n | 0));
+    for (var i = seededN; i < n; i++) {
+      seed[i * 4] = Math.acos(1 - 2 * ((i * gld) % 1));
+      seed[i * 4 + 1] = TAU * ((i * gld * 1.324) % 1);
+      seed[i * 4 + 2] = TAU * ((i * gld * 2.618) % 1);
+      seed[i * 4 + 3] = i;
+      var r = (Math.sin(i * 12.9898) * 43758.5453) % 1; if (r < 0) r += 1;
+      rand[i] = r;
+      dummy[i * 3] = Math.sin(i * 0.31) * 0.01;
+      dummy[i * 3 + 1] = Math.cos(i * 0.17) * 0.01;
+      dummy[i * 3 + 2] = Math.sin(i * 0.53) * 0.01;
+    }
+    seededN = n;
+  }
+  ensureSeeded(P.count);
+  var geo = new THREE.BufferGeometry();
+  geo.setAttribute("aSeed", new THREE.BufferAttribute(seed, 4));
+  geo.setAttribute("aRand", new THREE.BufferAttribute(rand, 1));
+  geo.setAttribute("position", new THREE.BufferAttribute(dummy, 3));
+  geo.setDrawRange(0, P.count);
+  geo.boundingSphere = new THREE.Sphere(new THREE.Vector3(0, 0, 0), 40);
+  geo.computeBoundingSphere = function () {};
+
+  var uniforms = {
+    uTime: { value: 0 }, uSpeed: { value: P.speed }, uMode: { value: 0 },
+    uQ: { value: 1 }, uN: { value: 5 }, uG0: { value: LOCK.g0 }, uLam: { value: LOCK.lstar },
+    uFlow: { value: P.flow }, uXi: { value: P.xi }, uLattice: { value: P.lattice }, uLink: { value: P.link },
+    uTwist: { value: P.twist }, uAlphaT: { value: P.alphaT }, uPump: { value: P.pump },
+    uPointSize: { value: P.point }, uGlow: { value: P.glow }, uPulse: { value: 0 },
+    uSoliton: { value: S.soliton }, uDark: { value: P.dark }, uDump: { value: 0 },
+    uT2: { value: P.t2t1 }, uFeGe: { value: 0 }, uFourD: { value: 1 },
+    uMask: { value: 255 }, uSpread: { value: 1 }, uStack: { value: 0 },
+    uWord: { value: 16 }, uStep: { value: 0 }
+  };
+  var mat = new THREE.ShaderMaterial({
+    vertexShader: vert, fragmentShader: frag, uniforms: uniforms,
+    transparent: true, depthWrite: false, depthTest: false,
+    blending: THREE.AdditiveBlending, fog: false
+  });
+  var points = new THREE.Points(geo, mat);
+  points.frustumCulled = false;
+  scene.add(points);
+
+  var ring = new THREE.Mesh(
+    new THREE.TorusGeometry(1.08, 0.012, 8, 96),
+    new THREE.MeshBasicMaterial({ color: 0x3a3328, transparent: true, opacity: 0.35 })
+  );
+  ring.rotation.x = Math.PI / 2;
+  scene.add(ring);
+
+  function look(arr) {
+    if (!camera || !arr) return;
+    camera.position.set(arr[0], arr[1], arr[2]);
+    controls.target.set(0, 0.15, 0);
+    controls.update();
+  }
+
+  function gap(lam) {
+    if (lam >= LOCK.lfold) return LOCK.Dc * Math.exp(-14 * (lam - LOCK.lfold));
+    if (lam <= LOCK.lstar) {
+      return LOCK.Dex + (LOCK.Dstar - LOCK.Dex) * (lam / LOCK.lstar);
+    }
+    return LOCK.Dstar + (LOCK.Dc - LOCK.Dstar) * ((lam - LOCK.lstar) / (LOCK.lfold - LOCK.lstar));
+  }
+  function identities() {
+    var Ncs = Math.max(3, P.N | 0);
+    var nReg = LOCK.nReg;
+    var g0 = P.g0;
+    var D = gap(P.lam);
+    var QH = 1 / Ncs;
+    var th = Math.PI / (2 * Ncs);
+    var hall = 1 / (2 * Ncs);
+    var Ahat = Math.min(P.pump, LOCK.Astar);
+    return [
+      ["N_islands", String(nReg)],
+      ["CS N", String(Ncs)],
+      ["g₀", g0.toFixed(4) + " meV"],
+      ["λ_max", ((nReg - 1) * g0).toFixed(4) + " meV"],
+      ["λ_min", (-g0).toFixed(4) + " x" + (nReg - 1)],
+      ["Δ(λ)", D.toFixed(4) + " meV"],
+      ["Q_H", QH.toFixed(4)],
+      ["θ", "π/" + (2 * Ncs) + " = " + th.toFixed(4)],
+      ["δσ_xy", "e²/h × " + hall.toFixed(4)],
+      ["A/A*_lim", Ahat.toFixed(4) + " / " + LOCK.Astar],
+      ["F Bessel", LOCK.F.toFixed(5)],
+      ["E_vac", LOCK.Evac.toFixed(4) + " meV"],
+      ["E_vac/h", (LOCK.Evac * 241.8).toFixed(1) + " GHz coinc."],
+      ["T*", LOCK.Tstar.toFixed(1) + " mK Schwinger"],
+      ["(r,R)", LOCK.rnm + "," + LOCK.Rnm + " nm"],
+      ["a_H", LOCK.aH + " nm"],
+      ["word", "0b" + S.word.toString(2).padStart(5, "0")],
+      ["step", String(S.step) + " / 16"],
+      ["overlays", overlayCount(P.mask) + (P.stack ? " stacked" : " cabinet")]
+    ];
+  }
+
+  var audio = { armed: false };
+  var JI = { u: 1, m2: 16 / 15, M2: 9 / 8, m3: 6 / 5, M3: 5 / 4, P4: 4 / 3, P5: 3 / 2, M6: 5 / 3, m7: 9 / 5, M7: 15 / 8, o: 2 };
+  var SCALE = [1, JI.M2, JI.M3, JI.P4, JI.P5, JI.M6, JI.M7, JI.o];
+  var REG_ARP = [4, 1, JI.M3, JI.P5, JI.M2, 1, JI.P4, 4];
+  var SSH_ARP = [1, JI.M2, JI.M3, JI.P4, JI.P5, JI.M6, JI.M7, JI.o];
+  var LAT_ARP = [1, JI.M2, JI.M3, JI.P5, JI.M6, JI.M3, JI.P5, JI.o];
+  var HOP_ARP = [1, JI.P5, JI.o, JI.P5, JI.M3, 1];
+  var HOR_ARP = [1, JI.m7, JI.P5, JI.M3];
+  var CAV_ARP = [1, JI.M2, JI.M3, JI.P5];
+  var HEL_ARP = [JI.o, JI.o * JI.M3, JI.o * JI.P5, JI.o * 2, JI.o * JI.M7];
+  var NOTE_NAMES = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
+  function crushCurve(depth) {
+    var n = Math.max(2, Math.round(Math.pow(2, 2 + 6 * (1 - depth))));
+    var c = new Float32Array(256);
+    for (var i = 0; i < 256; i++) {
+      var x = i / 128 - 1;
+      c[i] = Math.round(x * n) / n;
+    }
+    return c;
+  }
+  function armAudio() {
+    if (audio.armed) return;
+    try {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      var ctx = new AC();
+      audio.ctx = ctx;
+      audio.master = ctx.createGain(); audio.master.gain.value = 0;
+      audio.crush = ctx.createWaveShaper(); audio.crush.curve = crushCurve(P.crush); audio.crush.oversample = "none";
+      audio.lpf = ctx.createBiquadFilter(); audio.lpf.type = "lowpass"; audio.lpf.frequency.value = 4200;
+      audio.lim = ctx.createDynamicsCompressor();
+      audio.lim.threshold.value = -18; audio.lim.ratio.value = 8; audio.lim.attack.value = 0.003; audio.lim.release.value = 0.12;
+      audio.delay = ctx.createDelay(0.55); audio.delay.delayTime.value = 0.14;
+      audio.fb = ctx.createGain(); audio.fb.gain.value = 0.12;
+      audio.analyser = ctx.createAnalyser(); audio.analyser.fftSize = 2048; audio.analyser.smoothingTimeConstant = 0.72;
+      audio.master.connect(audio.crush);
+      audio.crush.connect(audio.lpf);
+      audio.lpf.connect(audio.lim);
+      audio.lim.connect(audio.delay);
+      audio.delay.connect(audio.fb); audio.fb.connect(audio.delay);
+      audio.lim.connect(audio.analyser);
+      audio.delay.connect(audio.analyser);
+      audio.analyser.connect(ctx.destination);
+      audio.spec = new Uint8Array(audio.analyser.frequencyBinCount);
+      audio.time = new Uint8Array(audio.analyser.fftSize);
+      function osc(type) {
+        var o = ctx.createOscillator(); o.type = type;
+        var g = ctx.createGain(); g.gain.value = 0;
+        o.connect(g); g.connect(audio.master); o.start();
+        return { o: o, g: g };
+      }
+      audio.bright = osc("square");
+      audio.darks = [];
+      for (var i = 0; i < 4; i++) audio.darks.push(osc("square"));
+      audio.sub = osc("triangle");
+      audio.ssh = osc("square");
+      audio.sshF = ctx.createBiquadFilter(); audio.sshF.type = "bandpass"; audio.sshF.Q.value = 7;
+      audio.sshP = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+      audio.ssh.o.disconnect(); audio.ssh.o.connect(audio.sshF); audio.sshF.connect(audio.sshP); audio.sshP.connect(audio.ssh.g);
+      audio.horL = osc("sine"); audio.horR = osc("sine");
+      if (audio.horL.g.disconnect) {
+        var pL = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+        var pR = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+        if (pL.pan) pL.pan.value = -0.75;
+        if (pR.pan) pR.pan.value = 0.75;
+        audio.horL.o.disconnect(); audio.horR.o.disconnect();
+        audio.horL.o.connect(pL); audio.horR.o.connect(pR);
+        pL.connect(audio.horL.g); pR.connect(audio.horR.g);
+      }
+      audio.hopL = osc("triangle"); audio.hopR = osc("triangle");
+      audio.lat = [];
+      for (var g = 0; g < 5; g++) audio.lat.push(osc("sine"));
+      audio.tor = osc("sawtooth");
+      audio.noise = ctx.createBuffer(1, ctx.sampleRate * 1.5, ctx.sampleRate);
+      var ch = audio.noise.getChannelData(0);
+      for (var n = 0; n < ch.length; n++) ch[n] = (Math.random() * 2 - 1) * 0.4;
+      audio.gN = ctx.createGain(); audio.gN.gain.value = 0;
+      audio.nSrc = ctx.createBufferSource(); audio.nSrc.buffer = audio.noise; audio.nSrc.loop = true;
+      audio.nSrc.connect(audio.gN); audio.gN.connect(audio.master); audio.nSrc.start();
+      audio.click = ctx.createBuffer(1, 280, ctx.sampleRate);
+      var ck = audio.click.getChannelData(0);
+      for (var j = 0; j < 280; j++) ck[j] = (1 - j / 280) * ((j % 4 < 2) ? 1 : -1) * 0.7;
+      audio.hat = ctx.createBuffer(1, 512, ctx.sampleRate);
+      var ht = audio.hat.getChannelData(0);
+      for (var h = 0; h < 512; h++) ht[h] = (Math.random() * 2 - 1) * (1 - h / 512) * 0.35;
+      audio.kickBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.18), ctx.sampleRate);
+      var kb = audio.kickBuf.getChannelData(0);
+      for (var k = 0; k < kb.length; k++) {
+        var p = k / kb.length;
+        kb[k] = Math.sin(TAU * (1 - p * 0.92) * (2.2 - 1.6 * p)) * (1 - p) * 0.9;
+      }
+      audio.snareBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.14), ctx.sampleRate);
+      var sb = audio.snareBuf.getChannelData(0);
+      for (var s = 0; s < sb.length; s++) {
+        var sp = s / sb.length;
+        sb[s] = ((Math.random() * 2 - 1) * 0.65 + Math.sin(TAU * 180 * sp) * 0.35) * (1 - sp);
+      }
+      audio.tomBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.12), ctx.sampleRate);
+      var tb = audio.tomBuf.getChannelData(0);
+      for (var u = 0; u < tb.length; u++) {
+        var tp = u / tb.length;
+        tb[u] = Math.sin(TAU * (1 - tp * 0.5) * 3.2) * (1 - tp) * 0.55;
+      }
+      audio.clapBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.09), ctx.sampleRate);
+      var cb = audio.clapBuf.getChannelData(0);
+      for (var c = 0; c < cb.length; c++) {
+        var cp = c / cb.length;
+        var burst = (cp > 0.05 && cp < 0.12) || (cp > 0.18 && cp < 0.28) || (cp > 0.34 && cp < 0.5);
+        cb[c] = burst ? (Math.random() * 2 - 1) * (1 - cp) * 0.5 : 0;
+      }
+      audio.reverb = ctx.createDelay(0.8);
+      audio.reverb.delayTime.value = 0.19;
+      audio.revG = ctx.createGain(); audio.revG.gain.value = 0.22;
+      audio.reverb.connect(audio.revG); audio.revG.connect(audio.lim);
+      audio.delay.connect(audio.reverb);
+      audio.armed = true;
+      document.getElementById("arm").classList.add("hidden");
+      document.getElementById("hint").textContent = "Listening armed · 16-step Φ₀ sequencer · Spec(G) arpeggios · overlay percussion.";
+    } catch (err) {
+      showErr("Audio graph failed: " + (err && err.message ? err.message : err));
+    }
+  }
+  function baseF0() { return 220 * (P.g0 / LOCK.g0); }
+  function noteHz(ratio) { return Math.max(28, baseF0() * ratio); }
+  function noteLabel(hz) {
+    if (!hz || hz < 20) return "—";
+    var midi = 69 + 12 * Math.log2(hz / 440);
+    var n = Math.round(midi) % 12;
+    var oct = Math.floor(Math.round(midi) / 12) - 1;
+    return NOTE_NAMES[(n + 12) % 12] + oct;
+  }
+  function playBuffer(buf, amp, t, pan, dest) {
+    if (!audio.armed || P.mute || !buf) return;
+    var ctx = audio.ctx;
+    var s = ctx.createBufferSource(); s.buffer = buf;
+    var g = ctx.createGain(); g.gain.value = amp || 0.3;
+    var p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    if (p && pan != null) { p.pan.value = pan; s.connect(p); p.connect(g); }
+    else s.connect(g);
+    g.connect(dest || audio.master);
+    s.start(t);
+  }
+  function pulseClick(g, kind) {
+    if (!audio.armed || P.mute) return;
+    playBuffer(kind === "hat" ? audio.hat : audio.click, g || 0.4, audio.ctx.currentTime, 0);
+  }
+  function playKick(t, amp) { playBuffer(audio.kickBuf, amp, t, 0); S.lastPerc = "kick Φ₀"; }
+  function playSnare(t, amp, pan) { playBuffer(audio.snareBuf, amp, t, pan != null ? pan : 0); S.lastPerc = "snare soliton"; }
+  function playTom(t, amp, pan) { playBuffer(audio.tomBuf, amp, t, pan != null ? pan : 0.2); S.lastPerc = "tom island"; }
+  function playClap(t, amp) { playBuffer(audio.clapBuf, amp, t, 0.05); S.lastPerc = "clap coupling"; }
+  function playHat(t, amp, pan) { playBuffer(audio.hat, amp, t, pan != null ? pan : 0.35); S.lastPerc = "hat 16th"; }
+  function playPluck(hz, amp, t, pan, wave, decay) {
+    if (!audio.armed || P.mute || hz < 24) return;
+    var ctx = audio.ctx;
+    var o = ctx.createOscillator();
+    o.type = wave || "triangle";
+    o.frequency.setValueAtTime(hz, t);
+    var fil = ctx.createBiquadFilter();
+    fil.type = "lowpass";
+    fil.frequency.setValueAtTime(Math.min(8200, hz * 6), t);
+    fil.Q.value = 0.7;
+    var g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(Math.max(0.0002, amp), t + 0.005);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + (decay || 0.24));
+    var p = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+    if (p) { p.pan.value = pan != null ? pan : 0; o.connect(fil); fil.connect(p); p.connect(g); }
+    else { o.connect(fil); fil.connect(g); }
+    g.connect(audio.master);
+    g.connect(audio.reverb);
+    o.start(t);
+    o.stop(t + (decay || 0.24) + 0.06);
+    S.lastNote = noteLabel(hz);
+  }
+  function gate(node, amp, t, atk, dec) {
+    if (!node) return;
+    node.gain.cancelScheduledValues(t);
+    node.gain.setValueAtTime(Math.max(node.gain.value, 0.0001), t);
+    node.gain.linearRampToValueAtTime(amp, t + (atk || 0.008));
+    node.gain.exponentialRampToValueAtTime(0.0001, t + (dec || 0.12));
+  }
+  function runStepMusic(step, t) {
+    if (!audio.armed || P.mute) return;
+    var ov = function (b) { return bitOn(P.mask, b); };
+    var arpGain = P.mix * P.arp;
+    if (arpGain <= 0.001) return;
+    var Ncs = Math.max(3, P.N | 0);
+    var panSol = -1 + 2 * (S.soliton / 15);
+    var anyPerc = false;
+
+    if (ov(6) || (P.tab === 0 && ov(6))) {
+      if (step % 4 === 0) { playKick(t, 0.42 * arpGain); anyPerc = true; }
+      else if (step % 2 === 1) playHat(t, 0.06 * arpGain, -0.2);
+    }
+    if (ov(6) && step % 8 === 0) playTom(t, 0.22 * arpGain, 0.5);
+
+    if (ov(4)) {
+      playHat(t, 0.11 * arpGain, panSol);
+      anyPerc = true;
+      if (Math.abs(step - S.soliton) < 0.55 || step === Math.floor(S.soliton)) {
+        playSnare(t, 0.28 * arpGain, panSol);
+      }
+    }
+
+    if (ov(5)) {
+      if (step % 5 === 0) playTom(t, 0.16 * arpGain, -0.55 + (step % 5) * 0.22);
+      var isl = step % 5;
+      var rr = REG_ARP[step % REG_ARP.length];
+      if (S.bits[isl]) rr *= isl === 4 ? 1 : (1 + 0.04 * isl);
+      var w = isl === 4 ? "square" : "triangle";
+      playPluck(noteHz(rr), 0.11 * arpGain * (0.5 + 0.5 * (1 - P.dark * 0.35)), t, -0.65 + isl * 0.28, w, isl === 4 ? 0.14 : 0.26);
+    }
+
+    if (ov(4)) {
+      var sr = SSH_ARP[step % SSH_ARP.length] * (1 + 0.002 * (P.t2t1 - 1));
+      playPluck(noteHz(sr), 0.1 * arpGain * S.fidelity, t, panSol, "square", 0.11);
+      if (step % 2 === 0) playPluck(noteHz(sr * 2), 0.045 * arpGain, t, panSol, "sine", 0.08);
+    }
+
+    if (ov(1)) {
+      var lr = LAT_ARP[(step + P.Q) % LAT_ARP.length];
+      playPluck(noteHz(lr * 0.5), 0.07 * arpGain, t, -0.35 + 0.12 * Math.sin(step * 0.7), "sine", 0.32);
+      if (step % 4 === 2) playPluck(noteHz(lr * JI.P5 * 0.5), 0.05 * arpGain, t, 0.35, "triangle", 0.2);
+    }
+
+    if (ov(0)) {
+      var hr = HOP_ARP[(step + P.Q) % HOP_ARP.length];
+      playPluck(noteHz(hr * 1.5), 0.06 * arpGain, t, -0.55, "triangle", 0.28);
+      playPluck(noteHz(hr * 1.5 + (Math.PI / (2 * Ncs)) * 8 / Math.PI), 0.05 * arpGain, t, 0.55, "triangle", 0.28);
+    }
+
+    if (ov(2)) {
+      var near = Math.exp(-Math.abs(P.flow - 1) * 3);
+      var dop = 0.85 + 0.3 * P.flow;
+      var hr = HOR_ARP[step % HOR_ARP.length];
+      playPluck(noteHz(hr * dop), 0.07 * arpGain * (0.35 + near), t, -0.7, "sine", 0.35);
+      playPluck(noteHz(hr * dop * (1.012 + 0.04 * near)), 0.06 * arpGain * (0.35 + near), t, 0.7, "sine", 0.35);
+    }
+
+    if (ov(3)) {
+      var lim = Math.min(P.pump, LOCK.Astar);
+      var cr = CAV_ARP[step % CAV_ARP.length];
+      playPluck(noteHz(cr * (1 + 0.08 * lim)), 0.08 * arpGain * lim, t, 0, "sine", 0.3);
+      if (step % 4 === 0) playPluck(noteHz(LOCK.Evac / LOCK.g0), 0.045 * arpGain, t, 0.4, "sine", 0.07);
+    }
+
+    if (ov(6)) {
+      var hr2 = HEL_ARP[step % HEL_ARP.length];
+      playPluck(noteHz(hr2 * 0.25), 0.09 * arpGain, t, 0.45, "square", 0.07);
+      if (step % 3 === 0) playHat(t, 0.14 * arpGain, 0.6);
+    }
+
+    if (ov(7)) {
+      var tr = 0.5 * (0.75 + P.alphaT) * (1 + 0.08 * P.Q);
+      playPluck(noteHz(tr), 0.05 * arpGain * P.alphaT, t, -0.15, "sawtooth", 0.14);
+      if (step % 4 === 1) playSnare(t, 0.08 * arpGain * P.alphaT, -0.4);
+    }
+
+    if (S.dump > 0.15 && step % 2 === 0) playSnare(t, 0.18 * arpGain * S.dump, 0);
+
+    var cpl = coupleText();
+    if (cpl.indexOf("·") >= 0 && step === 0) playClap(t, 0.2 * arpGain);
+
+    if (!anyPerc && step % 4 === 0) playKick(t, 0.12 * arpGain);
+  }
+  function setAudio() {
+    if (!audio.armed) return;
+    var t = audio.ctx.currentTime;
+    var m = P.mute ? 0 : P.mix * 0.14;
+    audio.master.gain.setTargetAtTime(m, t, 0.06);
+    var f0 = 220 * (P.g0 / LOCK.g0);
+    var Ncs = Math.max(3, P.N | 0);
+    var ov = function (b) { return bitOn(P.mask, b); };
+    var crush = Math.max(P.crush, S.dump * 0.85);
+    audio.crush.curve = crushCurve(crush);
+    audio.lpf.frequency.setTargetAtTime(380 + 7600 * (gap(P.lam) / LOCK.Dex) * (1 - 0.45 * crush), t, 0.1);
+    audio.lim.threshold.setTargetAtTime(P.pump > 0.85 ? -28 : -16, t, 0.12);
+    audio.delay.delayTime.setTargetAtTime(0.08 + 0.05 * P.Q, t, 0.15);
+    audio.fb.gain.setTargetAtTime(ov(0) ? Math.min(0.3, 0.12 + 0.03 * P.Q) : 0.03, t, 0.12);
+
+    var brOn = ov(5) ? (S.bits[4] ? 0.16 : 0.02) * (1 - P.dark * 0.4) : (ov(3) ? 0.04 * Math.min(P.pump, LOCK.Astar) : 0);
+    audio.bright.o.frequency.setTargetAtTime(f0 * 4, t, 0.04);
+    audio.bright.g.gain.setTargetAtTime(brOn, t, 0.06);
+    var det = [1, 9 / 8, 5 / 4, 3 / 2];
+    for (var i = 0; i < 4; i++) {
+      audio.darks[i].o.frequency.setTargetAtTime(f0 * det[i] * (1 + 0.0015 * i), t, 0.04);
+      audio.darks[i].g.gain.setTargetAtTime(ov(5) && S.bits[i] ? 0.07 * (0.35 + P.dark) : 0, t, 0.06);
+    }
+    audio.sub.o.frequency.setTargetAtTime(f0 / Ncs, t, 0.08);
+    audio.sub.g.gain.setTargetAtTime(ov(3) ? 0.12 * Math.min(P.pump, LOCK.Astar) : 0, t, 0.1);
+
+    var sshDeg = SCALE[S.step % 8];
+    audio.ssh.o.frequency.setTargetAtTime(f0 * sshDeg, t, 0.03);
+    audio.sshF.frequency.setTargetAtTime(f0 * sshDeg * 2, t, 0.05);
+    if (audio.sshP.pan) audio.sshP.pan.setTargetAtTime(-1 + 2 * (S.step / 15), t, 0.05);
+    audio.ssh.g.gain.setTargetAtTime(ov(4) ? 0.09 * S.fidelity : 0, t, 0.05);
+
+    var near = Math.exp(-Math.abs(P.flow - 1) * 3);
+    var dop = 0.85 + 0.3 * P.flow;
+    audio.horL.o.frequency.setTargetAtTime(f0 * dop, t, 0.08);
+    audio.horR.o.frequency.setTargetAtTime(f0 * dop * (1.01 + 0.05 * near), t, 0.08);
+    audio.horL.g.gain.setTargetAtTime(ov(2) ? 0.055 * (0.35 + near) : 0, t, 0.1);
+    audio.horR.g.gain.setTargetAtTime(ov(2) ? 0.055 * (0.35 + near) : 0, t, 0.1);
+
+    var beat = (Math.PI / (2 * Ncs)) * 8 / Math.PI;
+    audio.hopL.o.frequency.setTargetAtTime(f0 * 1.5, t, 0.1);
+    audio.hopR.o.frequency.setTargetAtTime(f0 * 1.5 + beat + P.Q * 0.9 + (P.fege ? 3.4 : 0), t, 0.1);
+    audio.hopL.g.gain.setTargetAtTime(ov(0) ? 0.04 : 0, t, 0.12);
+    audio.hopR.g.gain.setTargetAtTime(ov(0) ? 0.04 : 0, t, 0.12);
+
+    var gold = [1, 5 / 4, 3 / 2, 2, 5 / 2];
+    for (var k = 0; k < 5; k++) {
+      audio.lat[k].o.frequency.setTargetAtTime(f0 * gold[k] * 0.5, t, 0.1);
+      audio.lat[k].g.gain.setTargetAtTime(ov(1) ? 0.025 : 0, t, 0.12);
+    }
+    audio.tor.o.frequency.setTargetAtTime(f0 * 0.5 * (0.8 + P.alphaT), t, 0.12);
+    audio.tor.g.gain.setTargetAtTime(ov(7) ? 0.03 * P.alphaT : 0, t, 0.12);
+    audio.gN.gain.setTargetAtTime(S.dump * 0.2, t, 0.04);
+  }
+  function onStep(step) {
+    S.step = step;
+    if (bitOn(P.mask, 6) || bitOn(P.mask, 4)) {
+      S.soliton = step;
+    }
+    if (bitOn(P.mask, 4) && bitOn(P.mask, 5) && S.fidelity > 0.4) {
+      var isl = step % 5;
+      S.bits[isl] = 1;
+      if (P.dark > 0.5) {
+        var sum = S.bits[0] + S.bits[1] + S.bits[2] + S.bits[3] + S.bits[4];
+        if (sum === 5) S.bits[isl] = 0;
+      }
+    } else if (bitOn(P.mask, 5) && !bitOn(P.mask, 4)) {
+      if (P.dark > 0.7) S.bits = [1, 1, 1, 1, 0];
+      else if (P.dark < 0.3) S.bits = [1, 1, 1, 1, 1];
+    }
+    if (bitOn(P.mask, 3) && bitOn(P.mask, 5) && Math.min(P.pump, LOCK.Astar) > 0.6) {
+      S.bits[4] = 1;
+    }
+    S.word = (S.bits[0]) | (S.bits[1] << 1) | (S.bits[2] << 2) | (S.bits[3] << 3) | (S.bits[4] << 4);
+    if (!audio.armed || P.mute) return;
+    var t = audio.ctx.currentTime;
+    runStepMusic(step, t);
+    if (bitOn(P.mask, 6)) pulseClick(step % 4 === 0 ? 0.35 : 0.12);
+    else if (bitOn(P.mask, 4)) pulseClick(0.08, "hat");
+    if (bitOn(P.mask, 4) && audio.ssh) gate(audio.ssh.g, 0.1 * S.fidelity, t, 0.004, 0.09);
+    if (bitOn(P.mask, 5)) {
+      var i = step % 5;
+      if (S.bits[i]) {
+        if (i === 4) gate(audio.bright.g, 0.14, t, 0.005, 0.11);
+        else gate(audio.darks[i].g, 0.08, t, 0.005, 0.14);
+      }
+    }
+  }
+
+  var specC = document.getElementById("spec").getContext("2d");
+  var waveC = document.getElementById("wave").getContext("2d");
+  var rollC = document.getElementById("roll").getContext("2d");
+  var bitsC = document.getElementById("bits").getContext("2d");
+  function drawScore() {
+    var w = specC.canvas.width, h = specC.canvas.height;
+    specC.fillStyle = "#0a0810"; specC.fillRect(0, 0, w, h);
+    waveC.fillStyle = "#0a0810"; waveC.fillRect(0, 0, waveC.canvas.width, waveC.canvas.height);
+    if (audio.armed) {
+      audio.analyser.getByteFrequencyData(audio.spec);
+      audio.analyser.getByteTimeDomainData(audio.time);
+      var n = audio.spec.length;
+      for (var i = 0; i < n; i++) {
+        var x = (i / n) * w;
+        var y = h - (audio.spec[i] / 255) * (h - 8);
+        specC.fillStyle = audio.spec[i] > 110 ? "#c9a227" : (audio.spec[i] > 50 ? "#3d8a7a" : "#1a1822");
+        specC.fillRect(x, y, Math.max(1, w / n), h - y);
+      }
+      waveC.strokeStyle = "#e8dcc8"; waveC.lineWidth = 1.2; waveC.beginPath();
+      var nw = audio.time.length, ww = waveC.canvas.width, wh = waveC.canvas.height;
+      for (var k = 0; k < nw; k++) {
+        var xx = (k / nw) * ww;
+        var yy = (audio.time[k] / 255) * wh;
+        if (k === 0) waveC.moveTo(xx, yy); else waveC.lineTo(xx, yy);
+      }
+      waveC.stroke();
+      waveC.fillStyle = "#c9a227";
+      waveC.font = "11px 'IBM Plex Mono', monospace";
+      waveC.fillText("bit", 8, 16);
+    } else {
+      specC.fillStyle = "#8a7f72";
+      specC.font = "12px 'IBM Plex Mono', monospace";
+      specC.fillText("Enable listening — 16-step Φ₀ grid measures the overlay stack", 16, h * 0.55);
+    }
+    var rw = rollC.canvas.width, rh = rollC.canvas.height;
+    rollC.fillStyle = "#0a0810"; rollC.fillRect(0, 0, rw, rh);
+    var cell = (rw - 16) / 16;
+    for (var s = 0; s < 16; s++) {
+      var on = s === S.step;
+      var sshOn = bitOn(P.mask, 4) && on;
+      rollC.fillStyle = sshOn ? "#F0E442" : (on ? "#3d8a7a" : "#16131f");
+      rollC.fillRect(8 + s * cell, 10, cell - 3, 28);
+      rollC.fillStyle = on ? "#140e08" : "#8a7f72";
+      rollC.font = "9px 'IBM Plex Mono', monospace";
+      rollC.fillText(String(s), 10 + s * cell, 28);
+    }
+    for (var b = 0; b < 5; b++) {
+      rollC.fillStyle = S.bits[b] ? (b === 4 ? "#F0E442" : "#CC79A7") : "#16131f";
+      rollC.fillRect(8 + b * 38, 50, 32, 22);
+      rollC.fillStyle = S.bits[b] ? "#140e08" : "#8a7f72";
+      rollC.font = "10px 'IBM Plex Mono', monospace";
+      rollC.fillText("i" + b, 14 + b * 38, 65);
+    }
+    rollC.fillStyle = "#8a7f72";
+    rollC.font = "10px 'IBM Plex Mono', monospace";
+    rollC.fillText("16ths  ·  pentamer word 0b" + S.word.toString(2).padStart(5, "0"), 210, 65);
+    rollC.fillText("f0 " + baseF0().toFixed(0) + " Hz · note " + S.lastNote + " · " + S.lastPerc, 210, 88);
+
+    var bw = bitsC.canvas.width, bh = bitsC.canvas.height;
+    bitsC.clearRect(0, 0, bw, bh);
+    bitsC.fillStyle = "rgba(10,8,16,0.45)";
+    bitsC.fillRect(0, 0, bw, bh);
+    bitsC.font = "18px 'IBM Plex Mono', monospace";
+    bitsC.fillStyle = "#e8dcc8";
+    bitsC.fillText("REG " + S.bits.map(function (x) { return x ? "1" : "0"; }).join(""), 12, 32);
+    bitsC.font = "14px 'IBM Plex Mono', monospace";
+    var row = "";
+    for (var z = 0; z < 16; z++) row += (z === S.step ? "1" : "0");
+    bitsC.fillStyle = "#009E73";
+    bitsC.fillText("SSH " + row, 12, 58);
+    bitsC.fillStyle = "#c9a27a";
+    bitsC.fillText("CLK " + (S.step % 4 === 0 ? "1" : "0") + "   A* " + Math.min(P.pump, LOCK.Astar).toFixed(3), 12, 84);
+    bitsC.fillStyle = "#8a7f72";
+    bitsC.font = "13px 'IBM Plex Mono', monospace";
+    bitsC.fillText(P.stack ? "stack coincident" : (overlayCount(P.mask) > 1 ? "cabinet overlays" : "solo"), 12, 112);
+    bitsC.fillText("step " + S.step + "/16", 12, 136);
+  }
+
+  var tabsEl = document.getElementById("tabs");
+  GALLERIES.forEach(function (g, i) {
+    var b = document.createElement("button");
+    b.textContent = g.name;
+    if (i === 0) b.className = "on";
+    b.onclick = function () { setTab(i); };
+    tabsEl.appendChild(b);
+  });
+  var ovEl = document.getElementById("overlays");
+  function paintOverlays() {
+    ovEl.innerHTML = '<span class="lab">Overlay</span>';
+    FAM.forEach(function (name, f) {
+      var b = document.createElement("button");
+      b.className = "ov" + (bitOn(P.mask, f) ? " on" : "");
+      b.setAttribute("data-f", String(f));
+      b.textContent = name;
+      b.onclick = function () { toggleOverlay(f); };
+      ovEl.appendChild(b);
+    });
+    var solo = document.createElement("button");
+    solo.className = "util";
+    solo.textContent = "Solo focus";
+    solo.onclick = function () {
+      var f = P.tab === 0 ? -1 : P.tab - 1;
+      if (f < 0) setMask(255);
+      else { P.stack = 0; setMask(1 << f); }
+      paintOverlays();
+    };
+    ovEl.appendChild(solo);
+    var all = document.createElement("button");
+    all.className = "util";
+    all.textContent = "All";
+    all.onclick = function () { setMask(255); };
+    ovEl.appendChild(all);
+    var st = document.createElement("button");
+    st.className = "util" + (P.stack ? " on" : "");
+    st.textContent = P.stack ? "Stacked" : "Cabinet";
+    st.onclick = function () { P.stack = P.stack ? 0 : 1; paintOverlays(); document.getElementById("couple").textContent = coupleText(); paintIds(); };
+    ovEl.appendChild(st);
+  }
+  function setMask(m) {
+    m = m & 255;
+    if (!m) m = 1;
+    P.mask = m;
+    paintOverlays();
+    paintIds();
+    var c = document.getElementById("couple");
+    if (c) c.textContent = coupleText();
+    document.getElementById("legend").innerHTML = legendFor(P.tab);
+  }
+  function toggleOverlay(f) {
+    var next = P.mask ^ (1 << f);
+    if ((next & 255) === 0) return;
+    setMask(next);
+  }
+  var preEl = document.getElementById("presets");
+  Object.keys(PRESETS).forEach(function (name) {
+    var b = document.createElement("button");
+    b.textContent = name;
+    b.onclick = function () { applyPreset(name); };
+    preEl.appendChild(b);
+  });
+  function fmt(k, v) {
+    if (k === "count") return (v | 0).toLocaleString();
+    if (k === "N" || k === "Q" || k === "fege" || k === "fourD") return String(v | 0);
+    if (k === "g0" || k === "lam") return Number(v).toFixed(4);
+    return Number(v).toFixed(2);
+  }
+  function sliders() {
+    var keys = [
+      ["count", "Particles", 131072, 1048576, 65536],
+      ["speed", "Time", 0, 2.2, 0.02],
+      ["mix", "Listen", 0, 1, 0.01],
+      ["arp", "Arpeggio", 0, 1, 0.01],
+      ["Q", "Hopf Q", 1, 6, 1],
+      ["N", "CS N", 3, 9, 1],
+      ["g0", "g₀ meV", 0.04, 0.21, 0.002],
+      ["lam", "λ", 0.2, 0.92, 0.005],
+      ["flow", "v_s / κ", 0.2, 2.2, 0.02],
+      ["xi", "ξ healing", 0.12, 0.8, 0.01],
+      ["lattice", "Lattice a", 0.7, 2.4, 0.02],
+      ["link", "Filaments", 0, 1.4, 0.02],
+      ["t2t1", "t₂/t₁", 1.1, 3.8, 0.05],
+      ["pump", "DCE A", 0, 1.15, 0.01],
+      ["dark", "Dark mix", 0, 1, 0.01],
+      ["alphaT", "α_T", 0.05, 0.8, 0.01],
+      ["twist", "Stream ω", 0.2, 2.6, 0.02],
+      ["point", "Point", 0.6, 2.0, 0.02],
+      ["glow", "Glow", 0.15, 1.2, 0.02],
+      ["crush", "Bitcrush", 0, 1, 0.01],
+      ["fege", "FeGe module", 0, 1, 1],
+      ["fourD", "S³ rotate", 0, 1, 1]
+    ];
+    document.getElementById("sliders").innerHTML = keys.map(function (x) {
+      return '<div class="ctrl"><label>' + x[1] + "<b id='v_" + x[0] + "'>" + fmt(x[0], P[x[0]]) + "</b></label>" +
+        '<input type="range" min="' + x[2] + '" max="' + x[3] + '" step="' + x[4] + '" value="' + P[x[0]] + '" data-k="' + x[0] + '"></div>';
+    }).join("");
+  }
+  function paintIds() {
+    document.getElementById("ids").innerHTML = identities().map(function (r) {
+      return "<tr><td>" + r[0] + "</td><td>" + r[1] + "</td></tr>";
+    }).join("");
+  }
+  function legendFor(tab) {
+    var bits = FAM.map(function (n, f) {
+      return bitOn(P.mask, f) ? "<b>" + n + "</b>" : n;
+    }).join(" · ");
+    return bits + "<br>" + (P.stack ? "coincident stack — couplings occupy one volume" : "cabinet layout — overlays keep their galleries");
+  }
+  function setCount(n) {
+    P.count = Math.max(131072, Math.min(MAX, n | 0));
+    ensureSeeded(P.count);
+    geo.attributes.aSeed.needsUpdate = true;
+    geo.attributes.aRand.needsUpdate = true;
+    geo.attributes.position.needsUpdate = true;
+    geo.setDrawRange(0, P.count);
+    document.getElementById("nPill").textContent = P.count.toLocaleString() + " pts";
+  }
+  function setTab(i) {
+    P.tab = i;
+    [].forEach.call(tabsEl.children, function (el, j) { el.className = j === i ? "on" : ""; });
+    var g = GALLERIES[i];
+    document.getElementById("title").textContent = g.name.split("  ").slice(1).join(" ") || g.name;
+    document.getElementById("blurb").textContent = g.blurb;
+    document.getElementById("plaqueTitle").textContent = g.name;
+    document.getElementById("eq").textContent = g.eq;
+    document.getElementById("chips").innerHTML = g.chips.map(function (c) {
+      return '<span class="chip ' + c[0] + '">' + c[1] + "</span>";
+    }).join("");
+    if (i === 0) setMask(255);
+    else setMask(P.mask | (1 << (i - 1)));
+    look(P.stack ? [3.4, 2.2, 3.8] : g.look);
+    ring.visible = bitOn(P.mask, 2) || i === 0;
+    paintIds();
+  }
+  function applyPreset(name) {
+    var pr = PRESETS[name];
+    Object.keys(pr).forEach(function (k) {
+      if (k === "count") setCount(pr[k]);
+      else if (k === "mask") P.mask = pr[k];
+      else if (k === "tab") P.tab = pr[k];
+      else P[k] = pr[k];
+    });
+    sliders();
+    setTab(P.tab);
+    if (pr.mask != null) setMask(pr.mask);
+    document.getElementById("hint").textContent = "Preset · " + name + " · " + coupleText();
+  }
+  sliders();
+  paintOverlays();
+  document.getElementById("sliders").addEventListener("input", function (e) {
+    var k = e.target.getAttribute("data-k"); if (!k) return;
+    var v = Number(e.target.value);
+    if (k === "count") setCount(v);
+    else P[k] = v;
+    document.getElementById("v_" + k).textContent = fmt(k, P[k]);
+    paintIds();
+  });
+  document.getElementById("arm").onclick = armAudio;
+  document.getElementById("btnKick").onclick = function () { S.pulse = 1; pulseClick(0.3); document.getElementById("hint").textContent = "Kick · field impulse on all families."; };
+  document.getElementById("btnSol").onclick = function () { S.soliton = 2 + Math.random() * 12; S.fidelity = 1; S.dump = 0; document.getElementById("hint").textContent = "Soliton nucleated on SSH chain."; };
+  document.getElementById("btnDark").onclick = function () {
+    P.dark = 1; S.bits = [1, 1, 1, 1, 0]; S.word = 15;
+    sliders(); pulseClick(0.25); document.getElementById("hint").textContent = "Dark register written · Helmert word 01111.";
+  };
+  document.getElementById("btnPump").onclick = function () { P.pump = Math.min(1.15, P.pump + 0.18); sliders(); document.getElementById("hint").textContent = "DCE pump. Limiter engages approaching A*=0.9117."; };
+  document.getElementById("btnDump").onclick = function () { S.dump = 1; S.fidelity = 0.12; pulseClick(0.7); document.getElementById("hint").textContent = "Non-adiabatic dump · SSH falsifier."; };
+  document.getElementById("btnHide").onclick = function () { document.body.classList.toggle("wide"); };
+  document.getElementById("btnMute").onclick = function () { P.mute = !P.mute; };
+  document.addEventListener("keydown", function (e) {
+    if (e.key === " ") { P.running = !P.running; e.preventDefault(); }
+    if (e.key === "h" || e.key === "H") document.body.classList.toggle("wide");
+    if (e.key === "m" || e.key === "M") P.mute = !P.mute;
+    if (e.key === "o" || e.key === "O") {
+      if (P.tab > 0) toggleOverlay(P.tab - 1);
+    }
+    if (e.key === "s" || e.key === "S") { P.stack = P.stack ? 0 : 1; paintOverlays(); document.getElementById("couple").textContent = coupleText(); }
+    var num = parseInt(e.key, 10);
+    if (num >= 1 && num <= 9) setTab(num - 1);
+  });
+
+  function resize() {
+    var w = Math.max(stage.clientWidth, 16);
+    var h = Math.max(stage.clientHeight, 16);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+    renderer.setSize(w, h, false);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+  setTab(0);
+
+  var clock = new THREE.Clock();
+  var acc = 0;
+  function tick() {
+    requestAnimationFrame(tick);
+    var dt = Math.min(clock.getDelta(), 0.05);
+    if (P.running) acc += dt;
+    S.pulse *= Math.exp(-dt * 3.2);
+    S.dump *= Math.exp(-dt * 1.6);
+    var bpm = 72 * (P.g0 / LOCK.g0) * (0.45 + P.speed);
+    var stepNow = Math.floor(acc * (bpm / 60) * 4) % 16;
+    if (stepNow !== S.lastStep) {
+      S.lastStep = stepNow;
+      onStep(stepNow);
+    } else if (!bitOn(P.mask, 6) && bitOn(P.mask, 4) && S.fidelity > 0.3) {
+      S.soliton = (S.soliton + dt * P.speed * 0.55) % 16;
+    }
+    S.A += (Math.min(P.pump, LOCK.Astar) - S.A) * Math.min(1, dt * 1.8);
+    var nOv = overlayCount(P.mask);
+    uniforms.uTime.value = acc;
+    uniforms.uSpeed.value = P.speed;
+    uniforms.uMode.value = P.tab;
+    uniforms.uQ.value = P.Q;
+    uniforms.uN.value = P.N;
+    uniforms.uG0.value = P.g0;
+    uniforms.uLam.value = P.lam;
+    uniforms.uFlow.value = P.flow;
+    uniforms.uXi.value = P.xi;
+    uniforms.uLattice.value = P.lattice;
+    uniforms.uLink.value = P.link;
+    uniforms.uTwist.value = P.twist;
+    uniforms.uAlphaT.value = P.alphaT;
+    uniforms.uPump.value = P.pump;
+    uniforms.uPointSize.value = P.point;
+    uniforms.uGlow.value = P.glow;
+    uniforms.uPulse.value = S.pulse;
+    uniforms.uSoliton.value = S.soliton;
+    uniforms.uDark.value = P.dark;
+    uniforms.uDump.value = S.dump;
+    uniforms.uT2.value = P.t2t1;
+    uniforms.uFeGe.value = P.fege;
+    uniforms.uFourD.value = P.fourD;
+    uniforms.uMask.value = P.mask;
+    uniforms.uSpread.value = (!P.stack && nOv > 1) ? 1 : 0;
+    uniforms.uStack.value = P.stack;
+    uniforms.uWord.value = S.word;
+    uniforms.uStep.value = S.step;
+    controls.update();
+    renderer.render(scene, camera);
+    setAudio();
+    drawScore();
+    if (S.clock > 0) { S.clock -= dt; }
+  }
+  tick();
+})();
+</script>
+</body>
+</html>

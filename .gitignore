@@ -1,0 +1,27 @@
+.DS_Store
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.idea/
+.vscode/
+
+# LaTeX build crumbs (keep .bbl and committed PDFs)
+*.aux
+*.log
+*.out
+*.toc
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.synctex(busy)
+*.nav
+*.snm
+*.vrb
+
+node_modules/
+sim/standalone/vendor/three/

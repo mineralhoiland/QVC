@@ -1,0 +1,25 @@
+% Two-sector split: amplitude fold vs 2D phase vortex RG
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  box/.style={draw, rounded corners=2pt, align=center, inner sep=6pt,
+    text width=3.55cm, minimum height=1.35cm, line width=0.8pt},
+  amp/.style={box, draw=oiBlue, fill=oiBlue!10},
+  ph/.style={box, draw=oiOrange, fill=oiOrange!12},
+  lock/.style={box, draw=oiGreen, fill=oiGreen!10, text width=3.2cm},
+  conj/.style={box, draw=oiVerm, fill=oiVerm!10, dashed, text width=3.2cm},
+]
+\node[font=\sffamily\small\bfseries] at (0,3.55) {Amplitude $\rho$};
+\node[font=\sffamily\small\bfseries] at (7.2,3.55) {Phase $\theta$};
+\node[amp] (psi) at (3.6,4.85) {$\Psi=\rho\,e^{i\theta}$\\[-1pt]{\scriptsize before RG}};
+\node[amp] (fold) at (0,2.15) {gap map $\delta=1+\alpha(\ln\delta+\ell)$};
+\node[lock] (sn) at (0,0.45) {\statuslocked{} saddle-node\\$\alpha_c=\delta_c=\alphac$};
+\node[ph] (xy) at (7.2,2.15) {stiffness $\kappa$, fugacity $y$\\Villain / Coulomb gas};
+\node[conj] (kt) at (7.2,0.45) {\statusconjecture{} H-VRG1\\KT surface $K=2/\pi$};
+\draw[-{Stealth}, oiBlue, thick] (psi.south) -- (fold.north);
+\draw[-{Stealth}, oiOrange, thick] (psi.south) -- (xy.north);
+\draw[-{Stealth}, oiBlue] (fold.south) -- (sn.north);
+\draw[-{Stealth}, oiOrange] (xy.south) -- (kt.north);
+\node[font=\scriptsize, text width=10.5cm, align=center, oiVerm!70!black]
+  at (3.6,-1.05) {Live-gap estimator $\Delta_0\sqrt{n_w/n_{\mathrm{ref}}}$ reads $\rho$, not vortex unbinding.
+  Chern--Simons is \statustruncated{} in the GPE and in the default XY--KT scan.};
+\end{tikzpicture}

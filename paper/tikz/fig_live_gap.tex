@@ -1,0 +1,25 @@
+% Coupled GPE 1 ps: live gap from psi (not a schedule)
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=5.6cm,
+  xlabel={$t$ (ps)},
+  ylabel={$\Delta_{\mathrm{live}}[\psi]$ (meV)},
+  xmin=0, xmax=1.02,
+  ymin=0.08, ymax=0.72,
+  legend style={draw=none, at={(0.02,0.98)}, anchor=north west, font=\footnotesize},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiBlue, thick]
+  table[col sep=comma, x=t_ps, y=Delta_live_meV] {data/coupled_timeseries_plot.csv};
+\addlegendentry{$\Delta_{\mathrm{live}}$}
+\addplot[oiOrange, densely dashed]
+  table[col sep=comma, x=t_ps, y=Delta_fold_of_A_meV] {data/coupled_timeseries_plot.csv};
+\addlegendentry{fold $\Delta(A)$}
+\addplot[oiGreen, densely dotted] coordinates {(0,0.600) (1.02,0.600)};
+\addlegendentry{$\Delta_0$}
+\addplot[oiVerm, densely dotted] coordinates {(0,0.1091) (1.02,0.1091)};
+\addlegendentry{$\Delta_c$}
+\end{axis}
+\end{tikzpicture}

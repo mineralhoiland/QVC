@@ -1,0 +1,117 @@
+{
+  "status": "PROGRAM_COMPUTED_truncated_GPE_DCE",
+  "geometry": "option_A_star_fat_torus",
+  "locks": {
+    "r_nm": 8.0,
+    "R_nm": 50.0,
+    "E_vac_meV": 0.12870089825559464,
+    "F": 0.5806751779874608,
+    "alpha_c": 0.18179560182195154,
+    "delta_c": 0.18179560182195154,
+    "Delta_c_meV": 0.10907736109317091,
+    "Delta0_meV": 0.6,
+    "lambda_fold": 0.8475260279578454,
+    "lambda_star": 0.7627734251620608,
+    "Delta_star_meV": 0.23244395506499999,
+    "delta_star": 0.387406591775,
+    "gap_reduction_star_pct": 61.25934082249999,
+    "max_static_reduction_pct": 81.82043981780484,
+    "A_c_fold_um_inv": 1.558248015616727,
+    "A_star_um_inv": 1.4024232140550545,
+    "drive_scale_vs_old_0244": 0.5274626977688305
+  },
+  "withdrawn_folklore_not_results": {
+    "E_Cas_meV": 0.244,
+    "Delta_QVC_meV": 0.389,
+    "Delta_1ps_meV": 0.032,
+    "do_not_quote_92_pct": true,
+    "used_only_as_drive_denominator": true
+  },
+  "coupled_gpe_1ps": {
+    "n_grid": 128,
+    "dt_ps": 0.002,
+    "Delta_live_0_meV": 0.6,
+    "Delta_live_1ps_meV": 0.63048967017218,
+    "Delta_live_min_meV": 0.5999997198633745,
+    "live_below_delta_c": false,
+    "g1_final": 0.8832226987931293,
+    "A_final_over_Ac_fold": 0.9811353664448638,
+    "norm_rel_drift": 1.2958825288431149e-14,
+    "live_gap_uses_psi": true,
+    "no_time_schedule": true
+  },
+  "dce": {
+    "resonant": {
+      "A_star_over_Ac_fold": 0.9117258217581738,
+      "A_star_um_inv": 1.4206949525412043,
+      "Delta_star_dce_meV": 0.22395554023635442,
+      "any_folded_out": false,
+      "runaway_clipped": false,
+      "L0": 1.0,
+      "Lorentzian_identically_zero": false
+    },
+    "detuning": {
+      "A_star_over_Ac_fold": 0.8800243827201133,
+      "A_star_um_inv": 1.3712962480679518,
+      "Delta_star_dce_meV": 0.24607032688980246,
+      "any_folded_out": false,
+      "runaway_clipped": false,
+      "L0": 0.2
+    },
+    "A_c_is_fold_not_BKT": true,
+    "A_c_not_backcomputed_from_0p52": true,
+    "paper_ratio_0p52_not_imposed": true
+  },
+  "schwinger": {
+    "g0_democratic_meV": 0.09816962498385381,
+    "lambda_min_democratic_meV": -0.09816962498385381,
+    "E_pair_meV": 0.19633924996770763,
+    "A_eff_over_Ac_schwinger": 0.16361604163975638,
+    "T_star_K": 0.11866161301023516,
+    "Gamma_sch_ps_inv": 5.295625489881989e-10,
+    "E_pair_not_0p172": true
+  },
+  "berry": {
+    "R_mean": 0.9081236824432435,
+    "R_median": 0.9198578970709961,
+    "mean_abs_GOE": 0.19491099111376695,
+    "mean_abs_GUE": 0.17700328699889634,
+    "separate_from_democratic_G": true
+  },
+  "truncation": "EOM is kinetic + cubic-quintic + V_ZPF(A(t)) + V_phonon. Chern\u2013Simons, Berry, and Skyrme/Hopf terms are not discretised.",
+  "two_timescale": {
+    "gpe_window_ps": 1.0,
+    "dce_window_ps": 80.0,
+    "justification": "GPE resolves fs\u2013ps condensate response. DCE cavity time is \u0393_cav^{-1} ~ Q \u210f / (2\u0394\u2605) ~ tens of ps, so the 80 ps window slaves \u0394 to the static fold branch \u0394(A) rather than advancing the 128\u00b2 GPE for 4e4 extra steps."
+  },
+  "figures": [
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/gap_vs_time.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/gap_vs_time.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/g1_vs_time.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/g1_vs_time.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/density_heatmap.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/density_heatmap.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/A_vs_time.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/A_vs_time.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/Delta_of_A.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/Delta_of_A.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/lorentzian.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/lorentzian.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/portrait_Delta_A.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/portrait_Delta_A.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/fold_curve.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/fold_curve.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/schwinger_rate.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/schwinger_rate.png",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/berry_goe_gue.pdf",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/figures/berry_goe_gue.png"
+  ],
+  "csv": [
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/coupled_timeseries.csv",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/dce_resonant.csv",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/dce_detuning.csv",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/fold_curve.csv",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/schwinger.csv",
+    "/Users/mineralhoiland/Code/QVCCompute/output/tqgl_v4/csv/berry_lambda_min.csv"
+  ]
+}

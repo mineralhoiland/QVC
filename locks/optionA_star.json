@@ -1,0 +1,64 @@
+{
+  "schema": "qvc_optionA_star_paper_lock_v1",
+  "status": "frozen_converged",
+  "option": "A*_fat_torus",
+  "do_not_retune": true,
+  "geometry": {
+    "r_nm": 8.0,
+    "R_nm": 50.0,
+    "hbar_cs_meV_um": 0.07
+  },
+  "vacuum": {
+    "E_vac_meV": 0.1287,
+    "F": 0.58068,
+    "ell": -2.7958
+  },
+  "fold": {
+    "alpha_c": 0.1818,
+    "delta_c": 0.1818,
+    "Delta_c_meV": 0.109,
+    "lambda_fold": 0.8475,
+    "lambda_star": 0.7628,
+    "Delta_star_meV": 0.2324,
+    "lambda_min": "-g0",
+    "Q_H": "1/N"
+  },
+  "bridge": {
+    "g0_star_meV": 0.0982,
+    "E_pair_meV": 0.1963,
+    "T_star_mK": 118.7
+  },
+  "dynamics": {
+    "Delta_live_1ps_meV": 0.6305,
+    "g1_1ps": 0.8832,
+    "note": "Live GPE gap rises relative to the static fold; channels are parallel, not additive."
+  },
+  "cavity_channel": {
+    "F_moire_N5": 1.119,
+    "A_geom_um_inv": 1.839,
+    "A_eff_um_inv": 2.058,
+    "lambda_fold_F": 0.7573,
+    "lambda_star_F": 0.6816,
+    "Delta_star_F_meV": 0.2914,
+    "note": "Cavity channel is not the static Option A* lock. Unenhanced lambda_star * F sits past the fold."
+  },
+  "schwinger": {
+    "alpha_star": 0.1636,
+    "exponent": 19.20,
+    "Gamma_Hz": 530,
+    "formula": "Gamma = omega0 * alpha_star * exp(-pi / alpha_star)",
+    "note": "No F_moire in the exponent."
+  },
+  "cutoffs": {
+    "q_IR_um_inv": 3.65e3,
+    "Lambda_UV_um_inv": 125,
+    "note": "q_IR > Lambda; logarithm is a regulated phenomenological map, not a one-loop theorem."
+  },
+  "source_files": [
+    "paper/macros.tex",
+    "compute/qvc/locks/frozen_optionA_converged.json",
+    "compute/qvc/params.py",
+    "compute/qvc/tqgl/locks.py",
+    "compute/qvc_l1/locks.py"
+  ]
+}

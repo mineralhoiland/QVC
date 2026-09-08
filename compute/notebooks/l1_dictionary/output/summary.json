@@ -1,0 +1,455 @@
+{
+  "locks": {
+    "r_nm": 8.0,
+    "R_nm": 50.0,
+    "hbar_cs_meV_um": 0.07,
+    "Delta0_meV": 0.6,
+    "E_vac_meV": 0.12870089825559464,
+    "lambda_star": 0.7627734251620608,
+    "g0_star_meV": 0.09816962498385381,
+    "N_layers": 5,
+    "Q_H": 0.2,
+    "dem_lambda_max_over_g0": 4.0,
+    "dem_lambda_min_over_g0": -1.0,
+    "dem_lambda_min_mult": 4,
+    "cs_status": "truncated",
+    "notes": [
+      "Fat torus (r,R)=(8,50) nm, \u0127 c_s=0.07 meV\u00b7\u00b5m, \u03940=0.600 meV.",
+      "g0\u2605 = \u03bb\u2605 E_vac is BRIDGE algebra. Overlap g0_eff is a kernel number.",
+      "Democratic Spec(G): \u03bb_max=(N-1)g0, \u03bb_min=\u2212g0 (mult N\u22121). Not inserted into G_ij.",
+      "Hopfion \u2260 2D phase vortex \u2260 CS fluxon.",
+      "CS / Berry / Skyrme truncated in the GPE.",
+      "Never quote 0.244/0.389/0.032/92% as physics."
+    ],
+    "tqgl_keys": [
+      "A_c_fold_um_inv",
+      "A_geom_um_inv",
+      "A_star_um_inv",
+      "Delta0_meV",
+      "Delta_c_meV",
+      "Delta_star_meV",
+      "E_vac_meV",
+      "F",
+      "N_layers",
+      "Q_H",
+      "R_nm",
+      "R_um",
+      "alpha_c",
+      "alpha_star",
+      "alpha_star_over_ac",
+      "delta_c",
+      "delta_star",
+      "drive_scale_vs_old_0244",
+      "ell",
+      "gap_reduction_star_pct",
+      "hbar_cs_meV_um",
+      "hbar_meV_ps",
+      "kB_meV_per_K",
+      "lambda_fold",
+      "lambda_star",
+      "max_static_reduction_pct",
+      "r_nm",
+      "r_um",
+      "x"
+    ]
+  },
+  "gl": {
+    "alpha_gap_map_star": {
+      "alpha": 0.16361604163975638,
+      "lambda": 0.7627734251620608,
+      "formula": "\u03b1 = \u03bb E_vac / \u0394\u2080",
+      "status": "derived",
+      "alpha_over_ac": 0.9,
+      "note": "Gap-map coupling, not the Landau mass \u03b1_GL."
+    },
+    "alpha_gap_map_fold": {
+      "alpha": 0.18179560182195154,
+      "lambda": 0.8475260279578454,
+      "formula": "\u03b1 = \u03bb E_vac / \u0394\u2080",
+      "status": "derived",
+      "alpha_over_ac": 1.0,
+      "note": "Gap-map coupling, not the Landau mass \u03b1_GL."
+    },
+    "alpha_GL": {
+      "value_meV": -0.6,
+      "abs_meV": 0.6,
+      "formula": "\u03b1_GL = \u2212\u0394\u2080  (|\u03b1_GL|=\u0394\u2080)",
+      "status": "matched",
+      "note": "Landau mass, not the dimensionless gap-map \u03b1."
+    },
+    "kappa_GL": {
+      "value_meV_um2": 3.84e-05,
+      "formula": "\u03ba_GL = \u0394\u2080 a_H\u00b2 with a_H = r",
+      "status": "derived",
+      "a_H_um": 0.008,
+      "not_gamma_QM": true
+    },
+    "lambda_star": {
+      "value": 0.7627734251620608,
+      "status": "locked",
+      "rule": "\u03bb\u2605 = 0.90 \u03bb_fold"
+    },
+    "lambda_fold": {
+      "value": 0.8475260279578454,
+      "status": "derived",
+      "formula": "\u03bb_fold = \u03b1_c \u0394\u2080 / E_vac"
+    },
+    "n_ref": {
+      "n_ref": 0.8643521464440179,
+      "n_mean_box": 0.9696144457103757,
+      "n0": 1.0,
+      "core_depletion": 0.1,
+      "noise_amp": 0.0,
+      "L_um": 0.2,
+      "n_grid": 128,
+      "status": "computed",
+      "formula": "n_ref = \u27e8|\u03c8|\u00b2\u27e9_{ring} on hopfion_initial",
+      "note": "Same n_ref construction as the truncated GPE/DCE solver. Cartoon \u03b10=\u22120.5, \u03b1_QVC=\u22120.35 is not used."
+    },
+    "beta": {
+      "alpha_GL_meV": -0.6,
+      "alpha_GL_abs_meV": 0.6,
+      "beta_meV": 0.6941615202419823,
+      "n_ref": 0.8643521464440179,
+      "rho_eq2": 0.8643521464440179,
+      "formula": "\u03b2 = |\u03b1_GL| / n_ref = \u0394\u2080 / n_ref",
+      "status": "matched",
+      "gpe_cubic_quintic_beta_at_n0": 0.6,
+      "note": "GL Mexican hat uses this \u03b2 so the vacuum manifold sits at the hopfion n_ref. The truncated GPE EOM uses cubic-quintic \u03b1_nl=\u2212\u0394\u2080, \u03b2_nl=\u0394\u2080/n0 with n0=1 (dimensionless), a related but not identical matching."
+    },
+    "kappa_S": {
+      "kappa_S_meV_um4": 2.4576e-09,
+      "kappa_S_meV_nm4": 2457.6,
+      "formula": "\u03ba_S \u2248 \u03ba_GL a_H\u00b2 = \u0394\u2080 a_H\u2074  (Derrick balance at tube scale)",
+      "status": "ansatz",
+      "ansatz_label": "Faddeev\u2013Skyrme 3D Derrick on locked tube a_H; 2\u03c0R cancels",
+      "alternate_major_radius_kappa_S_meV_um4": 9.6e-08,
+      "alternate_note": "\u03ba_S^(R) \u2248 \u03ba_GL R\u00b2 uses the major radius instead of a_H. Labeled alternate, not the tube-scale ansatz.",
+      "not_holographic_gamma_QM": true,
+      "gamma_QM_meV_nm2_not_imported": 3.73,
+      "note": "Crude scaling, not a calibrated Skyrme coefficient. Do not import holographic \u03b3_QM\u22483.73 meV\u00b7nm\u00b2 as \u03ba_GL."
+    },
+    "cartoon_not_used": {
+      "alpha0": -0.5,
+      "alpha_QVC": -0.35,
+      "used": false
+    }
+  },
+  "catalyzon": {
+    "identification": "g0 = \u03bb E_vac (same participation as the gap-map \u03b1)",
+    "identification_status": "derived",
+    "at_lambda_star": {
+      "label": "lambda_star",
+      "lambda": 0.7627734251620608,
+      "g0_meV": 0.09816962498385381,
+      "Delta_cat_meV": 0.5018303750161461,
+      "reduction_pct": 16.361604163975635,
+      "formula": "g0 = \u03bb E_vac,  \u0394_cat = \u0394\u2080 \u2212 g0,  \u03bb_min = \u2212g0",
+      "status": "derived",
+      "spec": {
+        "lambda_max_meV": 0.39267849993541526,
+        "lambda_max_mult": 1,
+        "lambda_min_meV": -0.09816962498385381,
+        "lambda_min_mult": 4,
+        "eigs_numerical_meV": [
+          -0.09816962498385384,
+          -0.09816962498385381,
+          -0.09816962498385381,
+          -0.09816962498385379,
+          0.39267849993541526
+        ],
+        "numerical_matches_closed_form": true
+      },
+      "parallel_channel_only": true,
+      "do_not_stack_with_fold_or_live_gap": true,
+      "retired_g0_0p21_not_used": true,
+      "retired_g0_meV": 0.21
+    },
+    "at_lambda_fold": {
+      "label": "lambda_fold",
+      "lambda": 0.8475260279578454,
+      "g0_meV": 0.10907736109317091,
+      "Delta_cat_meV": 0.4909226389068291,
+      "reduction_pct": 18.179560182195154,
+      "formula": "g0 = \u03bb E_vac,  \u0394_cat = \u0394\u2080 \u2212 g0,  \u03bb_min = \u2212g0",
+      "status": "derived",
+      "spec": {
+        "lambda_max_meV": 0.43630944437268365,
+        "lambda_max_mult": 1,
+        "lambda_min_meV": -0.10907736109317091,
+        "lambda_min_mult": 4,
+        "eigs_numerical_meV": [
+          -0.10907736109317094,
+          -0.10907736109317091,
+          -0.1090773610931709,
+          -0.10907736109317083,
+          0.4363094443726836
+        ],
+        "numerical_matches_closed_form": true
+      },
+      "parallel_channel_only": true,
+      "do_not_stack_with_fold_or_live_gap": true,
+      "retired_g0_0p21_not_used": true,
+      "retired_g0_meV": 0.21
+    },
+    "g0_star_meV": 0.09816962498385381,
+    "Delta_cat_star_meV": 0.5018303750161461,
+    "g0_fold_meV": 0.10907736109317091,
+    "Delta_cat_fold_meV": 0.4909226389068291,
+    "g0_fold_equals_Delta_c": true,
+    "reduction_fold_equals_alpha_c": true,
+    "lambda_min_equals_minus_g0": true,
+    "N_layers": 5,
+    "note": "At \u03bb_fold, g0 = \u03b1_c \u0394\u2080 = \u0394_c so the catalyzon reduction is \u03b1_c (~18.2%), not 52%. g0~0.21 is a retired insertion and is not derived."
+  },
+  "mexican_hat": {
+    "formula": "V(\u03c1) = \u03b1_GL \u03c1\u00b2 + (\u03b2/2) \u03c1\u2074 \u2212 \u03bb\u2605 E_vac \u03c1\u00b2",
+    "alpha_GL_meV": -0.6,
+    "beta_meV": 0.6941615202419823,
+    "n_ref": 0.8643521464440179,
+    "g0_star_meV": 0.09816962498385381,
+    "lambda_star": 0.7627734251620608,
+    "bare": {
+      "rho_eq": 0.9297054084192572,
+      "V_min": -0.2593056439332053,
+      "barrier": 0.2593056439332053
+    },
+    "gpe_sign_shift": {
+      "rho_eq": 1.0028828561841185,
+      "V_min": -0.3511004363078027,
+      "barrier": 0.3511004363078027,
+      "alpha_eff_meV": -0.6981696249838538,
+      "well_deepens": true,
+      "depth_change_frac": 0.3540022923613759,
+      "status": "computed",
+      "note": "The \u2212\u03bb\u2605 E_vac \u03c1\u00b2 term is the GPE V_ZPF sign (attractive). The well deepens; this is not the cartoon 42% reduction."
+    },
+    "catalyzon_dressed": {
+      "rho_eq": 0.8502530621291643,
+      "V_min": -0.1813941841670059,
+      "barrier": 0.1813941841670059,
+      "alpha_eff_meV": -0.5018303750161461,
+      "Delta_cat_meV": 0.5018303750161461,
+      "barrier_reduction_frac": 0.30046187419765025,
+      "barrier_reduction_pct": 30.046187419765026,
+      "formula": "1 \u2212 (\u0394_cat/\u0394\u2080)\u00b2 with \u0394_cat = \u0394\u2080 \u2212 g0\u2605",
+      "status": "computed",
+      "replaces_cartoon_42pct": true,
+      "cartoon_42pct_not_used": 42.0,
+      "parallel_channel_only": true,
+      "note": "Landau mass tracks the catalyzon-dressed gap. Quadratic well depth scales as \u03b1\u00b2. This percentage is not stacked with the fold or live-gap channels."
+    },
+    "cartoon_not_used": {
+      "alpha0": -0.5,
+      "alpha_QVC": -0.35,
+      "barrier_pct": 42.0,
+      "used": false
+    }
+  },
+  "lengths": {
+    "formula": "\u03b7_ret = 2 \u0394\u2080 \u03be / (\u0127 c_s)",
+    "formula_status": "locked",
+    "lengths": {
+      "a_H": {
+        "value_um": 0.008,
+        "value_nm": 8.0,
+        "eta_ret": 0.13714285714285712,
+        "status": "locked",
+        "origin": "Option A* GL/GPE healing freeze a_H = r (fat-torus tube)",
+        "is_lock": true
+      },
+      "xi_ph": {
+        "value_um": 0.11666666666666668,
+        "value_nm": 116.66666666666669,
+        "eta_ret": 2.0,
+        "status": "derived",
+        "origin": "phonon healing \u03be_ph = \u0127 c_s / \u0394\u2080; \u03b7_ret = 2 identically",
+        "is_lock": false,
+        "identity_eta_ret_is_2": true
+      },
+      "xi_181": {
+        "value_um": 0.181,
+        "value_nm": 181.0,
+        "eta_ret": 3.1028571428571423,
+        "status": "alternate",
+        "origin": "Preprint causal-propagator coherence \u03be=0.181 \u00b5m that produced \u03b7_ret\u22483.1. Numerically \u0127 c_s/\u0394_QVC with withdrawn \u0394_QVC=0.389 meV (\u0127 c_s/\u0394_QVC=0.17995 \u00b5m). Not the lock.",
+        "is_lock": false,
+        "eta_ret_boxed_3p1_is_unique": false
+      }
+    },
+    "eta_ret_a_H": 0.13714285714285712,
+    "eta_ret_xi_ph": 2.0,
+    "eta_ret_xi_181": 3.1028571428571423,
+    "eta_ret_from_withdrawn_Delta_QVC": 3.0848329048843186,
+    "alternate_eta_ret_label": 3.1,
+    "unique_lock_is_not_3p1": true,
+    "a_H_is_not_xi_181": true,
+    "xi_ph_is_not_xi_181": true,
+    "notes": "Three lengths exist. Mixing \u03be=181 nm into a_H=8 nm is a convention error. \u03b7_ret(a_H)\u22480.137 is not the identity 2. \u03b7_ret(\u03be_ph)=2. \u03b7_ret\u22483.1 is the alternate \u03be=0.181 evaluation, not the unique lock."
+  },
+  "hall": {
+    "N": 5,
+    "k_CS": 10,
+    "Q_H": 0.2,
+    "pairing_k_QH": 2.0,
+    "pairing_identity": true,
+    "formula_parent": "\u03c3_xy = (k/2) e\u00b2/h = N e\u00b2/h",
+    "formula_step": "\u03b4\u03c3_xy = e\u00b2/(k h) = Q_H e\u00b2/(2h) = e\u00b2/(2N h)",
+    "formula_status": "derived",
+    "e2_over_h_S": 3.8740458649318244e-05,
+    "sigma_xy_parent_S": 0.0001937022932465912,
+    "delta_sigma_xy_S": 3.874045864931824e-06,
+    "theta_CS_rad": 0.3141592653589793,
+    "theta_CS_formula": "\u03b8 = \u03c0/k = \u03c0/(2N)",
+    "linking_theta_pi_over_N_not_mixed": 0.6283185307179586,
+    "staircase": {
+      "filling_index": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "sigma_xy_S": [
+        0.0,
+        3.874045864931824e-06,
+        7.748091729863649e-06,
+        1.1622137594795473e-05,
+        1.5496183459727297e-05,
+        1.9370229324659122e-05
+      ]
+    },
+    "not_in_GPE_EOM": true,
+    "note": "One CS convention: level k=2N with Q_H=1/N. The step is e\u00b2/(k h). Algebra only; no CS current is discretised on the GPE grid."
+  },
+  "acoustic": {
+    "formula": "R_WS = \u0127 c_s / (\u03c0 k_B T*)",
+    "status": "matched",
+    "not_a_duality": true,
+    "T_star_K": 0.11866161301023516,
+    "T_star_mK": 118.66161301023516,
+    "R_WS_um": 2.179039138430028,
+    "R_WS_withdrawn_285mK_um": 0.9072571893983867,
+    "withdrawn_label_um": 0.91,
+    "withdrawn_T_mK": 285.0,
+    "Berry_R_mean_is_ratio": true,
+    "Berry_R_mean": 0.908,
+    "Berry_R_mean_status": "computed",
+    "Berry_R_mean_note": "Berry R_mean\u22480.908 is \u27e8|\u03bb_min|\u27e9_GUE / \u27e8|\u03bb_min|\u27e9_GOE, not a radius. The numerical proximity to withdrawn R_WS(285 mK)\u22480.91 \u00b5m is coincidental.",
+    "notes": "Analogue Hawking matching, not a holographic dictionary. Do not identify R_WS with Berry R_mean."
+  },
+  "live_gap_baseline": {
+    "Delta_live_1ps_meV": 0.6305,
+    "g1_1ps": 0.8832,
+    "status": "computed",
+    "note": "Coherent truncated GPE/DCE baseline. Lindblad is another agent."
+  },
+  "parameter_card": {
+    "r_nm": 8.0,
+    "R_nm": 50.0,
+    "hbar_cs_meV_um": 0.07,
+    "Delta0_meV": 0.6,
+    "F": 0.5806751779874608,
+    "E_vac_meV": 0.12870089825559464,
+    "alpha_c": 0.18179560182195154,
+    "delta_c": 0.18179560182195154,
+    "Delta_c_meV": 0.10907736109317091,
+    "lambda_fold": 0.8475260279578454,
+    "lambda_star": 0.7627734251620608,
+    "Delta_star_meV": 0.23244395506499999,
+    "T_star_mK": 118.66161301023516,
+    "E_pair_meV": 0.19633924996770763,
+    "N": 5,
+    "Q_H": 0.2,
+    "k_CS": 10,
+    "a_H_um": 0.008,
+    "xi_ph_um": 0.11666666666666668,
+    "xi_181_um": 0.181,
+    "eta_ret_a_H": 0.13714285714285712,
+    "eta_ret_xi_ph": 2.0,
+    "eta_ret_xi_181": 3.1028571428571423,
+    "kappa_GL_meV_um2": 3.84e-05,
+    "alpha_GL_meV": -0.6,
+    "alpha_gap_map_star": 0.16361604163975638,
+    "n_ref": 0.8643521464440179,
+    "beta_meV": 0.6941615202419823,
+    "kappa_S_meV_um4": 2.4576e-09,
+    "g0_star_meV": 0.09816962498385381,
+    "Delta_cat_star_meV": 0.5018303750161461,
+    "g0_star_reduction_pct": 16.361604163975635,
+    "g0_fold_meV": 0.10907736109317091,
+    "Delta_cat_fold_meV": 0.4909226389068291,
+    "mexican_hat_barrier_reduction_pct": 30.046187419765026,
+    "mexican_hat_gpe_depth_change_frac": 0.3540022923613759,
+    "delta_sigma_xy_S": 3.874045864931824e-06,
+    "sigma_xy_parent_S": 0.0001937022932465912,
+    "R_WS_um": 2.179039138430028,
+    "Berry_R_mean": 0.908,
+    "Delta_live_1ps_meV": 0.6305,
+    "g1_1ps": 0.8832,
+    "retired_g0_meV": 0.21,
+    "retired_kappa_tor": 0.25,
+    "folklore_not_results": {
+      "E_Cas_meV": 0.244,
+      "Delta_QVC_meV": 0.389,
+      "Delta_1ps_meV": 0.032
+    }
+  },
+  "status_ledger": {
+    "locked": [
+      "fat torus (r,R)=(8,50) nm, \u0127 c_s=0.07 meV\u00b7\u00b5m, \u0394\u2080=0.600 meV",
+      "a_H = r (Option A* GL/GPE healing freeze)",
+      "\u03b7_ret = 2 \u0394\u2080 \u03be / (\u0127 c_s) as algebra (\u03be remains a choice)",
+      "\u03bb\u2605 = 0.90 \u03bb_fold, N=5, Q_H=1/N, k=2N",
+      "F, E_vac, \u03b1_c=\u03b4_c, \u0394_c from the frozen-cavity bridge"
+    ],
+    "derived": [
+      "\u03be_ph = \u0127 c_s / \u0394\u2080 and \u03b7_ret(\u03be_ph)=2",
+      "\u03b7_ret(a_H)=2 \u0394\u2080 a_H/(\u0127 c_s)\u22480.137",
+      "\u03ba_GL = \u0394\u2080 a_H\u00b2",
+      "\u03b1 = \u03bb E_vac / \u0394\u2080 (gap-map coupling)",
+      "g0 = \u03bb E_vac, \u0394_cat = \u0394\u2080 \u2212 g0, Spec(G): \u03bb_min=\u2212g0",
+      "\u03bb_fold = \u03b1_c \u0394\u2080 / E_vac",
+      "Hall: k=2N, \u03b4\u03c3_xy = e\u00b2/(k h) = Q_H e\u00b2/(2h)",
+      "pairing k Q_H = 2"
+    ],
+    "matched": [
+      "\u03b1_GL = \u2212\u0394\u2080 (Landau mass |\u03b1_GL|=\u0394\u2080)",
+      "\u03b2 = \u0394\u2080 / n_ref so the Mexican-hat vacuum sits on hopfion n_ref",
+      "R_WS = \u0127 c_s/(\u03c0 k_B T*) at T* (analogue Hawking matching, not duality)"
+    ],
+    "ansatz": [
+      "\u03ba_S \u2248 \u03ba_GL a_H\u00b2 = \u0394\u2080 a_H\u2074 (Derrick balance on the locked tube)"
+    ],
+    "computed": [
+      "n_ref from hopfion_initial (ring-weighted |\u03c8|\u00b2)",
+      "Mexican-hat well depths and catalyzon barrier reduction",
+      "T*, E_pair from Schwinger twin-channel at g0\u2605",
+      "live gap 0.6305 meV / g(1)=0.8832 coherent GPE baseline (not rerun here)",
+      "Berry R_mean\u22480.908 (ratio, not a radius)"
+    ],
+    "alternate_not_lock": [
+      "\u03be=0.181 \u00b5m \u2192 \u03b7_ret\u22483.1 (preprint coherence; \u0127 c_s/\u0394_QVC withdrawn)",
+      "R_WS(285 mK)\u22480.91 \u00b5m (same matching formula, withdrawn T*)"
+    ],
+    "retired": [
+      "g0~0.21 as a derived coupling",
+      "\u03ba_tor\u22480.25 as an insertion",
+      "cartoon \u03b10=\u22120.5, \u03b1_QVC=\u22120.35, 42% barrier drop",
+      "holographic \u03b3_QM\u22483.73 meV\u00b7nm\u00b2 as \u03ba_GL",
+      "folklore 0.244 / 0.389 / 0.032 / 92%"
+    ],
+    "out_of_scope": [
+      "Hubbard microscopic derivation of GL coefficients",
+      "Chern\u2013Simons in the GPE EOM",
+      "H-TOR1 torsion vertex",
+      "holographic dictionary"
+    ]
+  },
+  "figures": [
+    "/Users/mineralhoiland/Code/QVCCursor/notebooks/l1_dictionary/output/fig_lengths.png",
+    "/Users/mineralhoiland/Code/QVCCursor/notebooks/l1_dictionary/output/fig_mexican_hat.png",
+    "/Users/mineralhoiland/Code/QVCCursor/notebooks/l1_dictionary/output/fig_spec_G.png"
+  ]
+}

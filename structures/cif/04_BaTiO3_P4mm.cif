@@ -1,0 +1,26 @@
+# BaTiO3 tetragonal perovskite, piezoelectric substrate for TEVC Platform I
+data_BaTiO3_tetragonal
+
+_cell_length_a    3.994000
+_cell_length_b    3.994000
+_cell_length_c    4.038000
+_cell_angle_alpha 90.0000
+_cell_angle_beta  90.0000
+_cell_angle_gamma 90.0000
+
+_symmetry_space_group_name_H-M   'P 4 m m'
+_symmetry_Int_Tables_number       99
+
+loop_
+_atom_site_label
+_atom_site_type_symbol
+_atom_site_fract_x
+_atom_site_fract_y
+_atom_site_fract_z
+_atom_site_U_iso_or_equiv
+_atom_site_occupancy
+Ba1    Ba     0.000000   0.000000   0.000000 0.0060 1.0000
+Ti1    Ti     0.500000   0.500000   0.512600 0.0050 1.0000
+O1     O      0.500000   0.500000   0.023000 0.0080 1.0000
+O2     O      0.500000   0.000000   0.514700 0.0080 1.0000
+

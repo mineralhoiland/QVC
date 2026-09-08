@@ -1,0 +1,465 @@
+{
+  "config": {
+    "out": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite",
+    "quick": false,
+    "fields_grid": 48,
+    "gpe_grid": 64,
+    "gpe_t_ps": 0.5,
+    "gpe_frames": 12,
+    "berry_mesh": 12,
+    "theta": 1.1,
+    "no_png": false,
+    "html": false,
+    "l2": true
+  },
+  "S1": {
+    "n_atoms": 26450,
+    "moire_nm": 12.8110754462183,
+    "files": {
+      "cif": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/TEVC.cif",
+      "poscar": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/POSCAR",
+      "lammps": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/tevc.data",
+      "fragment_cif": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/TEVC_fragment.cif"
+    }
+  },
+  "S2": {
+    "Q_whitehead": 0.8767649258499506,
+    "Q_if_4pi2_normalisation": 3.5070597033998023,
+    "Q_H_flux_2d": 0.19788106953650533,
+    "Q_H_from_cut": 0.19788106953650533,
+    "E_FN_ward": 1.8825962222709518,
+    "VK": {
+      "E": 1.8825962222709518,
+      "VK_bound": 0.48365741790996836,
+      "ratio": 3.892416724230605,
+      "satisfied": true
+    },
+    "labels": {
+      "Q_whitehead": "Whitehead integral (1/16\u03c0\u00b2)\u222bA\u00b7B on S\u00b3 \u2014 expect 1 (unrelaxed stereographic ansatz)",
+      "Q_H_flux_2d": "2D CS-flux / lens-space lock (1/2\u03c0)\u222e\u2207\u03b8 with cut removed \u2014 expect 1/N",
+      "E_FN_ward": "Ward-normalised FN energy; relaxed Q=1 minimum \u2248 1.22; VK bound 0.534|Q|^{3/4}"
+    },
+    "acceptance": {
+      "unit_norm": true,
+      "old_4pi2_header_rejected": true,
+      "cs_flux_is_1_over_N": true,
+      "vk_bound": true,
+      "boundary_is_vacuum": true,
+      "all_pass": true,
+      "whitehead_Q_is_1_at_this_grid": false,
+      "whitehead_Q_is_1_richardson": true
+    },
+    "whitehead_convergence": {
+      "rows": [
+        {
+          "n_grid": 32,
+          "dx_nm": 12.5,
+          "Q": 0.7469929579637902
+        },
+        {
+          "n_grid": 48,
+          "dx_nm": 8.333333333333343,
+          "Q": 0.8767649258499506
+        },
+        {
+          "n_grid": 64,
+          "dx_nm": 6.25,
+          "Q": 0.928344050950559
+        }
+      ],
+      "richardson_Q": 0.9946600689370554
+    },
+    "files": {
+      "cube_rho_H": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_hopf_density.cube",
+      "cube_energy": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_FN_energy_density.cube",
+      "cube_nz": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_nz.cube",
+      "cube_casimir": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_casimir_envelope.cube",
+      "vti_hopfion": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_fields.vti",
+      "vti_torus": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/hopfion_torus.vti"
+    }
+  },
+  "S6": {
+    "hall": {
+      "lock_step_e2h": 0.1,
+      "lock_step_matches": true,
+      "steps_by_N": {
+        "3": 0.16666666666666666,
+        "4": 0.125,
+        "5": 0.1,
+        "6": 0.08333333333333333
+      },
+      "note": "B in units of B\u2080 = \u03a6\u2080/(\u03c0R\u00b2); thermal smearing k_BT/\u0394 = 0.02 (model in chern_hopf_hall)"
+    },
+    "berry": {
+      "layer": "L1",
+      "caption": "[L1] BM Berry curvature \u03a9(k), \u03b8=1.1\u00b0, 2 layers, 12\u00b2 mesh, 2 shells \u2014 C = -1.00 (one valley)",
+      "chern": -1.0,
+      "chern_rounded": -1,
+      "theta_deg": 1.1,
+      "n_layers": 2,
+      "bz_info": {
+        "theta_deg": 1.1,
+        "n_layers": 2,
+        "lambda_M_Angstrom": 128.1361657000531,
+        "lambda_M_nm": 12.813616570005312,
+        "K_theta_inv_Angstrom": 0.03269014787434563,
+        "G_magnitude_inv_Angstrom": 0.056620997025306374,
+        "hbar_vf_eV_Angstrom": 6.5821195690000005,
+        "alpha_BM": 0.5112225858443574,
+        "alpha_magic_chiral": 0.586,
+        "K_point_mBZ": [
+          -0.0,
+          0.03269014787434563
+        ]
+      },
+      "note": "Fukui lattice gauge on a coarse mesh; |C|=1 per valley per spin for the MATBG flat band"
+    },
+    "preimage": {
+      "layer": "L2",
+      "caption": "[L2] Preimage fibres n\u207b\u00b9(p) of the Whitehead hopfion; pairwise Gauss linking = 1.04 (expect 1). Distinct from the L1 lens-space lock Q_H = 1/N = 0.20",
+      "points_S2": [
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          -1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "linking_matrix": [
+        [
+          NaN,
+          1.003306713304209,
+          -1.003306713304209,
+          -1.003306713304209
+        ],
+        [
+          1.003306713304209,
+          NaN,
+          1.062646886272592,
+          1.0994680636443706
+        ],
+        [
+          -1.003306713304209,
+          1.062646886272592,
+          NaN,
+          -1.062646886272592
+        ],
+        [
+          -1.003306713304209,
+          1.0994680636443706,
+          -1.062646886272592,
+          NaN
+        ]
+      ],
+      "mean_abs_linking": 1.039113662683697,
+      "expected_linking": 1.0,
+      "Q_H_lock": 0.2,
+      "distinction": "Whitehead/Gauss linking on S\u00b3 (integer) \u2260 Q_H = 1/N (lens-space CS/linking form)",
+      "tolerance_used": 0.15
+    }
+  },
+  "S3": {
+    "democratic": {
+      "N": 5,
+      "g0_meV": 0.09816962498385381,
+      "lambda_max_meV": 0.39267849993541526,
+      "lambda_min_meV": -0.09816962498385381,
+      "lambda_min_multiplicity": 4,
+      "numeric_eigenvalues": [
+        -0.09816962498385386,
+        -0.09816962498385381,
+        -0.09816962498385381,
+        -0.0981696249838538,
+        0.39267849993541526
+      ],
+      "Delta_cat_meV": 0.5018303750161461,
+      "reduction_pct": 16.361604163975635,
+      "dark_subspace_residual": 3.894444544739273e-17
+    },
+    "ws_overlap": [
+      {
+        "xi_over_lambda_M": 0.5,
+        "xi_nm": 6.5,
+        "eigenvalues": [
+          -5.254902261950176e-05,
+          -5.252561031248783e-05,
+          -2.1173902054862252e-05,
+          -2.10070930749871e-05,
+          0.00014725562806183897
+        ],
+        "eigenvalues_over_g0eff": [
+          -1.4274234947237618,
+          -1.4267875309049987,
+          -0.5751605598250171,
+          -0.5706294183282705,
+          4.000001003782049
+        ],
+        "g0_eff_meV_units": 3.681389777717731e-05,
+        "lambda_min": -5.254902261950176e-05,
+        "lambda_max": 0.00014725562806183897,
+        "lambda_min_over_g0eff": -1.4274234947237618,
+        "lambda_max_over_g0eff": 4.000001003782049,
+        "lambda_min_mult_numeric": 1,
+        "lambda_min_mult_rel5pct": 2,
+        "rel_frobenius_to_democratic": 0.1910099636841823,
+        "offdiag_cv": 0.19100996368417827,
+        "near_democratic": false
+      },
+      {
+        "xi_over_lambda_M": 1.0,
+        "xi_nm": 13.0,
+        "eigenvalues": [
+          -8.563944561085781e-05,
+          -8.560878807402119e-05,
+          -4.76421703937613e-05,
+          -4.753726833392196e-05,
+          0.00026642767241256217
+        ],
+        "eigenvalues_over_g0eff": [
+          -1.2857448402262301,
+          -1.2852845643624553,
+          -0.7152740693733677,
+          -0.7136991259439063,
+          4.000002599905958
+        ],
+        "g0_eff_meV_units": 6.660687481023787e-05,
+        "lambda_min": -8.563944561085781e-05,
+        "lambda_max": 0.00026642767241256217,
+        "lambda_min_over_g0eff": -1.2857448402262301,
+        "lambda_max_over_g0eff": 4.000002599905958,
+        "lambda_min_mult_numeric": 1,
+        "lambda_min_mult_rel5pct": 2,
+        "rel_frobenius_to_democratic": 0.1276911197973919,
+        "offdiag_cv": 0.12769111979739042,
+        "near_democratic": true
+      },
+      {
+        "xi_over_lambda_M": 2.0,
+        "xi_nm": 26.0,
+        "eigenvalues": [
+          -0.00012229930227363776,
+          -0.0001222590886686556,
+          -8.127545620967825e-05,
+          -8.120729086315741e-05,
+          0.0004070411380151291
+        ],
+        "eigenvalues_over_g0eff": [
+          -1.201838552094589,
+          -1.2014433719105015,
+          -0.7986961069762563,
+          -0.7980262442718694,
+          4.000004275253216
+        ],
+        "g0_eff_meV_units": 0.0001017601757411526,
+        "lambda_min": -0.00012229930227363776,
+        "lambda_max": 0.0004070411380151291,
+        "lambda_min_over_g0eff": -1.201838552094589,
+        "lambda_max_over_g0eff": 4.000004275253216,
+        "lambda_min_mult_numeric": 1,
+        "lambda_min_mult_rel5pct": 2,
+        "rel_frobenius_to_democratic": 0.09018803720511526,
+        "offdiag_cv": 0.09018803720511456,
+        "near_democratic": true
+      },
+      {
+        "xi_over_lambda_M": 3.85,
+        "xi_nm": 50.05,
+        "eigenvalues": [
+          -0.0001582532702381404,
+          -0.0001582028076096335,
+          -0.00011629046775685289,
+          -0.0001160006632577141,
+          0.0005487472088623407
+        ],
+        "eigenvalues_over_g0eff": [
+          -1.1535620620033105,
+          -1.1531942226929004,
+          -0.8476808825186212,
+          -0.8455683986811542,
+          4.000005565895985
+        ],
+        "g0_eff_meV_units": 0.0001371866113239829,
+        "lambda_min": -0.0001582532702381404,
+        "lambda_max": 0.0005487472088623407,
+        "lambda_min_over_g0eff": -1.1535620620033105,
+        "lambda_max_over_g0eff": 4.000005565895985,
+        "lambda_min_mult_numeric": 1,
+        "lambda_min_mult_rel5pct": 2,
+        "rel_frobenius_to_democratic": 0.0686132890846348,
+        "offdiag_cv": 0.06861328908463439,
+        "near_democratic": true
+      },
+      {
+        "xi_over_lambda_M": 8.0,
+        "xi_nm": 104.0,
+        "eigenvalues": [
+          -0.00019893236190279552,
+          -0.00019886975176161293,
+          -0.00015678510734860656,
+          -0.00015621951686086577,
+          0.0007108067378738809
+        ],
+        "eigenvalues_over_g0eff": [
+          -1.1194755554000297,
+          -1.1191232219641642,
+          -0.8822953362072767,
+          -0.8791125221123937,
+          4.0000066356838655
+        ],
+        "g0_eff_meV_units": 0.00017770138967590916,
+        "lambda_min": -0.00019893236190279552,
+        "lambda_max": 0.0007108067378738809,
+        "lambda_min_over_g0eff": -1.1194755554000297,
+        "lambda_max_over_g0eff": 4.0000066356838655,
+        "lambda_min_mult_numeric": 1,
+        "lambda_min_mult_rel5pct": 2,
+        "rel_frobenius_to_democratic": 0.05338505288023882,
+        "offdiag_cv": 0.053385052880238586,
+        "near_democratic": true
+      }
+    ],
+    "ws_default_rel_frobenius": 0.06863933375611153,
+    "honesty": {
+      "five_mode_status": "phenomenological (Paper C \u00a7Five-Mode); democratic G is a lock, not a derivation",
+      "H_FN1": "NOT accepted on truncated TQGL: one discrete U(1) Goldstone, not five",
+      "H_TEGR1": "open \u2014 microscopic derivation of democratic G from teleparallel overlaps",
+      "H_TOR1": "parked \u2014 torsion is never fed into G_ij here",
+      "WS_overlap": "computed microscopic model (PROGRAM_COMPUTED), compared to the lock, not identified with it"
+    }
+  },
+  "S4": {
+    "mexican_hat": {
+      "B_cat_over_B0": 0.6995381258023496,
+      "B_cat_over_B0_expected": 0.6995381258023496,
+      "B_fold_over_B0": 0.1500838673507215,
+      "well_depth_bare_meV": 0.3,
+      "well_depth_cat_meV": 0.20986143774070487,
+      "well_depth_fold_meV": 0.04502516020521644
+    },
+    "fold": {
+      "alpha_c": 0.18179560182195154,
+      "delta_c": 0.18179560182195154,
+      "operating_point": {
+        "alpha_over_ac": 0.9,
+        "delta": 0.387406591775,
+        "label": "\u03bb* = 0.90 \u03bb_fold"
+      }
+    },
+    "rates": {
+      "T_K": [
+        0.1,
+        0.5,
+        1.0,
+        4.0,
+        7.0
+      ],
+      "arrhenius_ratio_catalyzon": [
+        88619.91816367864,
+        9.761268724686602,
+        3.124302918202171,
+        1.3294998222878573,
+        1.1767359434750924
+      ],
+      "wkb": {
+        "m_star_over_me": 0.5,
+        "width_nm": 8.0,
+        "S_over_hbar_bare": 1.419773734402709,
+        "S_over_hbar_catalyzon": 1.2984402954683918,
+        "S_over_hbar_fold": 0.8836954940603683,
+        "ratio_catalyzon": 1.12900130260346,
+        "ratio_fold": 1.70929027472987
+      },
+      "status": "phenomenological sketch (no bounce/instanton solver in-repo)"
+    },
+    "a_zpf": {
+      "A_star_over_Ac": 0.9000000000000001,
+      "Delta_track_meV": [
+        0.6,
+        0.5366367048522,
+        0.4672372569804,
+        0.38884891153979995,
+        0.2941282377192,
+        0.1196422884168
+      ],
+      "energy_pinned": true
+    }
+  },
+  "S5": {
+    "n_grid": 64,
+    "t_end_ps": 0.5,
+    "Delta_live_initial_meV": 0.6,
+    "Delta_live_final_meV": 0.6113675464722954,
+    "Delta_live_max_meV": 0.6113675464722954,
+    "Delta_live_min_meV": 0.6,
+    "live_gap_rose_above_Delta0": true,
+    "Delta_star_static_fold_meV": 0.23244395506499999,
+    "g1_final": 0.8773946586049439,
+    "A_final_over_Ac_fold": 0.9492008342037587,
+    "norm_rel_drift": 8.031275242687688e-15,
+    "truncation": "EOM is kinetic + cubic-quintic + V_ZPF(A(t)) + V_phonon. Chern\u2013Simons, Berry, and Skyrme/Hopf terms are not discretised.",
+    "caption_channels": "Live \u0394(\u03c8) under V_ZPF + phonon drive is a GPE *drive* channel and may rise above \u0394\u2080 (demo: 0.600 \u2192 0.650 meV). The static fold lowers \u0394 to \u0394* = 0.2324 meV. Parallel channels \u2014 never one compounded reduction (gap_reduction.py).",
+    "caption_3d": "2D evolution, 3D display: the ring profile is wrapped onto the torus tube; the IC is a 2D fractional vortex, not a 3D Hopf map.",
+    "n_frames": 14,
+    "dce_slow": {
+      "resonant_A_star_over_Ac": 0.9117258217581738,
+      "detuning_A_star_over_Ac": 0.8800243827201133,
+      "resonant_Delta_star_dce_meV": 0.22395554023635442,
+      "runaway_clipped": false,
+      "note": "A_c = \u03b1_c \u0394\u2080 / (\u210f c_s) is the fold critical amplitude. A*/A_c is reported as computed; it is not forced to 0.52."
+    },
+    "export": {
+      "pvd_2d": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/gpe_replay_2d.pvd",
+      "pvd_torus": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/gpe_replay_torus.pvd",
+      "timeseries_csv": "/Users/mineralhoiland/Code/QVCCompute/output/crystal_suite/gpe_replay_timeseries.csv",
+      "n_frames": 14,
+      "caption_3d": "2D evolution, 3D display: the ring profile is wrapped onto the torus tube; the IC is a 2D fractional vortex, not a 3D Hopf map."
+    }
+  },
+  "S7_L2": {
+    "acoustic_vortex_only": {
+      "rho_h_nm": 0.21942857142857142,
+      "horizon_inside_core": true,
+      "T_H_mK": 589185.5770995382,
+      "T_star_mK": 118.7
+    },
+    "acoustic_with_drain_1p2cs": {
+      "rho_h_nm": 60.0004020641252,
+      "T_H_mK": 2154.8339171432503,
+      "kappa_ps_inv": 1.7725593797542842
+    },
+    "h_ein1": {
+      "overlap_plus": 0.0,
+      "overlap_cross": 0.0,
+      "is_graviton_like": false
+    },
+    "h_tor1": "parked",
+    "L3": "[L3] Spacetime overlay is a SCHEMATIC: no Sakharov G, no hopfion-phonon gravitons, no E8 taxonomy, meV locks are not cosmology.",
+    "torsion_proxy_max": 1.0
+  },
+  "acceptance": {
+    "S0_locks_match_phase_two": true,
+    "S2_fields": true,
+    "S6_hall_step_matches_lock": true,
+    "S6_preimage_linking_is_1": true,
+    "S3_lambda_min_is_minus_g0": true,
+    "S4_fold_alpha_c": true,
+    "S5_norm_conserved": true,
+    "S7_TA_is_not_graviton": true,
+    "all_pass": true
+  },
+  "elapsed_s": 21.6
+}

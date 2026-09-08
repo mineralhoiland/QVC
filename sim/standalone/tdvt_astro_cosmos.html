@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Field — Magnetar · Horizon · Flare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #dce6ef; --dim: #8b9aaa; --line: rgba(220,230,240,.12);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: #000; color: var(--ink); overflow: hidden; }
+  canvas#gpu { position: fixed; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas#gpu:active { cursor: grabbing; }
+  #err {
+    display: none; position: fixed; left: 20px; right: 340px; top: 18px; z-index: 20;
+    background: #2a1010; border: 1px solid #e05656; color: #ffd0d0;
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; padding: .6rem .7rem;
+    white-space: pre-wrap; max-height: 36%; overflow: auto;
+  }
+  .vignette {
+    pointer-events: none; position: fixed; inset: 0; z-index: 2;
+    background: radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.55) 100%);
+  }
+  .titleblock {
+    position: fixed; left: 28px; bottom: 28px; z-index: 3; pointer-events: none;
+    text-shadow: 0 2px 18px #000;
+  }
+  .titleblock h1 {
+    font-size: 1.35rem; font-weight: 500; letter-spacing: .18em; text-transform: uppercase;
+  }
+  .titleblock p {
+    margin-top: .25rem; font-family: "IBM Plex Mono", monospace; font-size: .64rem;
+    color: var(--dim); letter-spacing: .08em; max-width: 42rem; line-height: 1.45;
+  }
+  .readout {
+    position: fixed; left: 28px; top: 24px; z-index: 3; pointer-events: none;
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; color: var(--dim);
+    letter-spacing: .06em; line-height: 1.7; text-shadow: 0 2px 12px #000;
+  }
+  .readout b { color: var(--ink); font-weight: 500; }
+  .worlds {
+    position: fixed; left: 50%; top: 22px; transform: translateX(-50%); z-index: 4;
+    display: flex; gap: 6px;
+  }
+  .worlds button {
+    background: rgba(0,0,0,.35); color: var(--dim); border: 1px solid var(--line);
+    padding: .32rem .7rem; cursor: pointer; letter-spacing: .12em; text-transform: uppercase;
+    font: 500 .62rem "IBM Plex Sans", sans-serif;
+  }
+  .worlds button.on { color: #fff; border-color: rgba(220,230,240,.45); }
+  .console {
+    position: fixed; right: 0; top: 0; bottom: 0; width: 312px; z-index: 4;
+    background: rgba(6,9,14,.78); border-left: 1px solid var(--line);
+    overflow: auto; padding: 18px 16px 28px;
+    backdrop-filter: blur(10px);
+  }
+  .console.hidden { display: none; }
+  .console h2 { font-size: .72rem; letter-spacing: .16em; text-transform: uppercase; color: var(--dim); font-weight: 500; }
+  .presets, .btns { display: flex; flex-wrap: wrap; gap: .28rem; margin: .55rem 0 .7rem; }
+  .presets button, .btns button {
+    background: transparent; color: var(--ink); border: 1px solid var(--line);
+    padding: .2rem .42rem; cursor: pointer; font-size: .7rem;
+  }
+  .presets button:hover, .btns button:hover { border-color: #fff; }
+  .ctrl { margin-bottom: .38rem; }
+  .ctrl label { display: flex; justify-content: space-between; font-size: .7rem; color: var(--dim); }
+  .ctrl b { font-family: "IBM Plex Mono", monospace; color: var(--ink); font-weight: 500; font-size: .66rem; }
+  input[type=range] { width: 100%; accent-color: #c5d0dc; }
+  .inst {
+    margin-top: .7rem; font-family: "IBM Plex Mono", monospace; font-size: .62rem;
+    color: var(--dim); line-height: 1.65;
+  }
+  .inst div { display: flex; justify-content: space-between; border-bottom: 1px solid var(--line); padding: .12rem 0; }
+  .inst span:last-child { color: var(--ink); }
+  #tog {
+    position: fixed; right: 18px; bottom: 18px; z-index: 5;
+    background: rgba(0,0,0,.45); color: var(--dim); border: 1px solid var(--line);
+    padding: .28rem .55rem; cursor: pointer; letter-spacing: .1em;
+    font: 500 .6rem "IBM Plex Sans", sans-serif;
+  }
+  #fps { position: fixed; right: 332px; bottom: 22px; z-index: 3; pointer-events: none;
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; color: var(--dim); }
+  .console.hidden ~ #fps { right: 22px; }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.js",
+    "three/addons/": "./vendor/three/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="gpu"></canvas>
+<div class="vignette"></div>
+<div id="err"></div>
+<div class="readout" id="readout"></div>
+<nav class="worlds" id="tabs"></nav>
+<div class="titleblock">
+  <h1 id="title">Magnetar</h1>
+  <p id="blurb"></p>
+</div>
+<aside class="console" id="console">
+  <h2>Target</h2>
+  <div class="presets" id="presets"></div>
+  <div class="btns">
+    <button id="btnPause">Pause</button>
+    <button id="btnReset">Reset view</button>
+    <button id="btnFlare">Detonate flare</button>
+    <button id="btnOrbit">Orbit on</button>
+  </div>
+  <div id="controls"></div>
+  <h2>Instruments</h2>
+  <div class="inst" id="tele"></div>
+</aside>
+<button id="tog">Hide console</button>
+<div id="fps"></div>
+
+<script>
+window.__tdvtBoot=setTimeout(function(){
+  var t=document.getElementById("title");
+  var err=document.getElementById("err");
+  if(t && t.textContent==="Magnetar" && !window.__booted && err){
+    err.style.display="block";
+    err.textContent="Renderer failed to start. Serve this folder over HTTP:\npython3 -m http.server 8765";
+  }
+}, 2800);
+</script>
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+function showErr(msg){
+  const el=document.getElementById("err");
+  if(!el) return;
+  el.style.display="block";
+  el.textContent=String(msg && msg.stack ? msg.stack : msg);
+  console.error(msg);
+}
+window.addEventListener("error", e=>showErr(e.error||e.message));
+window.addEventListener("unhandledrejection", e=>showErr(e.reason));
+
+const TAU=Math.PI*2;
+const BQ=4.414e13, C=2.99792458e8, RNS=1e4, G=6.6743e-11, MSUN=1.98847e30, HBAR=1.054571817e-34, KB=1.380649e-23;
+
+const WORLDS=[
+  {
+    id:"magnetar", name:"Magnetar",
+    line:"A neutron star in the QED magnetosphere. Dipole field, vacuum birefringence, polar pair cascades. The crust is iron-peak condensate; the glow is not vacuum energy.",
+  },
+  {
+    id:"horizon", name:"Horizon",
+    line:"Schwarzschild null geodesics through a thin Keplerian flow. Photon ring at 1.5 rₛ, ISCO from Kerr spin, gravitational redshift and Doppler boosting. The sonic overlay is analogue, not a second Einstein horizon.",
+  },
+  {
+    id:"flare", name:"Flare",
+    line:"A magnetar giant flare. Magnetic reconnection dumps B²/8π into a pair fireball (~200 keV). Photon splitting cuts the MeV tail. Expanding ejecta at ~c/3.",
+  },
+];
+
+const P={
+  tab:0, count:393216, speed:1, running:true, orbit:true,
+  B14:2.2, period:2.07, chi:0.32, hotspot:0.72, biref:1.0,
+  spin:0.88, diskO:22, tilt:0.18, exposure:1.15,
+  flareE:1.0, recon:0.9, eject:0.7, flareAge:8,
+  pointSize:0.72, density:1,
+};
+
+const PRESETS={
+  "1E 1547.0−5408":{tab:0,B14:2.2,period:2.07,chi:0.32,hotspot:0.72,biref:1,count:393216},
+  "4U 0142+61":{tab:0,B14:1.3,period:8.69,chi:0.45,hotspot:0.4,biref:1,count:262144},
+  "SGR 1806−20":{tab:2,B14:20,period:7.56,flareE:1,recon:1,eject:0.85,count:393216},
+  "Sgr A*":{tab:1,spin:0.9,diskO:24,tilt:0.16,exposure:1.2,count:393216},
+  "M87*":{tab:1,spin:0.7,diskO:18,tilt:0.22,exposure:1.05,count:262144},
+  "Schwarzschild":{tab:1,spin:0,diskO:26,tilt:0.2,exposure:1.1,count:393216},
+};
+
+const tabsEl=document.getElementById("tabs");
+WORLDS.forEach((w,i)=>{
+  const b=document.createElement("button");
+  b.textContent=w.name;
+  if(i===0) b.classList.add("on");
+  b.onclick=()=>setWorld(i);
+  tabsEl.appendChild(b);
+});
+
+function setWorld(i){
+  P.tab=i;
+  [...tabsEl.children].forEach((el,j)=>el.classList.toggle("on",j===i));
+  document.getElementById("title").textContent=WORLDS[i].name;
+  document.getElementById("blurb").textContent=WORLDS[i].line;
+  if(camera){
+    if(i===0){ camera.position.set(2.4, 1.1, 4.8); controls.target.set(0,0,0); }
+    if(i===1){ camera.position.set(2.2, 3.4, 11.5); controls.target.set(0,0,0); }
+    if(i===2){ camera.position.set(3.1, 1.6, 6.2); controls.target.set(0,0.2,0); }
+  }
+  renderConsole();
+}
+
+function fmt(k,v){
+  if(k==="count") return Math.round(v).toLocaleString();
+  if(k==="period") return v<0.05?v.toExponential(2)+" s":v.toFixed(2)+" s";
+  if(k==="B14") return v.toFixed(2)+"×10¹⁴ G";
+  return Number(v).toFixed(2);
+}
+function slider(key,label,min,max,step){
+  return `<div class="ctrl"><label>${label}<b id="v_${key}">${fmt(key,P[key])}</b></label>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${P[key]}" data-k="${key}"></div>`;
+}
+function renderConsole(){
+  document.getElementById("presets").innerHTML=Object.keys(PRESETS).map(n=>`<button data-p="${n}">${n}</button>`).join("");
+  document.getElementById("presets").onclick=(e)=>{
+    const n=e.target.dataset.p; if(!n) return;
+    Object.assign(P, PRESETS[n]);
+    setWorld(P.tab);
+  };
+  const w=WORLDS[P.tab].id;
+  let extra="";
+  if(w==="magnetar") extra=slider("B14","Surface field",0.4,24,0.05)+slider("period","Spin period",0.001,12,0.001)+slider("chi","Magnetic obliquity",0,1.2,0.01)+slider("hotspot","Polar cap heat",0,1,0.01)+slider("biref","Vacuum birefringence",0,1.4,0.02);
+  if(w==="horizon") extra=slider("spin","Kerr spin a*",-0.98,0.98,0.01)+slider("diskO","Disk outer radius / rₛ",8,40,0.5)+slider("tilt","Disk opening",0.04,0.45,0.01)+slider("exposure","Exposure",0.4,2.2,0.02);
+  if(w==="flare") extra=slider("B14","Surface field",1,24,0.05)+slider("flareE","Fireball yield",0.15,1.2,0.02)+slider("recon","Reconnection",0.1,1.2,0.02)+slider("eject","Ejecta mass",0.1,1.2,0.02)+slider("period","Spin period",0.5,12,0.02);
+  extra+=slider("count","Plasma tracers",65536,786432,16384)+slider("speed","Time",0,2.2,0.02)+slider("density","Tracer density",0.2,1.6,0.02);
+  document.getElementById("controls").innerHTML=extra;
+  document.getElementById("controls").querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      P[inp.dataset.k]=parseFloat(inp.value);
+      document.getElementById("v_"+inp.dataset.k).textContent=fmt(inp.dataset.k,P[inp.dataset.k]);
+    });
+  });
+}
+renderConsole();
+document.getElementById("blurb").textContent=WORLDS[0].line;
+
+function kerrISCO_M(a){
+  a=Math.max(-0.998,Math.min(0.998,a));
+  const aa=Math.abs(a);
+  const z1=1+Math.pow(1-aa*aa,1/3)*(Math.pow(1+aa,1/3)+Math.pow(1-aa,1/3));
+  const z2=Math.sqrt(3*aa*aa+z1*z1);
+  const disc=Math.sqrt(Math.max(0,(3-z1)*(3+z1+2*z2)));
+  return a>=0?3+z2-disc:3+z2+disc;
+}
+
+const rayVert=`void main(){ gl_Position=vec4(position.xy,0.0,1.0); }`;
+const rayFrag= /* glsl */ `
+precision highp float;
+uniform vec3 uCamPos, uCamFwd, uCamRight, uCamUp;
+uniform vec2 uRes;
+uniform float uFov, uTime, uMode, uSpin, uRisco, uRout, uTilt, uExp;
+uniform float uB14, uBiref, uHot, uChi, uPeriod, uFlareAge, uFlareE, uRecon, uEject;
+#define PI 3.14159265
+#define TAU 6.2831853
+
+float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }
+float n2(vec2 p){
+  vec2 i=floor(p), f=fract(p);
+  f=f*f*(3.-2.*f);
+  return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y);
+}
+float n3(vec3 p){ return n2(p.xy+p.z*13.1)+0.5*n2(p.yz*1.7); }
+
+vec3 stars(vec3 d){
+  vec3 dir=normalize(d);
+  float band=exp(-dir.y*dir.y*14.)*0.22;
+  vec3 bg=vec3(0.004,0.006,0.02)+vec3(0.14,0.11,0.18)*band;
+  vec2 g=dir.xy*90.0+dir.z*8.0;
+  float s=smoothstep(0.993,1.0, n2(floor(g*1.1)));
+  float s2=smoothstep(0.997,1.0, n2(floor(dir.zx*160.0)));
+  bg+=s*vec3(0.75,0.82,1.0)*0.9;
+  bg+=s2*vec3(1.0,0.9,0.7)*1.3;
+  float neb=n2(dir.xz*6.0+dir.y)*band;
+  bg+=vec3(0.08,0.04,0.12)*neb;
+  return bg;
+}
+vec3 aces(vec3 x){ return clamp((x*(2.51*x+0.03))/(x*(2.43*x+0.59)+0.14),0.,1.); }
+
+vec3 blackbody(float T){
+  float t=clamp(T,0.15,8.0);
+  vec3 c=vec3(
+    clamp(2.2*t, 0., 2.4),
+    clamp(0.15+1.4*t-0.18*t*t, 0., 1.6),
+    clamp(0.04+0.55*t*t, 0., 1.4)
+  );
+  return c;
+}
+
+vec3 dipole(vec3 p){
+  float r2=dot(p,p);
+  float r=sqrt(r2);
+  float r5=r2*r2*r;
+  vec3 m=vec3(sin(uChi)*0.25, 1.0, 0.0);
+  m=normalize(m);
+  return (3.0*dot(m,p)*p - m*r2) / max(r5, 1e-5);
+}
+
+vec3 traceHorizon(vec3 ro, vec3 rd){
+  vec3 p=ro;
+  vec3 v=rd;
+  vec3 col=vec3(0.0);
+  float absorb=1.0;
+  const float rs=1.0;
+  for(int i=0;i<72;i++){
+    float r=length(p);
+    if(r<rs*0.505){ absorb=0.0; break; }
+    float h=clamp(0.042*r, 0.01, 0.13);
+    vec3 acc=-1.5*rs*p/(r*r*r);
+    v+=acc*h;
+    p+=v*h;
+
+    float rho=length(p.xz);
+    float diskH=uTilt*sqrt(max(rho,0.8));
+    float dens=exp(-(p.y*p.y)/(2.0*diskH*diskH+1e-4)) / max(diskH*2.8, 0.02);
+    dens*=smoothstep(uRisco*0.92, uRisco+0.35, rho)*smoothstep(uRout, uRout-3.5, rho);
+    dens*=smoothstep(0.55, 0.2, abs(p.y));
+    if(dens>0.002 && rho>uRisco){
+      float kep=sqrt(0.5/max(rho,0.7));
+      vec3 bhat=normalize(vec3(-p.z, 0.0, p.x));
+      vec3 view=normalize(v);
+      float beta=clamp(kep,0.,0.65);
+      float mu=dot(bhat, -view);
+      float gam=1.0/sqrt(max(1e-4,1.0-beta*beta));
+      float delta=1.0/(gam*(1.0-beta*mu));
+      float z=sqrt(max(0.03,1.0-rs/rho));
+      float nt=pow(max(rho/uRisco,1.0),-0.75)*z;
+      vec3 emit=blackbody(nt*delta*2.4)*dens*pow(max(delta,0.05),3.0)*z;
+      vec2 uv=vec2(atan(p.z,p.x)*1.8+uTime*kep, log(rho)*3.0);
+      emit*=0.7+0.3*n2(uv);
+      col+=emit*absorb*h*6.5;
+    }
+    float ph=smoothstep(0.18,0.0,abs(r-1.5*rs))*smoothstep(0.25,0.0,abs(dot(normalize(p),normalize(v))));
+    col+=vec3(1.3,0.85,0.4)*ph*absorb*h*2.2;
+    if(r>90.0) break;
+  }
+  if(absorb>0.01){
+    col+=stars(normalize(v))*absorb;
+  }
+  return col;
+}
+
+vec3 shadeCrust(vec3 n, vec3 hit, vec3 rd){
+  float lat=n.y;
+  vec2 uv=vec2(atan(hit.z,hit.x)/TAU, lat*0.5+0.5);
+  float grain=0.55+0.45*n2(uv*22.0)+0.2*n2(uv*54.0);
+  float crack=smoothstep(0.62,0.72, n2(uv*9.0+13.0));
+  vec3 iron=vec3(0.12,0.08,0.07)*grain;
+  iron=mix(iron, vec3(0.04,0.035,0.04), crack);
+  float cap=smoothstep(0.62,0.92, abs(lat));
+  vec3 heat=vec3(1.4,0.45,0.12)*cap*uHot;
+  float B=length(dipole(hit))*uB14;
+  vec3 oMode=vec3(1.05,0.42,0.12);
+  vec3 xMode=vec3(0.35,0.7,1.15);
+  vec3 vac=mix(oMode, xMode, clamp(uBiref*B/(B+6.0),0.,1.));
+  float nd=max(0.0, -dot(n, rd));
+  float fres=pow(1.0-nd, 4.0);
+  vec3 col=iron*(0.15+0.85*nd) + heat*nd + vac*fres*0.35*uBiref;
+  return col;
+}
+
+vec3 traceStar(vec3 ro, vec3 rd, float flareOn){
+  vec3 glow=vec3(0.0);
+  vec3 surf=vec3(0.0);
+  bool hitS=false;
+  float t=0.0;
+  vec3 p=ro;
+  for(int i=0;i<64;i++){
+    float r=length(p);
+    float dist=r-1.0;
+    if(dist<0.002 && t>0.0){
+      vec3 n=normalize(p);
+      surf=shadeCrust(n, p, rd);
+      hitS=true;
+      break;
+    }
+    if(r>1.02 && r<7.5){
+      vec3 B=dipole(p)*uB14;
+      float Bb=length(B);
+      vec3 Bhat=B/max(Bb,1e-4);
+      float pitch=length(cross(Bhat, rd));
+      float syn=pow(max(Bb*0.12,0.0), 1.35)*pitch*pitch;
+      syn*=smoothstep(7.0, 1.2, r);
+      vec3 aurora=mix(vec3(0.95,0.28,0.08), vec3(0.2,0.55,1.0), clamp(uBiref,0.,1.));
+      float cascade=smoothstep(4.0, 14.0, uB14)*exp(-abs(p.y)*0.35);
+      glow+=aurora*syn*0.018;
+      glow+=vec3(1.1,0.7,0.35)*cascade*syn*0.012;
+      float gap=smoothstep(0.05,0.0,uPeriod)*exp(-abs(length(p.xz)-1.6)*2.0);
+      glow+=vec3(0.6,0.85,1.2)*gap*0.02;
+    }
+    if(flareOn>0.5){
+      float age=uFlareAge;
+      float rad=1.05+2.8*uFlareE*smoothstep(0.0,1.8,age);
+      float dF=length(p)-rad;
+      if(abs(dF)<0.12){
+        float shell=exp(-dF*dF*80.0)*exp(-age*0.22)*uFlareE;
+        glow+=vec3(1.6,0.75,0.28)*shell*0.9;
+      }
+      float sheet=exp(-abs(p.y)*12.0)*exp(-abs(p.x)*0.35)*uRecon*exp(-age*0.18);
+      glow+=vec3(1.3,0.9,0.45)*sheet*0.08;
+      float lobe=exp(-abs(length(p.xz)-(1.4+2.4*uEject*smoothstep(0.5,5.0,age)))*1.8)*smoothstep(0.2,1.4,abs(p.z));
+      glow+=vec3(0.35,0.55,0.95)*lobe*uEject*0.05*exp(-age*0.1);
+    }
+    float step=clamp(abs(r-1.0)*0.35, 0.03, 0.22);
+    t+=step;
+    p=ro+rd*t;
+    if(t>28.0) break;
+  }
+  vec3 col=hitS ? surf : stars(rd)*0.55;
+  return col+glow;
+}
+
+void main(){
+  vec2 ndc=(gl_FragCoord.xy-0.5*uRes)/uRes.y;
+  float tf=tan(uFov*0.008726646);
+  vec3 rd=normalize(uCamFwd+(uCamRight*ndc.x+uCamUp*ndc.y)*(2.0*tf));
+  vec3 ro=uCamPos;
+  vec3 col;
+  if(uMode<0.5) col=traceStar(ro,rd,0.0);
+  else if(uMode<1.5) col=traceHorizon(ro,rd);
+  else col=traceStar(ro,rd,1.0);
+  col*=uExp;
+  float grain=(hash(gl_FragCoord.xy+uTime*3.0)-0.5)*0.025;
+  col+=grain;
+  col=aces(col);
+  col=pow(col, vec3(0.92));
+  gl_FragColor=vec4(col,1.0);
+}
+`;
+
+const pVert= /* glsl */ `
+precision highp float;
+attribute vec4 aSeed;
+attribute float aRand;
+uniform float uTime,uSpeed,uMode,uB14,uPeriod,uChi,uRisco,uRout,uTilt;
+uniform float uFlareAge,uFlareE,uEject,uPointSize,uDensity;
+varying vec3 vColor; varying float vAlpha;
+#define TAU 6.2831853
+void main(){
+  float t=uTime*uSpeed;
+  vec3 pos; vec3 col; float a;
+  if(uMode<0.5){
+    float r0=1.15+5.5*pow(aRand,0.55);
+    float th=0.15+2.85*fract(aSeed.x);
+    float r=r0*sin(th)*sin(th);
+    float ph=aSeed.y + t*0.04*(1.0+0.4*uB14);
+    pos=vec3(r*sin(th)*cos(ph), r*cos(th), r*sin(th)*sin(ph));
+    float B=pow(1.0/max(r,1.0),3.0)*uB14;
+    col=mix(vec3(1.0,0.32,0.08), vec3(0.25,0.55,1.0), clamp(B*0.08,0.,1.));
+    a=(0.04+0.09*clamp(B*0.1,0.,1.))*uDensity*smoothstep(7.0,1.2,r);
+  } else if(uMode<1.5){
+    float rho=uRisco+0.4+(uRout-uRisco)*pow(fract(aSeed.x),0.55);
+    float kep=sqrt(0.5/max(rho,0.8));
+    float ph=aSeed.y+t*kep;
+    float y=(fract(aSeed.z)-0.5)*uTilt*sqrt(rho)*2.4;
+    pos=vec3(rho*cos(ph), y, rho*sin(ph));
+    float z=sqrt(max(0.05,1.0-1.0/rho));
+    float T=pow(rho,-0.75)*z;
+    col=vec3(1.1,0.38+0.4*T,0.08)*T;
+    a=0.045*uDensity*smoothstep(uRout,uRisco+1.0,rho);
+  } else {
+    float age=uFlareAge;
+    float th=aSeed.x, ph=aSeed.y;
+    float rad=1.0+(2.6*uFlareE+3.0*uEject*aRand)*smoothstep(0.0,5.0,age);
+    pos=vec3(sin(th)*cos(ph), cos(th)*0.55, sin(th)*sin(ph))*rad;
+    col=mix(vec3(1.4,0.55,0.15), vec3(0.4,0.6,1.0), aRand);
+    a=0.07*uDensity*exp(-age*0.12);
+  }
+  vColor=col; vAlpha=a;
+  vec4 mv=modelViewMatrix*vec4(pos,1.0);
+  gl_Position=projectionMatrix*mv;
+  gl_PointSize=max(1.8, min(5.5, uPointSize*(160.0/max(1.6,-mv.z))));
+}
+`;
+const pFrag= /* glsl */ `
+precision highp float;
+varying vec3 vColor; varying float vAlpha;
+void main(){
+  vec2 uv=gl_PointCoord*2.0-1.0;
+  float d=dot(uv,uv);
+  if(d>1.0) discard;
+  float a=exp(-d*3.6)*vAlpha;
+  if(a<0.016) discard;
+  gl_FragColor=vec4(vColor, a);
+}
+`;
+
+const canvas=document.getElementById("gpu");
+const renderer=new THREE.WebGLRenderer({canvas, antialias:false, powerPreference:"high-performance"});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+renderer.setClearColor(0x000000,1);
+renderer.sortObjects=false;
+renderer.toneMapping=THREE.NoToneMapping;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.debug.checkShaderErrors=true;
+renderer.debug.onShaderError=(gl,program,vs,fs)=>{
+  showErr("Shader compile failed:\n"+[gl.getShaderInfoLog(vs),gl.getShaderInfoLog(fs),gl.getProgramInfoLog(program)].filter(Boolean).join("\n"));
+};
+const scene=new THREE.Scene();
+let camera=new THREE.PerspectiveCamera(52,1,0.08,250);
+camera.position.set(2.4,1.1,4.8);
+const controls=new OrbitControls(camera, canvas);
+controls.enableDamping=true; controls.dampingFactor=0.05;
+controls.minDistance=1.35; controls.maxDistance=48;
+controls.autoRotate=true; controls.autoRotateSpeed=0.35;
+
+const rayUni={
+  uCamPos:{value:new THREE.Vector3()}, uCamFwd:{value:new THREE.Vector3()},
+  uCamRight:{value:new THREE.Vector3()}, uCamUp:{value:new THREE.Vector3()},
+  uRes:{value:new THREE.Vector2(1,1)}, uFov:{value:52},
+  uTime:{value:0}, uMode:{value:0}, uSpin:{value:0.88},
+  uRisco:{value:1.15}, uRout:{value:22}, uTilt:{value:0.18}, uExp:{value:1.15},
+  uB14:{value:2.2}, uBiref:{value:1}, uHot:{value:0.72}, uChi:{value:0.32},
+  uPeriod:{value:2.07}, uFlareAge:{value:8}, uFlareE:{value:1}, uRecon:{value:0.9}, uEject:{value:0.7},
+};
+const rayMat=new THREE.ShaderMaterial({
+  vertexShader:rayVert, fragmentShader:rayFrag, uniforms:rayUni,
+  depthTest:false, depthWrite:false, toneMapped:false,
+});
+const rayMesh=new THREE.Mesh(new THREE.PlaneGeometry(2,2), rayMat);
+rayMesh.frustumCulled=false; rayMesh.renderOrder=-1;
+scene.add(rayMesh);
+
+const MAX=786432;
+const seed=new Float32Array(MAX*4);
+const rand=new Float32Array(MAX);
+const dummy=new Float32Array(MAX*3);
+const gld=0.61803398875;
+let seededN=0, geo=null;
+function ensureSeeded(n){
+  n=Math.min(MAX,Math.max(0,n|0));
+  const grew=n>seededN;
+  for(let i=seededN;i<n;i++){
+    seed[i*4]=Math.acos(1-2*((i*gld)%1));
+    seed[i*4+1]=TAU*((i*gld*1.324)%1);
+    seed[i*4+2]=TAU*((i*gld*2.618)%1);
+    seed[i*4+3]=(i%54)+(i+0.5)/MAX;
+    let r=(Math.sin(i*12.9898)*43758.5453)%1; if(r<0) r+=1;
+    rand[i]=r;
+    dummy[i*3]=Math.sin(i*0.3)*0.02;
+    dummy[i*3+1]=Math.cos(i*0.17)*0.02;
+    dummy[i*3+2]=Math.sin(i*0.5)*0.02;
+  }
+  seededN=n;
+  if(grew&&geo){
+    geo.attributes.aSeed.needsUpdate=true;
+    geo.attributes.aRand.needsUpdate=true;
+    geo.attributes.position.needsUpdate=true;
+  }
+}
+ensureSeeded(P.count);
+geo=new THREE.BufferGeometry();
+geo.setAttribute("aSeed", new THREE.BufferAttribute(seed,4));
+geo.setAttribute("aRand", new THREE.BufferAttribute(rand,1));
+geo.setAttribute("position", new THREE.BufferAttribute(dummy,3));
+geo.setDrawRange(0,P.count);
+geo.boundingSphere=new THREE.Sphere(new THREE.Vector3(), 80);
+geo.computeBoundingSphere=()=>{};
+const puni={
+  uTime:{value:0}, uSpeed:{value:1}, uMode:{value:0},
+  uB14:{value:2.2}, uPeriod:{value:2.07}, uChi:{value:0.32},
+  uRisco:{value:1.15}, uRout:{value:22}, uTilt:{value:0.18},
+  uFlareAge:{value:8}, uFlareE:{value:1}, uEject:{value:0.7},
+  uPointSize:{value:0.72}, uDensity:{value:1},
+};
+const pmat=new THREE.ShaderMaterial({
+  vertexShader:pVert, fragmentShader:pFrag, uniforms:puni,
+  transparent:true, depthWrite:false, depthTest:false,
+  blending:THREE.AdditiveBlending, toneMapped:false, fog:false,
+});
+const points=new THREE.Points(geo,pmat);
+points.frustumCulled=false; points.renderOrder=1;
+scene.add(points);
+
+function resize(){
+  const w=Math.max(window.innerWidth,16), h=Math.max(window.innerHeight,16);
+  camera.aspect=w/h; camera.updateProjectionMatrix();
+  renderer.setSize(w,h,false);
+  const pr=Math.min(devicePixelRatio,1.5);
+  rayUni.uRes.value.set(w*pr, h*pr);
+}
+window.addEventListener("resize", resize);
+resize();
+
+document.getElementById("btnPause").onclick=()=>{
+  P.running=!P.running;
+  document.getElementById("btnPause").textContent=P.running?"Pause":"Run";
+};
+document.getElementById("btnReset").onclick=()=>setWorld(P.tab);
+document.getElementById("btnFlare").onclick=()=>{ P.flareAge=0; P.tab=2; setWorld(2); };
+document.getElementById("btnOrbit").onclick=()=>{
+  P.orbit=!P.orbit; controls.autoRotate=P.orbit;
+  document.getElementById("btnOrbit").textContent=P.orbit?"Orbit on":"Orbit off";
+};
+document.getElementById("tog").onclick=()=>{
+  const c=document.getElementById("console");
+  c.classList.toggle("hidden");
+  document.getElementById("tog").textContent=c.classList.contains("hidden")?"Show console":"Hide console";
+};
+
+function apply(){
+  const nDraw=Math.min(MAX, Math.max(16384, Math.floor(P.count)));
+  ensureSeeded(nDraw);
+  geo.setDrawRange(0,nDraw);
+  const rISCO=kerrISCO_M(P.spin)/2;
+  puni.uSpeed.value=P.speed; puni.uMode.value=P.tab;
+  puni.uB14.value=P.B14; puni.uPeriod.value=P.period; puni.uChi.value=P.chi;
+  puni.uRisco.value=rISCO; puni.uRout.value=P.diskO; puni.uTilt.value=P.tilt;
+  puni.uFlareAge.value=P.flareAge; puni.uFlareE.value=P.flareE; puni.uEject.value=P.eject;
+  puni.uPointSize.value=P.pointSize; puni.uDensity.value=P.density;
+  rayUni.uMode.value=P.tab; rayUni.uSpin.value=P.spin;
+  rayUni.uRisco.value=rISCO; rayUni.uRout.value=P.diskO; rayUni.uTilt.value=P.tilt; rayUni.uExp.value=P.exposure;
+  rayUni.uB14.value=P.B14; rayUni.uBiref.value=P.biref; rayUni.uHot.value=P.hotspot; rayUni.uChi.value=P.chi;
+  rayUni.uPeriod.value=P.period; rayUni.uFlareAge.value=P.flareAge; rayUni.uFlareE.value=P.flareE;
+  rayUni.uRecon.value=P.recon; rayUni.uEject.value=P.eject; rayUni.uFov.value=camera.fov;
+  camera.getWorldPosition(rayUni.uCamPos.value);
+  camera.getWorldDirection(rayUni.uCamFwd.value);
+  const e=camera.matrixWorld.elements;
+  rayUni.uCamRight.value.set(e[0],e[1],e[2]).normalize();
+  rayUni.uCamUp.value.set(e[4],e[5],e[6]).normalize();
+}
+
+function instruments(){
+  const B=P.B14*1e14, Bb=B/BQ;
+  const Om=TAU/Math.max(P.period,1e-4);
+  const OmRc=Om*RNS/C;
+  const Eover=OmRc*Bb;
+  const rM=kerrISCO_M(P.spin);
+  const rows=[];
+  if(P.tab===0){
+    rows.push(["B / B_Q", Bb.toFixed(2)]);
+    rows.push(["P", P.period<0.05?P.period.toExponential(2)+" s":P.period.toFixed(2)+" s"]);
+    rows.push(["ΩR/c", OmRc.toExponential(2)]);
+    rows.push(["E∥ / E_c", Eover.toExponential(2)]);
+    rows.push(["Pairs", P.period<0.05?"gap cascade":"magnetic γ→e⁺e⁻"]);
+    rows.push(["Vacuum", "birefringent medium"]);
+  } else if(P.tab===1){
+    rows.push(["a*", P.spin.toFixed(3)]);
+    rows.push(["r_ISCO / M", rM.toFixed(3)]);
+    rows.push(["r_ph / r_s", "1.50"]);
+    rows.push(["geodesics", "Schwarzschild null"]);
+    rows.push(["disk", "Kepler + g-redshift + Doppler"]);
+  } else {
+    const L=P.flareE*Math.exp(-P.flareAge*0.22);
+    rows.push(["B₁₄", P.B14.toFixed(2)]);
+    rows.push(["age", P.flareAge.toFixed(2)+" s*"]);
+    rows.push(["L/L₀", L.toFixed(3)]);
+    rows.push(["kT", "~200 keV pair eq."]);
+    rows.push(["source", "magnetic / crust"]);
+  }
+  document.getElementById("tele").innerHTML=rows.map(([a,b])=>`<div><span>${a}</span><span>${b}</span></div>`).join("");
+  const dist=camera.position.length();
+  document.getElementById("readout").innerHTML=
+    `<div>RANGE  <b>${dist.toFixed(2)}</b>  rₛ</div>
+     <div>FIELD  <b>${Bb.toFixed(2)}</b>  B_Q</div>
+     <div>SPIN   <b>${P.tab===1?P.spin.toFixed(2):P.period.toFixed(2)}</b>  ${P.tab===1?"a*":"P/s"}</div>`;
+}
+
+let t0=performance.now()/1000, frames=0, fpsT=0;
+function loop(now){
+  requestAnimationFrame(loop);
+  try{
+    const t=now/1000, dt=Math.min(0.05,t-t0); t0=t;
+    if(P.running){
+      puni.uTime.value+=dt;
+      rayUni.uTime.value=puni.uTime.value;
+      P.flareAge+=dt*P.speed;
+    }
+    apply();
+    controls.update();
+    renderer.render(scene, camera);
+    frames++; fpsT+=dt;
+    if(fpsT>0.45){
+      document.getElementById("fps").textContent=`${Math.round(frames/fpsT)} fps`;
+      frames=0; fpsT=0;
+      instruments();
+    }
+  }catch(e){ showErr(e); }
+}
+window.__booted=true;
+if(window.__tdvtBoot) clearTimeout(window.__tdvtBoot);
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

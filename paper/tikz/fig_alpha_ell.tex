@@ -1,0 +1,23 @@
+% Coupled diagnostic: α(ℓ) from the UV vs from λ*
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=5.8cm,
+  xlabel={RG time $\ell=\ln(L/a_c)$},
+  ylabel={$\alpha/\alpha_c$},
+  xmin=0, xmax=8,
+  ymin=0.15, ymax=1.05,
+  legend style={draw=none, at={(0.98,0.12)}, anchor=south east, font=\footnotesize},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiGreen, thick]
+  table[x index=0, y index=4, skip first n=1] {data/vortex_rg_coupled_uv.dat};
+\addlegendentry{coupled from UV (\statusdiag)}
+\addplot[oiVerm, densely dashed]
+  coordinates {(0,1) (8,1)};
+\addlegendentry{fold $\alpha=\alpha_c$}
+\addplot[oiOrange, densely dashed]
+  coordinates {(0,0.90) (8,0.90)};
+\end{axis}
+\end{tikzpicture}

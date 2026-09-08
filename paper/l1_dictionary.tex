@@ -1,0 +1,236 @@
+\section{Matched L1 coefficients, lengths, and catalyzon scale}
+\label{sec:l1_dictionary}
+
+The preceding sections introduce the frozen-cavity bridge, the democratic catalyzon, and the bulk \TQGL{} functional. Those objects share symbols---lengths, Landau coefficients, a vacuum coupling $g_0$, a Hall step, a retardation factor, and an analogue horizon radius---that must not be identified across distinct geometric settings. This section records one convention for each quantity. Fold, catalyzon, and truncated Gross--Pitaevskii dynamics remain independent channels. Holographic and torsion constructions are not used to derive $G_{ij}$ or $\kappa_{\mathrm{GL}}$. The matching $T_H=T^*$ (hypothesis H-HAWK1) fixes $R_{\mathrm{WS}}$.
+
+\subsection{Length dictionary}
+\label{sec:length_dict}
+
+The frozen-cavity geometry identifies the fat-torus tube with the Ginzburg--Landau healing length,
+\begin{equation}
+a_H = r = \aHlock
+\end{equation}
+A second length is the phonon (Bogoliubov) healing constructed from the same package constants that enter the gap map,
+\begin{equation}
+\xi_{\mathrm{ph}} = \frac{\hbar c_s}{\Delta_0} = \xiph
+\end{equation}
+These two lengths are not interchangeable: $a_H$ is the cavity minor radius and the GPE core scale; $\xi_{\mathrm{ph}}$ is the scale on which $\Delta_0$ and $\hbar c_s$ produce a dimensionless ratio of order one.
+
+Retardation is defined from the causal phonon propagator by the algebraic identity
+\begin{equation}
+\eta_{\mathrm{ret}} = \frac{2\Delta_0\xi}{\hbar c_s}
+\label{eq:eta_ret_lock}
+\end{equation}
+Substituting the two lengths of this dictionary yields the pair
+\begin{equation}
+\eta_{\mathrm{ret}}(a_H)=\etaretaH,\qquad
+\eta_{\mathrm{ret}}(\xi_{\mathrm{ph}})=\etaretph.
+\end{equation}
+The second evaluation is an identity: $\xi_{\mathrm{ph}}=\hbar c_s/\Delta_0$ converts Eq.~\eqref{eq:eta_ret_lock} into $\eta_{\mathrm{ret}}=2$. An alternate coherence length $\xi=\xialt$ produces $\eta_{\mathrm{ret}}\approx\etaretalt$. Table~\ref{tab:length_dict} records the three evaluations.
+
+\begin{table}[htbp]
+\centering
+\caption{Length dictionary on the frozen cavity. The retardation identity is Eq.~\eqref{eq:eta_ret_lock}.}
+\begin{tabular}{llll}
+\hline
+\textbf{Length} & \textbf{Value} & $\eta_{\mathrm{ret}}$ & \textbf{St.} \\
+\hline
+$a_H=r$ (GL/GPE) & $\aHlock$ & $\etaretaH$ & L \\
+$\xi_{\mathrm{ph}}=\hbar c_s/\Delta_0$ & $\xiph$ & $\etaretph$ & D \\
+$\xi$ (alternate) & $\xialt$ & $\etaretalt$ & Alt \\
+\hline
+\end{tabular}
+\label{tab:length_dict}
+\end{table}
+
+\subsection{Locked kinematics: mass, frequencies, two velocities}
+\label{sec:kinematics_dict}
+
+The gradient weight $\kappa_{\mathrm{GL}}=\Delta_0 a_H^2$ is $\hbar^2/(2m^*)$, so
+\begin{equation}
+\frac{m^*}{m_e}=\frac{\hbar^2/(2m_e)}{\kappa_{\mathrm{GL}}}=\mstaroverme
+\end{equation}
+The healing identification $a_H=\hbar/\sqrt{2m^*\Delta_0}$ with locked $a_H=\aHlock$ therefore requires $m^*\approx m_e$, not $0.4\,m_e$.
+
+Package $\hbar c_s=\hbarcs$ converts to $c_s=\csBog$. This velocity enters the Casimir prefactor, the gap map, retardation~\eqref{eq:eta_ret_lock}, and the Goldstone resonance $k^*=2\Delta/(\hbar c_s)$. Independently, graphene's longitudinal acoustic speed is $c_{\mathrm{LA}}=\cLA$ and locates the moiré-zone wavevector $q^*=\omega_0/c_{\mathrm{LA}}$. The two speeds are not identified.
+
+Cyclic frequencies $\nu=\omega/(2\pi)$ at $\omega=2\Delta/\hbar$ are $\nu_{\mathrm{GPE}}=\nuGPE$ for the GPE drive $\Delta=\Delta_0$ and $\nu^\star=\nuStar$ for the working gap $\Delta^\star$. Angular $\omega_0(\Delta_0)=\omegaGPEps$. At $\Delta^\star$ the graphene-LA kinematics give $q^*=\qstarLA$, $\lambda_{\mathrm{res}}=2\pi/q^*=\lamresLA$, and $q^*/K_M=\qoverKM$ with $K_M=4\pi/(3\lambda_M)$. The Bogoliubov wavelength at the same $\Delta^\star$ is $\lamresCS$. The Vakulenko--Kapitansky comparison uses $E_{\mathrm{vac}}$: $N^{-3/4}\approx 0.299$ implies $C > \Cvkmin$.
+
+\subsection{Track A Ginzburg--Landau coefficients}
+\label{sec:gl_dict}
+
+The bulk functional of Section~\ref{sec:tqgl} and the two-sector split of Section~\ref{sec:vortex_rg} employ a Landau mass $\alpha_{\mathrm{GL}}$, a quartic $\beta$, and a gradient weight $\kappa_{\mathrm{GL}}$, together with a participation $\lambda$ that feeds the gap-map coupling $\alpha$ of Section~\ref{sec:bridge}. These are distinct objects. The gap-map coupling is dimensionless,
+\begin{equation}
+\alpha=\lambda\frac{E_{\mathrm{vac}}}{\Delta_0},
+\end{equation}
+and at the working point equals $\alpha^\star=\alphastar$. The Landau mass is matched to the bare exchange gap of the truncated GPE,
+\begin{equation}
+\alpha_{\mathrm{GL}}=-\Delta_0=\alphaGL
+\end{equation}
+so that $|\alpha_{\mathrm{GL}}|=\Delta_0$ and $\alpha_{\mathrm{GL}}$ is not the number $\alpha^\star$. The gradient weight follows from the healing identification $a_H=r$ in the kinetic coefficient $\hbar^2/(2m^*)$,
+\begin{equation}
+\kappa_{\mathrm{GL}}=\Delta_0 a_H^2=\kappaGL
+\end{equation}
+Hence $m^*=\hbar^2/(2\kappa_{\mathrm{GL}})=\mstaroverme\,m_e$. This $\kappa_{\mathrm{GL}}$ is not the holographic $\gamma_{\mathrm{QM}}$ of Section~\ref{sec:holographic_dict}; that coefficient is an L3 matching and is not imported into Track~A.
+
+The quartic is matched so that the Mexican-hat vacuum manifold sits on the hopfion density of the truncated solver. On the ring-weighted initial condition of \texttt{hopfion\_initial} (box $L=200$\,nm, $n_0=1$, core depletion $0.10$, noise-free) one finds $n_{\mathrm{ref}}=\nrefhopf$, and therefore
+\begin{equation}
+\beta=\frac{\Delta_0}{n_{\mathrm{ref}}}=\betaGL
+\end{equation}
+The GPE cubic-quintic potential used in the $1$\,ps integrator is the related but not identical pair $\alpha_{\mathrm{nl}}=-\Delta_0$, $\beta_{\mathrm{nl}}=\Delta_0/n_0$ with dimensionless $n_0=1$; $n_{\mathrm{ref}}$ is the live-gap denominator of Section~\ref{sec:dynamics}. Participation in the dictionary is the working value $\lambda=\lambda^\star=\lstar$, with $\lambda_{\mathrm{fold}}=\lfold$ the edge of the physical fold branch.
+
+The Skyrme coefficient that stabilizes finite-size textures against Derrick collapse is not derived from a microscopic Hubbard model. A Faddeev--Skyrme balance at the locked tube scale $a_H$ gives the estimate $\kappa_S\sim\kappa_{\mathrm{GL}}a_H^2=\Delta_0 a_H^4=\kappaSansatz$. Table~\ref{tab:gl_dict} collects the Track~A card.
+
+\begin{table}[htbp]
+\centering
+\caption{Track A Ginzburg--Landau coefficients. The gap-map $\alpha$ is dimensionless; $\alpha_{\mathrm{GL}}$ and $\beta$ are energies. Holographic $\gamma_{\mathrm{QM}}$ is not $\kappa_{\mathrm{GL}}$.}
+\begin{tabular}{llll}
+\hline
+\textbf{Symbol} & \textbf{Value} & \textbf{Meaning} & \textbf{St.} \\
+\hline
+$\alpha^\star$ & $\alphastar$ & Gap-map $\lambda^\star E_{\mathrm{vac}}/\Delta_0$ & D \\
+$\alpha_{\mathrm{GL}}$ & $\alphaGL$ & Landau mass, $|\alpha_{\mathrm{GL}}|=\Delta_0$ & M \\
+$\kappa_{\mathrm{GL}}$ & $\kappaGL$ & $\Delta_0 a_H^2$ with $a_H=r$ & D \\
+$m^*/m_e$ & $\mstaroverme$ & $\hbar^2/(2\kappa_{\mathrm{GL}})$ & D \\
+$\lambda^\star$ & $\lstar$ & Working participation & L \\
+$\beta$ & $\betaGL$ & $\Delta_0/n_{\mathrm{ref}}$ on hopfion IC & M \\
+$n_{\mathrm{ref}}$ & $\nrefhopf$ & Ring-weighted hopfion density & C \\
+$\kappa_S$ & $\kappaSansatz$ & Derrick estimate at tube scale & A \\
+\hline
+\end{tabular}
+\label{tab:gl_dict}
+\end{table}
+
+\subsection{Catalyzon scale \texorpdfstring{$g_0=\lambda E_{\mathrm{vac}}$}{g0 = lambda E\_vac}}
+\label{sec:g0_dict}
+
+If the same vacuum that feeds the fold also hybridizes the five long-wavelength modes of Section~\ref{sec:catalyzon}, the off-diagonal coupling is the bridge identification
+\begin{equation}
+g_0=\lambda E_{\mathrm{vac}}.
+\label{eq:g0_bridge}
+\end{equation}
+At the working point $\lambda^\star$ this is $g_0^\star=\gzerostar$, so the democratic dark eigenvalue $\lambda_{\min}=-g_0$ produces
+\begin{equation}
+\Delta_{\mathrm{cat}}=\Delta_{\mathrm{ex}}-g_0^\star=\Deltacat
+\end{equation}
+(\pctcat{} of $\Delta_{\mathrm{ex}}=\Deltaex$). At the fold edge $\lambda_{\mathrm{fold}}$ one has $g_0=\lambda_{\mathrm{fold}}E_{\mathrm{vac}}=\gzerofold=\Delta_c$, a \pctcatfold{} catalyzon reduction. Both evaluations are parallel to the static fold: $\Delta^\star=\Deltastar$ at $\lambda^\star$ is an amplitude-map number, not a stacked correction to $\Delta_{\mathrm{cat}}$. The working vacuum scale is $g_0^\star$; a coupling larger than $E_{\mathrm{vac}}$ is not a participation of the locked vacuum.
+
+\subsection{Mexican-hat barrier from $V(\rho)$}
+\label{sec:mexican_dict}
+
+The bulk potential of Track~A is the quadratic-quartic family
+\begin{equation}
+V(\rho)=\alpha_{\mathrm{GL}}\,\rho^2+\frac{\beta}{2}\rho^4,
+\label{eq:Vrho}
+\end{equation}
+with $\alpha_{\mathrm{GL}}$ and $\beta$ from Table~\ref{tab:gl_dict}. The vacuum manifold sits at $\rho^2=|\alpha_{\mathrm{GL}}|/\beta=n_{\mathrm{ref}}$, and the well depth measured from $\rho=0$ is
+\begin{equation}
+B=\frac{\alpha_{\mathrm{GL}}^2}{2\beta}=\frac{\Delta_0\,n_{\mathrm{ref}}}{2}.
+\end{equation}
+On the catalyzon channel the Landau mass tracks the dressed gap, $\alpha_{\mathrm{GL}}\to-\Delta_{\mathrm{cat}}$, at the same $\beta$. The well-depth ratio is then independent of $n_{\mathrm{ref}}$,
+\begin{equation}
+\frac{B_{\mathrm{cat}}}{B_0}=\left(\frac{\Delta_{\mathrm{cat}}}{\Delta_0}\right)^2,
+\end{equation}
+which evaluates to a \hatbarrier{} reduction. Figure~\ref{fig:mexican_matched} shows the radial cuts of Eq.~\eqref{eq:Vrho} at $\alpha_{\mathrm{GL}}=-\Delta_0$ and $\alpha_{\mathrm{GL}}=-\Delta_{\mathrm{cat}}$. This is the barrier of the matched potential, not a schematic pair of Landau masses.
+
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.72\linewidth,
+  height=5.2cm,
+  xlabel={$\rho$},
+  ylabel={$V(\rho)/\Delta_0$},
+  xmin=0, xmax=1.45,
+  ymin=-0.55, ymax=0.12,
+  legend style={font=\small, at={(0.97,0.97)}, anchor=north east, draw=none, fill=white, fill opacity=0.85},
+  grid=major, grid style={gray!20},
+  clip=true,
+]
+\addplot[oiBlue, thick, domain=0:1.4, samples=200]
+  {-1.0*x^2 + 0.5*x^4};
+\addlegendentry{bare ($\alpha_{\mathrm{GL}}=-\Delta_0$)}
+\addplot[oiVerm, thick, domain=0:1.4, samples=200]
+  {-(0.5018/0.600)*x^2 + 0.5*x^4};
+\addlegendentry{catalyzon ($\alpha_{\mathrm{GL}}=-\Delta_{\mathrm{cat}}$)}
+\addplot[oiGreen, dashed, domain=0:1.4, samples=2] {0};
+\end{axis}
+\end{tikzpicture}
+\caption{\textbf{Matched Mexican-hat radial cuts.} Equation~\eqref{eq:Vrho} in units of $\Delta_0$, with the Track~A quartic $\beta$ scaled out of the dimensionless plot. Well-depth reduction $B_{\mathrm{cat}}/B_0=(\Delta_{\mathrm{cat}}/\Delta_0)^2$ is \hatbarrier{}. The catalyzon pathway $\Delta_{\mathrm{ex}}\to\Delta_{\mathrm{cat}}$ remains the parallel \pctcat{} gap reduction of Section~\ref{sec:g0_dict}.}
+\label{fig:mexican_matched}
+\end{figure}
+
+\subsection{Hall convention}
+\label{sec:hall_dict}
+
+A single Chern--Simons \emph{dictionary} is used throughout. The topological term in the \TQGL{} functional is
+\begin{equation}
+\mathcal{F}_{\mathrm{CS}}=\frac{k}{4\pi}\int\mathbf{a}\wedge\mathrm{d}\mathbf{a},\qquad k=2N,
+\end{equation}
+and the lens-space identification of Section~\ref{sec:lens_space_proof} is $Q_H=1/N$. These two statements are independent locks; their product $k\,Q_H=2$ is algebra, not a pairing theorem that uniquely determines $k$ from $Q_H$ or conversely. The uncatalyzed Hall conductance of the condensate is
+\begin{equation}
+\sigma_{xy}=N\frac{e^2}{h}=\frac{k}{2}\frac{e^2}{h}.
+\end{equation}
+Each hopfion nucleation event changes that conductance by one step
+\begin{equation}
+\delta\sigma_{xy}=\frac{e^2}{2Nh}=\frac{Q_H e^2}{2h}=\frac{e^2}{kh}.
+\label{eq:dsigma_lock}
+\end{equation}
+For $N=5$ this is $\delta\sigma_{xy}=\dsigmaH$. No second Hall formula is employed as a physics lock.
+
+\begin{remark}[Dictionary versus textbook Chern--Simons]
+\label{rem:cs_convention}
+The usual continuum evaluation of $\frac{k}{4\pi}\int\mathbf{a}\wedge\mathrm{d}\mathbf{a}$ assigns Hall conductance $\sigma_{xy}=k\,e^2/h$~\cite{Laughlin1983,Wen1995}. At the locked level $k=2N$ that textbook reading would be $2N\,e^2/h$, which is \emph{not} the QVC lock. The paper uses $\sigma_{xy}=(k/2)e^2/h=N e^2/h$ as a dictionary convention so that the uncatalyzed condensate tracks $N$ layers and the step~\eqref{eq:dsigma_lock} remains $e^2/(2Nh)$. Likewise, textbook flux attachment at level $k$ is $\oint\mathbf{a}=2\pi/k=\pi/N$; the mean-field background integrated in Section~\ref{sec:cs_eom} is $a_\theta=Q_H/\rho$, whose holonomy is $2\pi Q_H=2\pi/N$. Both numbers are recorded. Neither is used to reset $k$, $Q_H$, $\sigma_{xy}$, or $\delta\sigma_{xy}$. The covariant stepper confirms the mean-field holonomy; it does not transport an edge and does not independently derive the Hall staircase.
+\end{remark}
+
+\subsection{Analogue horizon radius from \texorpdfstring{$T_H=T^*$}{TH = T*}}
+\label{sec:rws_dict}
+
+The Unruh--Visser acoustic metric of Section~\ref{sec:acoustic_hawking} has surface gravity $\kappa_{\mathrm{surface}}=2c_s/R_{\mathrm{WS}}$ and Hawking temperature $T_H=\hbar c_s/(\pi k_B R_{\mathrm{WS}})$. Hypothesis H-HAWK1 is the matching condition $T_H=T^*$, which inverts for the Wigner--Seitz radius
+\begin{equation}
+R_{\mathrm{WS}}=\frac{\hbar c_s}{\pi k_B T^*}=\RwsMatch
+\label{eq:Rws_match}
+\end{equation}
+using the Schwinger diagnostic $T^*=\Tstar$ constructed from $E_{\mathrm{pair}}=\Epair$ at $g_0^\star$. The same algebra at $T^*=285$\,mK returns $R_{\mathrm{WS}}=\RwsAlt$; that length is the matching at that temperature, not the present $T^*$. The Berry Monte Carlo ratio $R_{\mathrm{mean}}=\BerryR$ of Section~\ref{sec:berry_enhancement} is a dimensionless GUE/GOE comparison of $|\lambda_{\min}|$, not a radius, and is not $R_{\mathrm{WS}}$.
+
+\subsection{Wigner--Seitz kernel \texorpdfstring{$G_{ij}$}{G\_ij}}
+\label{sec:gij_dict}
+
+Democratic $G=g_0(J_N-I_N)$ has the exact spectrum $\lambda_{\max}=(N-1)g_0$ (multiplicity~$1$) and $\lambda_{\min}=-g_0$ (multiplicity~$N-1$) at the bridge scale $g_0^\star$. That algebra does not evaluate matrix elements and is not inserted into $G_{ij}$. Two computed kernels share the Macdonald function $K_0(|\mathbf{r}-\mathbf{r}'|/\xi_K)$ with $\xi_K=R=50$\,nm and set $G_{ii}=0$.
+
+The Gaussian construction places five profiles of width $\sigma\approx 0.18\,\lambda_M$ on a regular pentagon inside the moir\'e Wigner--Seitz hexagon. The output is Hermitian and traceless, with $\lambda_{\min}<0$, mean off-diagonal $g_{0,\mathrm{eff}}=\gzeroeff$ in kernel units, and relative Frobenius distance $\relfroG$ from the democratic matrix at $\langle G_{\mathrm{off}}\rangle$. The eigenvalues are
+\begin{equation}
+\mathrm{Spec}(G_{K_0})\approx
+\specGws:
+\end{equation}
+$\lambda_{\max}$ tracks $4g_{0,\mathrm{eff}}$, while the dark subspace is split by the pentagon-in-hexagon geometry rather than exactly four-fold. This $g_{0,\mathrm{eff}}$ is not the bridge energy $g_0^\star=\gzerostar$.
+
+A ring-Fourier companion uses angular harmonics of the hopfion envelope, Wannier-transformed to $N$ localized packets on the locked torus. It returns $g_{0,\mathrm{eff}}=\gzeroeffring$ in kernel units and relative Frobenius distance $\relfroGring$, with
+\begin{equation}
+\mathrm{Spec}(G_{\mathrm{ring}})\approx
+\specGring.
+\end{equation}
+Converting either $g_{0,\mathrm{eff}}$ to meV requires a prefactor that is not supplied by the overlap; the meV scale of the catalyzon remains the bridge value $g_0^\star$. Neither kernel is a torsion vertex (hypothesis H-TOR1 is left for a future three-dimensional Weitzenb\"ock quadrature; Section~\ref{sec:l1_closure}) nor a hand-inserted $J-I$.
+
+\subsection{Lindblad window}
+\label{sec:lindblad_dict}
+
+The truncated GPE of Section~\ref{sec:dynamics} is kinetic plus cubic-quintic plus $V_{\mathrm{ZPF}}$ plus $V_{\mathrm{phonon}}$; Chern--Simons, Berry, and Skyrme terms are not discretised. A Lindblad dissipator is applied after each split step with phenomenological rates $\gamma_n=\gamma_{\phi}=1/\tau_{\mathrm{dec}}$. On the coherent $1$\,ps coupled-DCE window the integrator returns $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$ and $g^{(1)}=\goneps$. Combined number-plus-dephasing on that window is Table~\ref{tab:lindblad_1ps}.
+
+\begin{table}[htbp]
+\centering
+\caption{Truncated GPE plus Lindblad on the $1$\,ps coupled-DCE window. Combined scan: $\gamma_n=\gamma_{\phi}=1/\tau_{\mathrm{dec}}$.}
+\begin{tabular}{llll}
+\hline
+$\tau_{\mathrm{dec}}$ & $\Delta_{\mathrm{live}}$ & $g^{(1)}$ & St. \\
+\hline
+coherent & $\Deltaliveone$ & $\goneps$ & C \\
+$5$\,ps & $\Deltataufive$ & $\gonetaufive$ & C \\
+$20$\,ps & $\Deltatautwenty$ & $\gonetautwenty$ & C \\
+$50$\,ps & $\Deltataufifty$ & $\gonetaufifty$ & C \\
+\hline
+\end{tabular}
+\label{tab:lindblad_1ps}
+\end{table}
+
+Number-only damping at $\tau_{\mathrm{dec}}=5$\,ps gives $\Delta_{\mathrm{live}}=\Deltanumonly$ and $g^{(1)}=\gonumonly$; dephasing-only gives $\Delta_{\mathrm{live}}=\Deltadephonly$ and $g^{(1)}=\godephonly$. Number damping moves $\Delta_{\mathrm{live}}$; dephasing moves $g^{(1)}$. A $20$\,ps window with frozen $V_{\mathrm{ZPF}}$ (no DCE) isolates the rates: coherent $\Delta_{\mathrm{live}}=\Deltafrozencoherent$, $g^{(1)}=\gofrozencoherent$; at $\tau_{\mathrm{dec}}=5$, $20$, $50$\,ps the pairs are $(\Deltafrozentaufive,\ \gofrozentaufive)$, $(\Deltafrozentautwenty,\ \gofrozentautwenty)$, and $(\Deltafrozentaufifty,\ \gofrozentaufifty)$. The $\tau_{\mathrm{dec}}=5$\,ps frozen trajectory reaches $\Deltafrozentaufive$, below $\Delta_c=\Deltac$. That window is unphysical on the static branch and is not combined with $\Delta^\star$ or $\Delta_{\mathrm{cat}}$.

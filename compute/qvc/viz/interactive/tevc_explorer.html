@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEVC Explorer: Topological Excitonic Vacuum Crystal</title>
+<style>
+:root { color-scheme: dark; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+#canvas-container {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0; left: 0;
+}
+#info-panel {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(10, 10, 30, 0.85);
+    border: 1px solid rgba(100, 140, 255, 0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    min-width: 240px;
+    backdrop-filter: blur(8px);
+    z-index: 100;
+}
+#info-panel h1 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #7eb8ff;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+}
+#info-panel h2 {
+    font-size: 10px;
+    font-weight: 400;
+    color: #8090a0;
+    margin-bottom: 12px;
+}
+.param-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 11px;
+}
+.param-row label { color: #a0b0c0; }
+.param-row .value {
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    color: #60d0ff;
+    font-size: 11px;
+}
+#controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(10, 10, 30, 0.85);
+    border: 1px solid rgba(100, 140, 255, 0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    min-width: 220px;
+    backdrop-filter: blur(8px);
+    z-index: 100;
+}
+#controls h3 {
+    font-size: 11px;
+    font-weight: 600;
+    color: #7eb8ff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.control-group {
+    margin-bottom: 10px;
+}
+.control-group label {
+    display: block;
+    font-size: 10px;
+    color: #8090a0;
+    margin-bottom: 3px;
+}
+.control-group input[type="range"] {
+    width: 100%;
+    height: 4px;
+    -webkit-appearance: none;
+    background: #2a3040;
+    border-radius: 2px;
+    outline: none;
+}
+.control-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #60d0ff;
+    cursor: pointer;
+}
+.control-group .slider-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: #60d0ff;
+    float: right;
+    margin-top: -14px;
+}
+.toggle-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    font-size: 10px;
+}
+.toggle-row input[type="checkbox"] {
+    margin-right: 8px;
+    accent-color: #60d0ff;
+}
+.toggle-row label { color: #a0b0c0; cursor: pointer; }
+hr {
+    border: none;
+    border-top: 1px solid rgba(100, 140, 255, 0.15);
+    margin: 10px 0;
+}
+</style>
+</head>
+<body>
+<div id="canvas-container"></div>
+
+<div id="info-panel">
+    <h1>TEVC Explorer</h1>
+    <h2>Topological Excitonic Vacuum Crystal</h2>
+    <div class="param-row"><label>Moire period:</label><span class="value" id="val-lambdaM">12.8 nm</span></div>
+    <div class="param-row"><label>K_M:</label><span class="value" id="val-KM">0.49 nm<sup>-1</sup></span></div>
+    <div class="param-row"><label>Atoms / cell:</label><span class="value" id="val-Natoms">~55,800</span></div>
+    <div class="param-row"><label>Bandwidth W:</label><span class="value" id="val-W">~5 meV</span></div>
+    <div class="param-row"><label>Layers:</label><span class="value" id="val-layers">5</span></div>
+    <div class="param-row"><label>Cavity R:</label><span class="value" id="val-R">50 nm</span></div>
+    <div class="param-row"><label>Cavity r:</label><span class="value" id="val-r">8 nm</span></div>
+</div>
+
+<div id="controls">
+    <h3>Controls</h3>
+    <div class="control-group">
+        <label>Twist angle &theta;</label>
+        <input type="range" id="slider-theta" min="0.5" max="2.0" step="0.01" value="1.1">
+        <span class="slider-value" id="disp-theta">1.10&deg;</span>
+    </div>
+    <div class="control-group">
+        <label>Number of layers N</label>
+        <input type="range" id="slider-N" min="2" max="7" step="1" value="5">
+        <span class="slider-value" id="disp-N">5</span>
+    </div>
+    <hr>
+    <div class="toggle-row"><input type="checkbox" id="tog-layers" checked><label for="tog-layers">Graphene layers</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-moire" checked><label for="tog-moire">Moire overlay</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-cavity" checked><label for="tog-cavity">Casimir cavity</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-layer1" checked><label for="tog-layer1">Layer 1 (bottom)</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-layer2" checked><label for="tog-layer2">Layer 2</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-layer3" checked><label for="tog-layer3">Layer 3</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-layer4" checked><label for="tog-layer4">Layer 4</label></div>
+    <div class="toggle-row"><input type="checkbox" id="tog-layer5" checked><label for="tog-layer5">Layer 5 (top)</label></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function() {
+    'use strict';
+
+    // === Physical constants ===
+    const A_CC = 1.42;         // Angstrom
+    const A_LAT = A_CC * Math.sqrt(3); // 2.46 A
+    const D_INTER = 3.35;     // Angstrom interlayer spacing
+
+    // Scale: 1 unit in scene = 1 nm
+    // So D_INTER in scene units = 0.335 nm (but we'll scale for visibility)
+    const LAYER_SPACING = 4.0; // nm in scene (exaggerated for visibility)
+    const LAYER_RADIUS_CELLS = 5; // show 5 moire cells radius
+
+    // Layer colors
+    const LAYER_COLORS = [
+        0x2060ff, // blue (bottom)
+        0x00cccc, // cyan
+        0x00cc44, // green
+        0xff8800, // orange
+        0xff2222, // red (top)
+        0xaa44ff, // purple (extra layers)
+        0xffcc00, // gold (extra layers)
+    ];
+
+    // === Scene setup ===
+    const container = document.getElementById('canvas-container');
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a2e);
+    scene.fog = new THREE.FogExp2(0x1a1a2e, 0.003);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.set(80, 60, 100);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.target.set(0, 0, 0);
+
+    // === Lighting ===
+    const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    dirLight.position.set(50, 80, 60);
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0x6080ff, 0.3);
+    fillLight.position.set(-30, -20, -40);
+    scene.add(fillLight);
+
+    // === State ===
+    let state = {
+        theta: 1.1,
+        N: 5,
+        showLayers: true,
+        showMoire: true,
+        showCavity: true,
+        layerVisible: [true, true, true, true, true, true, true],
+    };
+
+    // Groups for easy toggle
+    const layerGroup = new THREE.Group();
+    const moireGroup = new THREE.Group();
+    const cavityGroup = new THREE.Group();
+    scene.add(layerGroup);
+    scene.add(moireGroup);
+    scene.add(cavityGroup);
+
+    let layerMeshes = [];
+
+    // === Physics computations ===
+    function moirePeriod(theta_deg) {
+        const theta = theta_deg * Math.PI / 180;
+        return A_LAT / (2 * Math.sin(theta / 2)) / 10; // convert A to nm
+    }
+
+    function moireKM(lambda_nm) {
+        return 4 * Math.PI / (3 * lambda_nm); // 1/nm
+    }
+
+    function atomsPerCell(theta_deg, N) {
+        const lambda_A = A_LAT / (2 * Math.sin(theta_deg * Math.PI / 360));
+        const cells = (lambda_A / A_LAT) ** 2;
+        return Math.round(2 * cells * N);
+    }
+
+    function bandwidth(theta_deg) {
+        // Approximate: W peaks at magic angle, use a simple model
+        const theta_magic = 1.1;
+        const W_magic = 5.0; // meV
+        const ratio = theta_deg / theta_magic;
+        return W_magic / (1 + 2 * (ratio - 1) ** 2);
+    }
+
+    // === Build hexagonal layer ===
+    function createHexagonalLayer(radius_nm, color, opacity) {
+        const shape = new THREE.Shape();
+        const sides = 6;
+        for (let i = 0; i <= sides; i++) {
+            const angle = (i / sides) * Math.PI * 2 + Math.PI / 6;
+            const x = radius_nm * Math.cos(angle);
+            const y = radius_nm * Math.sin(angle);
+            if (i === 0) shape.moveTo(x, y);
+            else shape.lineTo(x, y);
+        }
+
+        const geometry = new THREE.ShapeGeometry(shape);
+        const material = new THREE.MeshPhongMaterial({
+            color: color,
+            transparent: true,
+            opacity: opacity,
+            side: THREE.DoubleSide,
+            shininess: 30,
+        });
+        return new THREE.Mesh(geometry, material);
+    }
+
+    // === Build moire overlay ===
+    function createMoireOverlay(lambda_nm, radius_nm) {
+        const group = new THREE.Group();
+
+        // AA site positions (triangular lattice)
+        const L1 = [lambda_nm, 0];
+        const L2 = [lambda_nm * 0.5, lambda_nm * Math.sqrt(3) / 2];
+        const sites = [];
+
+        const n_max = Math.ceil(radius_nm / lambda_nm) + 1;
+        for (let i = -n_max; i <= n_max; i++) {
+            for (let j = -n_max; j <= n_max; j++) {
+                const x = i * L1[0] + j * L2[0];
+                const y = i * L1[1] + j * L2[1];
+                const r = Math.sqrt(x * x + y * y);
+                if (r < radius_nm * 0.9) {
+                    sites.push([x, y]);
+                }
+            }
+        }
+
+        // AA sites as glowing spheres
+        const sphereGeo = new THREE.SphereGeometry(1.5, 16, 16);
+        const sphereMat = new THREE.MeshPhongMaterial({
+            color: 0xff4444,
+            emissive: 0x441111,
+            transparent: true,
+            opacity: 0.8,
+        });
+        sites.forEach(([x, y]) => {
+            const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+            sphere.position.set(x, y, 0);
+            group.add(sphere);
+        });
+
+        // Domain wall network (lines connecting adjacent AA sites)
+        const lineMaterial = new THREE.LineBasicMaterial({
+            color: 0x445566,
+            transparent: true,
+            opacity: 0.5,
+        });
+        for (let i = 0; i < sites.length; i++) {
+            for (let j = i + 1; j < sites.length; j++) {
+                const dx = sites[i][0] - sites[j][0];
+                const dy = sites[i][1] - sites[j][1];
+                const d = Math.sqrt(dx * dx + dy * dy);
+                if (Math.abs(d - lambda_nm) < lambda_nm * 0.15) {
+                    const lineGeo = new THREE.BufferGeometry().setFromPoints([
+                        new THREE.Vector3(sites[i][0], sites[i][1], 0),
+                        new THREE.Vector3(sites[j][0], sites[j][1], 0),
+                    ]);
+                    group.add(new THREE.Line(lineGeo, lineMaterial));
+                }
+            }
+        }
+
+        return group;
+    }
+
+    // === Build Casimir cavity (torus) ===
+    function createCasimirCavity(R_nm, r_nm) {
+        const geometry = new THREE.TorusGeometry(R_nm, r_nm, 32, 64);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xffcc44,
+            emissive: 0x332200,
+            transparent: true,
+            opacity: 0.45,
+            shininess: 80,
+            specular: 0xffffaa,
+            side: THREE.DoubleSide,
+        });
+        const torus = new THREE.Mesh(geometry, material);
+        // Torus lies in xy-plane by default (around z-axis)
+        // Rotate to lie flat between layers
+        torus.rotation.x = Math.PI / 2;
+        return torus;
+    }
+
+    // === Rebuild scene ===
+    function rebuildScene() {
+        // Clear existing
+        while (layerGroup.children.length > 0) layerGroup.remove(layerGroup.children[0]);
+        while (moireGroup.children.length > 0) moireGroup.remove(moireGroup.children[0]);
+        while (cavityGroup.children.length > 0) cavityGroup.remove(cavityGroup.children[0]);
+        layerMeshes = [];
+
+        const lambda_nm = moirePeriod(state.theta);
+        const radius_nm = LAYER_RADIUS_CELLS * lambda_nm;
+
+        // Build layers
+        const N = state.N;
+        const totalHeight = (N - 1) * LAYER_SPACING;
+
+        for (let i = 0; i < N; i++) {
+            const color = LAYER_COLORS[i % LAYER_COLORS.length];
+            const layer = createHexagonalLayer(radius_nm, color, 0.35);
+            const z = i * LAYER_SPACING - totalHeight / 2;
+            layer.position.z = z;
+            layer.rotation.x = -Math.PI / 2; // lay flat in xz plane
+            layer.position.y = z;
+            layer.position.z = 0;
+            // Actually: layers are in the xz plane, stacked along y
+            layer.position.set(0, z, 0);
+            layer.rotation.x = -Math.PI / 2;
+
+            layerGroup.add(layer);
+            layerMeshes.push(layer);
+        }
+
+        // Moire overlay (on the bottom layer pair)
+        const moireOverlay = createMoireOverlay(lambda_nm, radius_nm);
+        moireOverlay.rotation.x = -Math.PI / 2;
+        moireOverlay.position.y = -totalHeight / 2 + LAYER_SPACING * 0.5;
+        moireGroup.add(moireOverlay);
+
+        // Casimir cavity at center AA site
+        const R_cavity = 5.0; // scaled for visibility (real: 50 nm, but scale with moire)
+        const r_cavity = 1.2; // scaled
+        // Scale cavity to moire cell size
+        const cavityScale = lambda_nm / 13.0; // normalize to 13nm reference
+        const cavity = createCasimirCavity(R_cavity * cavityScale, r_cavity * cavityScale);
+        cavity.position.y = -totalHeight / 2 + LAYER_SPACING * 0.5;
+        cavityGroup.add(cavity);
+
+        // Update visibility
+        updateVisibility();
+        updateInfoPanel();
+    }
+
+    function updateVisibility() {
+        layerGroup.visible = state.showLayers;
+        moireGroup.visible = state.showMoire;
+        cavityGroup.visible = state.showCavity;
+
+        // Individual layer visibility
+        layerMeshes.forEach((mesh, i) => {
+            mesh.visible = state.layerVisible[i] !== false;
+        });
+    }
+
+    function updateInfoPanel() {
+        const lambda_nm = moirePeriod(state.theta);
+        const KM = moireKM(lambda_nm);
+        const Natoms = atomsPerCell(state.theta, state.N);
+        const W = bandwidth(state.theta);
+
+        document.getElementById('val-lambdaM').textContent = lambda_nm.toFixed(1) + ' nm';
+        document.getElementById('val-KM').innerHTML = KM.toFixed(2) + ' nm<sup>-1</sup>';
+        document.getElementById('val-Natoms').textContent = '~' + Natoms.toLocaleString();
+        document.getElementById('val-W').textContent = '~' + W.toFixed(1) + ' meV';
+        document.getElementById('val-layers').textContent = state.N.toString();
+    }
+
+    // === Controls ===
+    const sliderTheta = document.getElementById('slider-theta');
+    const sliderN = document.getElementById('slider-N');
+    const dispTheta = document.getElementById('disp-theta');
+    const dispN = document.getElementById('disp-N');
+
+    sliderTheta.addEventListener('input', function() {
+        state.theta = parseFloat(this.value);
+        dispTheta.innerHTML = state.theta.toFixed(2) + '&deg;';
+        rebuildScene();
+    });
+
+    sliderN.addEventListener('input', function() {
+        state.N = parseInt(this.value);
+        dispN.textContent = state.N.toString();
+        // Update layer toggle visibility
+        for (let i = 0; i < 7; i++) {
+            const tog = document.getElementById('tog-layer' + (i + 1));
+            if (tog) {
+                tog.parentElement.style.display = i < state.N ? '' : 'none';
+            }
+        }
+        rebuildScene();
+    });
+
+    document.getElementById('tog-layers').addEventListener('change', function() {
+        state.showLayers = this.checked;
+        updateVisibility();
+    });
+    document.getElementById('tog-moire').addEventListener('change', function() {
+        state.showMoire = this.checked;
+        updateVisibility();
+    });
+    document.getElementById('tog-cavity').addEventListener('change', function() {
+        state.showCavity = this.checked;
+        updateVisibility();
+    });
+
+    // Individual layer toggles
+    for (let i = 1; i <= 5; i++) {
+        (function(idx) {
+            document.getElementById('tog-layer' + idx).addEventListener('change', function() {
+                state.layerVisible[idx - 1] = this.checked;
+                updateVisibility();
+            });
+        })(i);
+    }
+
+    // === Animation ===
+    let time = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.005;
+
+        controls.update();
+
+        // Gentle rotation of the whole scene if not interacting
+        if (!controls.enabled) {
+            layerGroup.rotation.y = time * 0.1;
+            moireGroup.rotation.y = time * 0.1;
+            cavityGroup.rotation.y = time * 0.1;
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    // === Camera entrance animation ===
+    function animateCamera() {
+        const startPos = { x: 150, y: 100, z: 150 };
+        const endPos = { x: 80, y: 50, z: 80 };
+        const duration = 2000; // ms
+        const startTime = performance.now();
+
+        function step(now) {
+            const t = Math.min((now - startTime) / duration, 1);
+            // Ease out cubic
+            const ease = 1 - Math.pow(1 - t, 3);
+            camera.position.x = startPos.x + (endPos.x - startPos.x) * ease;
+            camera.position.y = startPos.y + (endPos.y - startPos.y) * ease;
+            camera.position.z = startPos.z + (endPos.z - startPos.z) * ease;
+            camera.lookAt(0, 0, 0);
+            if (t < 1) requestAnimationFrame(step);
+        }
+        camera.position.set(startPos.x, startPos.y, startPos.z);
+        requestAnimationFrame(step);
+    }
+
+    // === Resize handling ===
+    window.addEventListener('resize', function() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // === Initialize ===
+    rebuildScene();
+    animateCamera();
+    animate();
+
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,221 @@
+{
+  "summary": {
+    "PASS": 23,
+    "FAIL": 0,
+    "WARN": 1,
+    "INFO": 5
+  },
+  "checks": [
+    {
+      "name": "democratic Spec(G) exact match",
+      "status": "PASS",
+      "detail": "eigs=[-1.0000000000000004, -1.0000000000000002, -1.0, -0.9999999999999993, 3.9999999999999996]",
+      "value": -1.0000000000000004,
+      "expected": -1.0
+    },
+    {
+      "name": "preprint claim lambda_min=-4g0 is FALSE",
+      "status": "PASS",
+      "detail": "Democratic matrix does not have lambda_min=-4g0",
+      "value": -1.0000000000000004,
+      "expected": -4.0
+    },
+    {
+      "name": "Tr(G)=0",
+      "status": "PASS",
+      "detail": "Tr=0.0",
+      "value": null,
+      "expected": null
+    },
+    {
+      "name": "catalyzon dark basis is sum-zero",
+      "status": "PASS",
+      "detail": "row sums=[0.0, 0.0, 1.1102230246251565e-16, 0.0]",
+      "value": null,
+      "expected": null
+    },
+    {
+      "name": "catalyzon dark basis orthonormal (Helmert)",
+      "status": "PASS",
+      "detail": "B B^T \u2248 I",
+      "value": null,
+      "expected": null
+    },
+    {
+      "name": "catalyzon gap shift \u0394_cat = \u0394_ex - g0",
+      "status": "PASS",
+      "detail": "Identity from \u03bb_min",
+      "value": -0.4,
+      "expected": -0.4
+    },
+    {
+      "name": "supplemental lambda_min=-5g0 != democratic",
+      "status": "PASS",
+      "detail": "Octahedral adjacency claim needs a different matrix; democratic is -g0",
+      "value": -1.0000000000000004,
+      "expected": -5.0
+    },
+    {
+      "name": "CS[A_1] = 1/N",
+      "status": "PASS",
+      "detail": "Chern-Simons of fundamental flat connection",
+      "value": 0.2,
+      "expected": 0.2
+    },
+    {
+      "name": "linking self-number = 1/N",
+      "status": "PASS",
+      "detail": "Rational linking form on H1=Z_N",
+      "value": 0.2,
+      "expected": 0.2
+    },
+    {
+      "name": "Q_H identification = 1/N",
+      "status": "PASS",
+      "detail": "Physical Hall fractionalization target",
+      "value": 0.2,
+      "expected": 0.2
+    },
+    {
+      "name": "anyonic theta = pi/N",
+      "status": "INFO",
+      "detail": "Programmatic prediction from same linking form",
+      "value": 0.6283185307179586,
+      "expected": 0.6283185307179586
+    },
+    {
+      "name": "H2(L(N,1))=0 \u2014 no fundamental 2-cycle",
+      "status": "PASS",
+      "detail": "Preprint 2-cycle fractionalization proof path is INVALID; use CS/linking on H1 instead.",
+      "value": "0",
+      "expected": "0"
+    },
+    {
+      "name": "fold \u03b4_c recovers Corrections ~0.182",
+      "status": "PASS",
+      "detail": "ell=-2.790757",
+      "value": 0.182,
+      "expected": 0.182
+    },
+    {
+      "name": "fold \u03b1_c = \u03b4_c",
+      "status": "PASS",
+      "detail": "Saddle-node condition",
+      "value": 0.182,
+      "expected": 0.182
+    },
+    {
+      "name": "fold has FINITE Delta_c (not BKT vanishing)",
+      "status": "PASS",
+      "detail": "Without vortex RG, transition is saddle-node",
+      "value": 0.10919999999999999,
+      "expected": 0.109
+    },
+    {
+      "name": "two real branches exist below alpha_c",
+      "status": "PASS",
+      "detail": "max sign-change pairs=2",
+      "value": 2,
+      "expected": 2
+    },
+    {
+      "name": "tree-level log coefficient ln(1/2)+\u03b3_E",
+      "status": "PASS",
+      "detail": "Negative \u21d2 vacuum amplitude suppresses gap",
+      "value": -0.11593151565841242,
+      "expected": -0.11593
+    },
+    {
+      "name": "preprint formula does NOT yield 0.244 meV on stated (r,R)",
+      "status": "PASS",
+      "detail": "FAIL_CLAIM: preprint 0.244 meV is NOT reproduced by old Casimir formula on stated preprint geometry",
+      "value": 2.5270362279386474,
+      "expected": 0.244
+    },
+    {
+      "name": "Bessel F(x) at preprint aspect ratio",
+      "status": "INFO",
+      "detail": "x=1.0053",
+      "value": 0.5806751779874608,
+      "expected": 0.596
+    },
+    {
+      "name": "corrected prefactor on preprint geometry (no R/r)",
+      "status": "INFO",
+      "detail": "Shows sensitivity to formula choice",
+      "value": 0.12870089825559464,
+      "expected": null
+    },
+    {
+      "name": "corrected self-energy on Corrections geometry (package units)",
+      "status": "INFO",
+      "detail": "F(0.157)=8.097; provisional \u2014 not a paper meV claim",
+      "value": 42.85874528602627,
+      "expected": null
+    },
+    {
+      "name": "Corrections SI self-energy order ~0.25 meV",
+      "status": "WARN",
+      "detail": "F(0.157)=8.097; sensitive to K0 accuracy / c_s",
+      "value": 8.467411287782342,
+      "expected": 0.256
+    },
+    {
+      "name": "Jacobi \u03b8\u2083 alternating does NOT equal F\u22480.596",
+      "status": "PASS",
+      "detail": "theta=-2.415966e-16 at alpha_c=0.0442",
+      "value": -2.4159660232755273e-16,
+      "expected": 0.596
+    },
+    {
+      "name": "provisional vacuum lockfile written",
+      "status": "PASS",
+      "detail": "qvc/locks/provisional_corrections_self_energy.json",
+      "value": "provisional_corrections_self_energy.json",
+      "expected": "provisional_corrections_self_energy.json"
+    },
+    {
+      "name": "single-mode A_ZPF at bare gap is negligible",
+      "status": "PASS",
+      "detail": "Matches Corrections iteration-0 exponential suppression",
+      "value": 6.411531954925066e-26,
+      "expected": null
+    },
+    {
+      "name": "\u221a14 enhancement ratio",
+      "status": "PASS",
+      "detail": "Quadrature multiplicity factor",
+      "value": 3.7416573867739418,
+      "expected": 3.7416573867739413
+    },
+    {
+      "name": "\u03b7_ret = 2 when \u03be = a_H = \u0127c_s/\u0394\u2080",
+      "status": "PASS",
+      "detail": "Causal-propagator algebra identity",
+      "value": 2.0,
+      "expected": 2.0
+    },
+    {
+      "name": "\u03b7_ret = 2 \u0394\u2080 \u03be / (\u0127 c_s) for \u03be=\u03bb_M",
+      "status": "PASS",
+      "detail": "General retardation factor",
+      "value": 0.22285714285714284,
+      "expected": null
+    },
+    {
+      "name": "acoustic R_WS matching helper (not duality proof)",
+      "status": "INFO",
+      "detail": "MATCHING_NOT_PROOF: invert T_H=T* for R_WS at T*=1 K",
+      "value": 0.25856829897854017,
+      "expected": null
+    }
+  ],
+  "canonical_notes": {
+    "lambda_min": "Use -g0 (mult N-1), not -4g0 or -5g0",
+    "Q_H": "Use CS/linking; never H2-cycle language",
+    "gap_transition": "Fold unless vortex RG is derived",
+    "vacuum": "Freeze one (formula, geometry) before quoting meV; see locks/",
+    "retardation": "\u03b7_ret=2\u03940 \u03be/(\u0127 c_s) \u2014 algebra lock",
+    "mode_enhancement": "A_eff=\u221an A_single \u2014 quadrature lock"
+  }
+}

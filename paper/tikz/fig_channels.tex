@@ -1,0 +1,26 @@
+% Parallel channels
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  ch/.style={draw=#1, line width=0.9pt, rounded corners=2pt, fill=#1!10,
+    align=center, inner sep=6pt, text width=3.7cm, minimum height=2.35cm},
+  arr/.style={-{Latex}, thick, gray!60!black}
+]
+\node[ch=oiBlue] (f) {\textbf{Fold (static)}\\[2pt]
+$\alpha=\lambda_\alpha E_{\mathrm{vac}}/\Delta_0$\\
+branch iff $\lambda_\alpha\le\lfold$\\
+at $\lambda^\star$: $\Delta^\star=\Deltastar$\\[1pt]
+{\scriptsize max static \redmax}};
+\node[ch=oiOrange, right=0.7cm of f] (c) {\textbf{Catalyzon (Spec $G$)}\\[2pt]
+$\Delta_{\mathrm{cat}}=\Delta_{\mathrm{ex}}-g_0$\\
+$g_0=\lambda^\star E_{\mathrm{vac}}=\gzerostar$\\
+$\lambda_{\min}=-g_0$ (mult.\ $N-1$)\\[1pt]
+{\scriptsize $\Delta_{\mathrm{cat}}\approx 0.502$\,meV}};
+\node[ch=oiGreen, right=0.7cm of c] (t) {\textbf{GPE + DCE}\\[2pt]
+live $\Delta[\psi]$ from the field\\
+$\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$\\[1pt]
+{\scriptsize $g^{(1)}=\goneps$}};
+\node[above=0.35cm of c, font=\sffamily\small, align=center]
+  {three \emph{parallel} channels \quad---\quad unitarity $\lambda_\alpha+\lambda_G\le 1$};
+\draw[arr] (f.east) -- (c.west);
+\draw[arr] (c.east) -- (t.west);
+\end{tikzpicture}

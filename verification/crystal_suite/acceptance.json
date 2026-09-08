@@ -1,0 +1,11 @@
+{
+  "S0_locks_match_phase_two": true,
+  "S2_fields": true,
+  "S6_hall_step_matches_lock": true,
+  "S6_preimage_linking_is_1": true,
+  "S3_lambda_min_is_minus_g0": true,
+  "S4_fold_alpha_c": true,
+  "S5_norm_conserved": true,
+  "S7_TA_is_not_graviton": true,
+  "all_pass": true
+}

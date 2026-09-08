@@ -1,0 +1,15 @@
+{
+  "theta_deg": 1.1,
+  "n_layers": 5,
+  "lambda_M_nm": 12.8110754462183,
+  "n_atoms": 26450,
+  "layer": "L1",
+  "provenance": "magic-angle TEVC from qvc.materials.moire.build_tevc_stack (unrelaxed, analytic \u00b1\u03b8/2 alternating stack). TEVC_structures 13\u201322\u00b0 CIFs are proxies.",
+  "files": {
+    "cif": "/Users/mineralhoiland/Code/QVCCompute/output/workbench_exports/TEVC.cif",
+    "poscar": "/Users/mineralhoiland/Code/QVCCompute/output/workbench_exports/POSCAR",
+    "lammps": "/Users/mineralhoiland/Code/QVCCompute/output/workbench_exports/tevc.data",
+    "fragment_cif": "/Users/mineralhoiland/Code/QVCCompute/output/workbench_exports/TEVC_fragment.cif"
+  },
+  "fragment_n_atoms": 2440
+}

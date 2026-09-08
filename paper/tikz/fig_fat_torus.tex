@@ -1,0 +1,21 @@
+% Fat-torus Casimir cavity (schematic)
+\tdplotsetmaincoords{70}{115}
+\begin{tikzpicture}[tdplot_main_coords, scale=1.15]
+\pgfmathsetmacro{\R}{2.15}
+\pgfmathsetmacro{\rr}{0.55}
+% torus meridians
+\foreach \t in {0,20,...,340}{
+  \draw[oiBlue!35, thin]
+    plot[domain=0:360, samples=36, variable=\u]
+    ({\R*cos(\t)+\rr*cos(\t)*cos(\u)}, {\R*sin(\t)+\rr*sin(\t)*cos(\u)}, {\rr*sin(\u)});
+}
+\draw[oiVerm, very thick] (0,0,0) circle (\R);
+\draw[oiGreen, thick] ({\R},0,0) circle ({\rr});
+\draw[<->, oiVerm, thick] (0,0,-1.55) -- (\R,0,-1.55)
+  node[midway, below, font=\small] {$R=50$\,nm};
+\draw[<->, oiGreen, thick] ({\R},0,0) -- ({\R+\rr},0,0)
+  node[midway, above, font=\scriptsize, xshift=4pt] {$r=8$\,nm};
+\node[font=\small, oiBlue] at (0,0,1.35) {$x=2\pi r/R\approx 1.005$};
+\node[font=\small] at (0,-2.9,0) {frozen working geometry (Option A*)};
+\node[font=\small, oiVerm] at (2.8,0.2,1.0) {$Q_H=1/N$};
+\end{tikzpicture}

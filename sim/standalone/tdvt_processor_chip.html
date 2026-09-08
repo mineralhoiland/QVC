@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDVT processor — acoustic die</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Outfit:wght@360;450;560&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #12110f;
+    --stage: #0c0b0a;
+    --panel: #181614;
+    --line: rgba(232, 224, 210, .1);
+    --ink: #e8e0d2;
+    --mute: #8f877a;
+    --copper: #c08a4e;
+    --sage: #8aa37b;
+    --clay: #d7c4a3;
+    --warn: #c46a4a;
+    --font: Outfit, system-ui, sans-serif;
+    --serif: Fraunces, Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--ink); font-family: var(--font); overflow: hidden; }
+  body {
+    display: grid;
+    grid-template-rows: 58px 1fr 178px;
+  }
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.1rem; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { display: flex; align-items: baseline; gap: .75rem; }
+  .wordmark h1 { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; letter-spacing: -.02em; }
+  .wordmark h1 span { color: var(--copper); }
+  .wordmark small { color: var(--mute); font-size: .72rem; font-weight: 360; }
+  .views { display: flex; gap: .15rem; }
+  .views button, header .ghost {
+    background: none; border: 0; color: var(--mute); cursor: pointer;
+    font: 450 .8rem var(--font); padding: .35rem .65rem; border-radius: 999px;
+  }
+  .views button.on, header .ghost.on { color: var(--bg); background: var(--clay); }
+  .views button:hover, header .ghost:hover { color: var(--ink); }
+  .right { display: flex; align-items: center; gap: .4rem; }
+  main { display: grid; grid-template-columns: 300px 1fr; min-height: 0; }
+  @media (max-width: 980px) { main { grid-template-columns: 1fr; } aside { display: none; } }
+  aside {
+    border-right: 1px solid var(--line); background: var(--panel);
+    overflow: auto; padding: 1rem 1.05rem 1.4rem;
+  }
+  aside h2 { font-family: var(--serif); font-size: 1.2rem; font-weight: 500; margin-bottom: .35rem; }
+  aside .note { color: var(--mute); font-size: .78rem; line-height: 1.45; margin-bottom: .9rem; }
+  .eq {
+    font-size: .68rem; color: var(--clay); background: #12110f;
+    padding: .55rem .6rem; border-radius: 8px; line-height: 1.45; margin-bottom: .85rem;
+    white-space: pre-wrap; font-variant-numeric: tabular-nums;
+  }
+  label.row {
+    display: flex; justify-content: space-between; font-size: .74rem; color: var(--mute); margin-top: .55rem;
+  }
+  label.row b { color: var(--clay); font-weight: 450; font-variant-numeric: tabular-nums; }
+  input[type=range] { width: 100%; accent-color: var(--copper); }
+  .acts { display: flex; flex-wrap: wrap; gap: .35rem; margin: .85rem 0 .4rem; }
+  .acts button, select {
+    background: #12110f; color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: .32rem .55rem; cursor: pointer; font: 450 .75rem var(--font);
+  }
+  .acts button:hover { border-color: var(--copper); color: var(--copper); }
+  .acts button.quiet { color: var(--warn); }
+  select { width: 100%; margin-bottom: .5rem; }
+  .read { margin-top: .7rem; }
+  .kv { display: flex; justify-content: space-between; font-size: .74rem; padding: .18rem 0; border-bottom: 1px solid var(--line); }
+  .kv span:last-child { font-variant-numeric: tabular-nums; color: var(--sage); }
+  .kv.bad span:last-child { color: var(--warn); }
+  .stage { position: relative; background: radial-gradient(ellipse at 50% 18%, #1d1b17 0%, var(--stage) 62%); }
+  canvas#gpu { width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas#gpu:active { cursor: grabbing; }
+  .hint {
+    position: absolute; left: 1rem; bottom: 1rem; color: var(--mute); font-size: .72rem;
+    pointer-events: none;
+  }
+  .arm {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(12,11,10,.55); z-index: 4;
+  }
+  .arm button {
+    font-family: var(--serif); font-size: 1.05rem; padding: .7rem 1.2rem;
+    border-radius: 999px; border: 1px solid var(--copper); background: var(--ink); color: var(--bg);
+    cursor: pointer;
+  }
+  .arm.hidden { display: none; }
+  #err {
+    display: none; position: absolute; left: 1rem; right: 1rem; top: 1rem;
+    background: #2a1814; color: #f0c8bc; padding: .6rem .7rem; border-radius: 8px; font-size: .75rem;
+  }
+  .deck {
+    display: grid; grid-template-columns: 1.4fr 1fr 220px;
+    border-top: 1px solid var(--line); background: #141210; min-height: 0;
+  }
+  .deck section { padding: .55rem .75rem; min-width: 0; }
+  .deck h3 { font-size: .68rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); font-weight: 450; margin-bottom: .3rem; }
+  canvas#spec, canvas#wave { width: 100%; height: 118px; display: block; background: #0c0b0a; border-radius: 6px; }
+  .meters { display: flex; gap: 8px; height: 118px; align-items: flex-end; }
+  .meters .col { flex: 1; display: flex; flex-direction: column; justify-content: flex-end; gap: 4px; }
+  .meters .bar { background: var(--copper); border-radius: 3px 3px 0 0; width: 100%; }
+  .meters .bar.dark { background: var(--sage); }
+  .meters .nm { font-size: .62rem; color: var(--mute); text-align: center; }
+  .map { color: var(--mute); font-size: .7rem; line-height: 1.45; }
+  .map b { color: var(--clay); font-weight: 450; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wordmark">
+    <h1>Acoustic <span>die</span></h1>
+    <small>TDVT processor · L1/L2 circuit objects · open this file directly</small>
+  </div>
+  <nav class="views" id="views"></nav>
+  <div class="right">
+    <button class="ghost" id="btnMute">Mute</button>
+    <button class="ghost" id="btnPause">Pause</button>
+  </div>
+</header>
+<main>
+  <aside>
+    <h2 id="title">Die</h2>
+    <p class="note" id="note"></p>
+    <div class="eq" id="eq"></div>
+    <select id="preset"></select>
+    <div class="acts">
+      <button id="btnDark">Write dark</button>
+      <button id="btnClock">Clock</button>
+      <button id="btnShuttle">Shuttle</button>
+      <button id="btnPump">Pump DCE</button>
+      <button id="btnBraid">Braid θ</button>
+      <button id="btnDump" class="quiet">Non-adiabatic</button>
+    </div>
+    <div id="sliders"></div>
+    <div class="read" id="read"></div>
+  </aside>
+  <section class="stage">
+    <canvas id="gpu"></canvas>
+    <div id="err"></div>
+    <div class="hint" id="hint">Drag to orbit · scroll to zoom</div>
+    <div class="arm" id="arm">
+      <button id="btnArm">Enable listening</button>
+    </div>
+  </section>
+</main>
+<div class="deck">
+  <section>
+    <h3>Spectrum — live FFT of the analog mix</h3>
+    <canvas id="spec" width="900" height="160"></canvas>
+  </section>
+  <section>
+    <h3>Waveform</h3>
+    <canvas id="wave" width="640" height="160"></canvas>
+  </section>
+  <section>
+    <h3>Mode levels</h3>
+    <div class="meters" id="meters"></div>
+  </section>
+</div>
+<script src="vendor-umd/three.min.js"></script>
+<script src="vendor-umd/OrbitControls.js"></script>
+<script>
+(function () {
+  "use strict";
+  function showErr(m) {
+    var el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = String(m && m.stack ? m.stack : m);
+  }
+  window.onerror = function (m) { showErr(m); };
+  if (typeof THREE === "undefined") {
+    showErr("Local Three.js did not load. Keep vendor-umd/three.min.js next to this HTML.");
+    return;
+  }
+
+  var LOCK = {
+    Evac: 0.1287, Delta0: 0.600, Deltastar: 0.2324, Deltac: 0.109,
+    lfold: 0.8475, lstar: 0.7628, g0: 0.0982, ell: -2.7958, alphac: 0.1818,
+    AresAc: 0.9117, aH: 8, Tstar: 118.7,
+    e: 1.602176634e-19, h: 6.62607015e-34
+  };
+  var HBAR = 0.658211951;
+
+  var VIEWS = [
+    { id: "die", name: "Die",
+      note: "Foundry stack: pentamer register, He-FIB SSH chain, cavity SQUID, WC helix, bolometer, flash. FeGe racetrack stays dark until the module is on. Nothing here is spacetime ontology.",
+      eq: "G = g₀(J − I)\nλ_max = (N−1)g₀   λ_min = −g₀  (× N−1)\nθ = π/(2N) abelian · not SU(2)_k" },
+    { id: "reg", name: "Register",
+      note: "Five-island Helmert register (always 5 pads). Dark subspace is the memory. Bright all-ones mode is the antenna — and the loudest partial (4 f₀) in the analog mix. CS N on the slider is only for θ and the Hall step.",
+      eq: "iħ ψ̇ = Gψ\n⟨1|ψ_dark⟩ = 0\nf_bright : f_dark = 4 : 1  at N = 5" },
+    { id: "ssh", name: "Shuttle",
+      note: "Staggered Josephson SSH. The soliton is a mid-gap grain that pans across the stereo field. A non-adiabatic dump is the audible falsifier: the grain collapses into broadband.",
+      eq: "ξ = a / ln(t₂/t₁)   match a ≃ a_H ∼ 8 nm\nθ = π/(2N) independent of duration if adiabatic" },
+    { id: "gate", name: "Gate",
+      note: "Vacuumronic SQUID. DCE amplitude saturates at A*, heard as a limited subharmonic rather than runaway gain. Optional h-BN park is a slow formant shift.",
+      eq: "dA/dt = Λ(Δ) A ℒ(δω) − loss\nA*/A_c = 0.9117 resonant · catalyst, not a source" },
+    { id: "mem", name: "Memory",
+      note: "vdW flash now. Hopfion occupancy only with FeGe. Two linked partials beat when a hopfion bit is present — linking as roughness, not as gravity.",
+      eq: "cache 8 ns / 30 mV\nδσ_xy = e²/(2Nh)  TEVC Stage 5 only" },
+    { id: "clk", name: "Clock / I/O",
+      note: "Clock is the overlap of ringdown, adiabatic window, and optional breathing. Bolometer band sits next to E_vac/h ≈ 31.1 GHz — a packaging coincidence, not a detection.",
+      eq: "E_vac/h ≈ 31.12 GHz\nH-CLK1 ∩ H-BOL1 ∩ H-FLUX1  Φ₀ click" }
+  ];
+
+  var P = { tab: 0, speed: 1, running: true, mute: false, N: 5, g0: LOCK.g0, lam: LOCK.lstar,
+    t2t1: 2, pitch: 8, pump: 0.15, fe: 0, fege: 0, flux: 0.4, TmK: 12, stage: 0, mix: 0.55 };
+  var S = { t: 0, clock: 0, shuttle: 0, shuttling: false, soliton: 3, theta: 0, braid: 0, braiding: false,
+    fidelity: 1, A: 0.12, Delta: LOCK.Deltastar, dumped: false, flash: 0, hopBits: [0, 1, 0, 1, 1],
+    hopPos: 0, fluxon: 0, cycles: 0 };
+  var psiRe = [1, 0, 0, 0, 0], psiIm = [0, 0, 0, 0, 0];
+
+  var PRESETS = {
+    "Stage 0 pentamer": { tab: 1, stage: 0, fege: 0, pump: 0.1, lam: LOCK.lstar },
+    "He-FIB shuttle": { tab: 2, stage: 1, t2t1: 2.2, pitch: 8 },
+    "Cavity FET": { tab: 3, stage: 3, pump: 0.9, fe: 0.2 },
+    "DCE saturate": { tab: 3, pump: 1.05, A: 0.05 },
+    "Plaquette braid": { tab: 2, stage: 2, N: 5 },
+    "FeGe racetrack": { tab: 4, stage: 4, fege: 1 },
+    "Fold edge": { tab: 3, lam: 0.84, pump: 0.7 },
+    "Stage 5 MATBG": { tab: 0, stage: 5, fege: 1, pump: 0.55, TmK: 8 }
+  };
+
+  function resizePsi() {
+    var nReg = 5;
+    psiRe = Array(nReg).fill(0);
+    psiIm = Array(nReg).fill(0);
+    psiRe[0] = 1 / Math.sqrt(2);
+    psiRe[1] = -1 / Math.sqrt(2);
+  }
+  function occ() {
+    var N = psiRe.length, sr = 0, si = 0, arr = [];
+    for (var i = 0; i < N; i++) {
+      arr[i] = psiRe[i] * psiRe[i] + psiIm[i] * psiIm[i];
+      sr += psiRe[i]; si += psiIm[i];
+    }
+    var pB = (sr * sr + si * si) / N;
+    return { arr: arr, pBright: pB, pDark: Math.max(0, 1 - pB) };
+  }
+  function evolve(dtps) {
+    var N = psiRe.length, g = P.g0, wB = (N - 1) * g / HBAR, wD = -g / HBAR;
+    var sr = 0, si = 0, i;
+    for (i = 0; i < N; i++) { sr += psiRe[i]; si += psiIm[i]; }
+    var br = sr / N, bi = si / N;
+    var cB = Math.cos(-wB * dtps), sB = Math.sin(-wB * dtps);
+    var cD = Math.cos(-wD * dtps), sD = Math.sin(-wD * dtps);
+    var nbr = br * cB - bi * sB, nbi = br * sB + bi * cB;
+    for (i = 0; i < N; i++) {
+      var dr = psiRe[i] - br, di = psiIm[i] - bi;
+      psiRe[i] = nbr + dr * cD - di * sD;
+      psiIm[i] = nbi + dr * sD + di * cD;
+    }
+  }
+  function foldDelta(alpha) {
+    if (alpha <= 0) return LOCK.Delta0;
+    if (alpha >= LOCK.alphac - 1e-6) return LOCK.Deltac;
+    var d = 0.85, k, f, df;
+    for (k = 0; k < 40; k++) {
+      f = d - 1 - alpha * (Math.log(Math.max(d, 1e-8)) + LOCK.ell);
+      df = 1 - alpha / Math.max(d, 1e-8);
+      d = Math.max(0.05, d - f / df);
+    }
+    return d * LOCK.Delta0;
+  }
+  function alphaOf(lam) { return lam * LOCK.Evac / LOCK.Delta0; }
+  function sshXi() { return P.pitch / Math.log(Math.max(P.t2t1, 1.001)); }
+  function hallS() { return (LOCK.e * LOCK.e) / (2 * P.N * LOCK.h); }
+  function evacGHz() { return LOCK.Evac * 1.602176634e-22 / LOCK.h / 1e9; }
+  function specG() {
+    var nReg = 5, i, out = [];
+    for (i = 0; i < nReg - 1; i++) out.push(-P.g0);
+    out.push((nReg - 1) * P.g0);
+    return out;
+  }
+
+  /* —— audio: Spec(G) as partials, soliton as grain, DCE as limited AM —— */
+  var audio = {
+    ctx: null, master: null, analyser: null, limiter: null, armed: false,
+    bright: null, dark: [], gBright: null, gDark: [],
+    ssh: null, sshF: null, sshP: null, sshG: null,
+    sub: null, subG: null, lpf: null, click: null, hopL: null, hopR: null, hopG: null
+  };
+  function mkNoise(ctx) {
+    var n = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
+    var d = n.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    var src = ctx.createBufferSource(); src.buffer = n; src.loop = true; src.start();
+    return src;
+  }
+  function armAudio() {
+    if (audio.armed) return;
+    try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.resume) ctx.resume();
+    audio.ctx = ctx;
+    audio.master = ctx.createGain(); audio.master.gain.value = 0.22;
+    audio.limiter = ctx.createDynamicsCompressor();
+    audio.limiter.threshold.value = -18; audio.limiter.ratio.value = 12;
+    audio.lpf = ctx.createBiquadFilter(); audio.lpf.type = "lowpass"; audio.lpf.frequency.value = 4200;
+    audio.analyser = ctx.createAnalyser(); audio.analyser.fftSize = 2048;
+    audio.master.connect(audio.lpf); audio.lpf.connect(audio.limiter);
+    audio.limiter.connect(audio.analyser); audio.analyser.connect(ctx.destination);
+
+    audio.gBright = ctx.createGain(); audio.gBright.gain.value = 0;
+    audio.bright = ctx.createOscillator(); audio.bright.type = "sine";
+    audio.bright.connect(audio.gBright); audio.gBright.connect(audio.master); audio.bright.start();
+
+    audio.dark = []; audio.gDark = [];
+    for (var k = 0; k < 4; k++) {
+      var o = ctx.createOscillator(); o.type = "sine";
+      var g = ctx.createGain(); g.gain.value = 0;
+      var panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null;
+      if (panner) { panner.pan.value = -0.7 + k * 0.45; o.connect(g); g.connect(panner); panner.connect(audio.master); }
+      else { o.connect(g); g.connect(audio.master); }
+      audio.dark.push(o); audio.gDark.push(g); o.start();
+    }
+    audio.sshG = ctx.createGain(); audio.sshG.gain.value = 0;
+    audio.sshF = ctx.createBiquadFilter(); audio.sshF.type = "bandpass"; audio.sshF.Q.value = 6;
+    audio.sshP = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+    audio.ssh = mkNoise(ctx); audio.ssh.connect(audio.sshF); audio.sshF.connect(audio.sshP);
+    audio.sshP.connect(audio.sshG); audio.sshG.connect(audio.master);
+
+    audio.subG = ctx.createGain(); audio.subG.gain.value = 0;
+    audio.sub = ctx.createOscillator(); audio.sub.type = "sine";
+    audio.sub.connect(audio.subG); audio.subG.connect(audio.master); audio.sub.start();
+
+    audio.hopG = ctx.createGain(); audio.hopG.gain.value = 0;
+    audio.hopL = ctx.createOscillator(); audio.hopR = ctx.createOscillator();
+    audio.hopL.type = "triangle"; audio.hopR.type = "triangle";
+    var mL = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+    var mR = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+    if (mL.pan) mL.pan.value = -0.6;
+    if (mR.pan) mR.pan.value = 0.6;
+    audio.hopL.connect(mL); audio.hopR.connect(mR);
+    mL.connect(audio.hopG); mR.connect(audio.hopG); audio.hopG.connect(audio.master);
+    audio.hopL.start(); audio.hopR.start();
+
+    audio.click = ctx.createBuffer(1, 256, ctx.sampleRate);
+    var c = audio.click.getChannelData(0);
+    for (var j = 0; j < 256; j++) c[j] = (1 - j / 256) * (j % 2 ? 1 : -1) * 0.4;
+
+    audio.armed = true;
+    document.getElementById("arm").classList.add("hidden");
+    } catch (err) {
+      showErr("Audio graph failed: " + (err && err.message ? err.message : err));
+    }
+  }
+  function pulseClick(gain) {
+    if (!audio.armed || P.mute) return;
+    var s = audio.ctx.createBufferSource(); s.buffer = audio.click;
+    var g = audio.ctx.createGain(); g.gain.value = gain || 0.4;
+    s.connect(g); g.connect(audio.master); s.start();
+  }
+  function setAudio() {
+    if (!audio.armed) return;
+    var o = occ();
+    var f0 = 220 * (P.g0 / LOCK.g0);
+    var t = audio.ctx.currentTime;
+    var m = P.mute ? 0 : P.mix;
+    audio.master.gain.setTargetAtTime(P.mute ? 0 : 0.22, t, 0.05);
+    audio.bright.frequency.setTargetAtTime(f0 * 4, t, 0.04);
+    audio.gBright.gain.setTargetAtTime(m * 0.18 * (0.15 + o.pBright), t, 0.05);
+    for (var k = 0; k < audio.dark.length; k++) {
+      audio.dark[k].frequency.setTargetAtTime(f0 * (1 + 0.004 * k), t, 0.04);
+      audio.gDark[k].gain.setTargetAtTime(m * 0.07 * (0.2 + o.pDark), t, 0.05);
+    }
+    audio.sshF.frequency.setTargetAtTime(900 + 1400 * S.fidelity, t, 0.08);
+    if (audio.sshP.pan) audio.sshP.pan.setTargetAtTime(-1 + 2 * (S.soliton / 15), t, 0.08);
+    audio.sshG.gain.setTargetAtTime(m * 0.12 * S.fidelity * (S.shuttling || S.dumped ? 1 : 0.25), t, 0.08);
+    audio.sub.frequency.setTargetAtTime(f0 / P.N, t, 0.06);
+    audio.subG.gain.setTargetAtTime(m * 0.16 * Math.min(S.A, LOCK.AresAc), t, 0.08);
+    audio.lpf.frequency.setTargetAtTime(380 + 7600 * (S.Delta / LOCK.Delta0), t, 0.1);
+    var beat = (S.theta / Math.PI) * 6;
+    audio.hopL.frequency.setTargetAtTime(330, t, 0.08);
+    audio.hopR.frequency.setTargetAtTime(330 + beat + (P.fege ? 3.5 : 0), t, 0.08);
+    audio.hopG.gain.setTargetAtTime(m * (P.fege ? 0.06 : 0.015), t, 0.1);
+    audio.limiter.threshold.setTargetAtTime(S.A > 0.85 ? -24 : -16, t, 0.1);
+  }
+
+  function logAct(msg) { document.getElementById("hint").textContent = msg; }
+  function writeDark() { resizePsi(); S.cycles++; pulseClick(0.25); logAct("Dark register written · sum-zero Helmert"); }
+  function clockEdge() { S.clock = 1; S.flash = 1; S.cycles++; pulseClick(0.55); logAct("Clock · ringdown ∩ adiabatic"); }
+  function startShuttle() { S.shuttling = true; S.dumped = false; S.fidelity = 1; logAct("Adiabatic shuttle"); }
+  function startBraid() { S.braiding = true; S.braid = 0; logAct("Braid · θ = π/(2N) if adiabatic"); }
+  function dump() { S.dumped = true; S.shuttling = false; S.fidelity = 0.12; pulseClick(0.8); logAct("Non-adiabatic dump · falsifier"); }
+
+  var views = document.getElementById("views");
+  VIEWS.forEach(function (v, i) {
+    var b = document.createElement("button");
+    b.textContent = v.name; if (i === 0) b.className = "on";
+    b.onclick = function () { setView(i); };
+    views.appendChild(b);
+  });
+  var preset = document.getElementById("preset");
+  Object.keys(PRESETS).forEach(function (n) {
+    var o = document.createElement("option"); o.value = n; o.textContent = n; preset.appendChild(o);
+  });
+  function fmt(k, v) {
+    if (k === "N" || k === "stage" || k === "fege") return String(v | 0);
+    if (k === "TmK") return Number(v).toFixed(0) + " mK";
+    if (k === "pitch") return Number(v).toFixed(1) + " nm";
+    return Number(v).toFixed(2);
+  }
+  function sliders() {
+    var keys = [
+      ["speed", "Time", 0, 2.4, 0.02], ["mix", "Listen level", 0, 1, 0.01],
+      ["N", "CS N", 3, 9, 2], ["g0", "g₀ meV", 0.03, 0.21, 0.002],
+      ["lam", "λ", 0.15, 0.95, 0.005], ["t2t1", "t₂/t₁", 1.2, 4, 0.05],
+      ["pitch", "Pitch a", 3, 18, 0.5], ["pump", "DCE pump", 0, 1.2, 0.01],
+      ["fe", "h-BN E", 0, 0.5, 0.01], ["fege", "FeGe", 0, 1, 1],
+      ["flux", "Fluxon", 0, 1.4, 0.02], ["TmK", "T", 6, 280, 1],
+      ["stage", "Stage", 0, 5, 1]
+    ];
+    document.getElementById("sliders").innerHTML = keys.map(function (x) {
+      return '<label class="row">' + x[1] + "<b id='v_" + x[0] + "'>" + fmt(x[0], P[x[0]]) + "</b></label>" +
+        '<input type="range" min="' + x[2] + '" max="' + x[3] + '" step="' + x[4] + '" value="' + P[x[0]] + '" data-k="' + x[0] + '">';
+    }).join("");
+  }
+  function setView(i) {
+    P.tab = i;
+    [].forEach.call(views.children, function (el, j) { el.classList.toggle("on", j === i); });
+    var v = VIEWS[i];
+    document.getElementById("title").textContent = v.name;
+    document.getElementById("note").textContent = v.note;
+    document.getElementById("eq").textContent = v.eq;
+    look();
+  }
+  sliders();
+  document.getElementById("sliders").addEventListener("input", function (e) {
+    var k = e.target.getAttribute("data-k"); if (!k) return;
+    P[k] = Number(e.target.value);
+    document.getElementById("v_" + k).textContent = fmt(k, P[k]);
+    if (k === "N") P.N = Math.max(3, P.N | 0);
+  });
+  preset.onchange = function () {
+    Object.assign(P, PRESETS[preset.value]);
+    if (PRESETS[preset.value].A != null) S.A = PRESETS[preset.value].A;
+    sliders(); setView(P.tab); logAct("Preset · " + preset.value);
+  };
+  document.getElementById("btnDark").onclick = writeDark;
+  document.getElementById("btnClock").onclick = clockEdge;
+  document.getElementById("btnShuttle").onclick = startShuttle;
+  document.getElementById("btnPump").onclick = function () { P.pump = Math.min(1.2, P.pump + 0.25); sliders(); logAct("DCE pump"); };
+  document.getElementById("btnBraid").onclick = startBraid;
+  document.getElementById("btnDump").onclick = dump;
+  document.getElementById("btnPause").onclick = function () {
+    P.running = !P.running; this.textContent = P.running ? "Pause" : "Run";
+  };
+  document.getElementById("btnMute").onclick = function () {
+    P.mute = !P.mute; this.classList.toggle("on", P.mute); this.textContent = P.mute ? "Muted" : "Mute";
+  };
+  document.getElementById("btnArm").onclick = function () { armAudio(); };
+
+  /* —— three.js clay die (no neon HUD) —— */
+  var canvas = document.getElementById("gpu");
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.05;
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0c0b0a);
+  scene.fog = new THREE.Fog(0x0c0b0a, 14, 36);
+  var camera = new THREE.PerspectiveCamera(40, 1, 0.08, 80);
+  camera.position.set(8.6, 6.4, 10.4);
+  if (typeof THREE.OrbitControls !== "function") {
+    showErr("OrbitControls did not attach to THREE. Keep vendor-umd/OrbitControls.js next to this HTML.");
+    return;
+  }
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableDamping = true; controls.target.set(0, 0.45, 0);
+
+  scene.add(new THREE.HemisphereLight(0xf0e6d4, 0x1a1814, 0.7));
+  var key = new THREE.DirectionalLight(0xffe4c4, 1.15); key.position.set(6, 10, 4); scene.add(key);
+  var fill = new THREE.DirectionalLight(0x8aa37b, 0.28); fill.position.set(-8, 3, -4); scene.add(fill);
+
+  var ground = new THREE.Mesh(new THREE.CircleGeometry(18, 48), new THREE.MeshStandardMaterial({ color: 0x161412, roughness: 0.92, metalness: 0 }));
+  ground.rotation.x = -Math.PI / 2; scene.add(ground);
+
+  function std(c, r, m) {
+    return new THREE.MeshStandardMaterial({ color: c, roughness: r == null ? 0.45 : r, metalness: m == null ? 0.25 : m });
+  }
+  var chip = new THREE.Group(); scene.add(chip);
+  chip.add(new THREE.Mesh(new THREE.BoxGeometry(12.2, 0.26, 8), std(0x2a2722, 0.55, 0.35)));
+  var islands = [], sshSites = [];
+  var pent = new THREE.Group(); pent.position.set(-3.4, 0.48, 0.2); chip.add(pent);
+  for (var i = 0; i < 5; i++) {
+    var a = -Math.PI / 2 + i * 2 * Math.PI / 5;
+    var m = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.3, 0.14, 20), std(0xe8e0d2, 0.3, 0.1));
+    m.position.set(1.12 * Math.cos(a), 0.08, 1.12 * Math.sin(a)); pent.add(m); islands.push(m);
+  }
+  var sshG = new THREE.Group(); sshG.position.set(-0.3, 0.42, -2.05); chip.add(sshG);
+  for (i = 0; i < 16; i++) {
+    var s = new THREE.Mesh(new THREE.SphereGeometry(i % 2 ? 0.1 : 0.13, 14, 14), std(i % 2 ? 0xc08a4e : 0x8aa37b, 0.4, 0.2));
+    s.position.x = -3.5 + i * 0.46; sshG.add(s); sshSites.push(s);
+  }
+  var soliton = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), std(0xc46a4a, 0.25, 0.05));
+  sshG.add(soliton);
+  var cavity = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(3.1, 1.7, 2.1)), new THREE.LineBasicMaterial({ color: 0xc08a4e }));
+  cavity.position.set(2.6, 1.25, 2.5); chip.add(cavity);
+  var squid = new THREE.Mesh(new THREE.TorusGeometry(0.4, 0.05, 10, 28), std(0xc08a4e, 0.3, 0.55));
+  squid.rotation.x = Math.PI / 2; squid.position.copy(cavity.position); chip.add(squid);
+  var helixPts = [];
+  for (i = 0; i <= 70; i++) {
+    var u = i / 70 * Math.PI * 6;
+    helixPts.push(new THREE.Vector3(4.5 + 0.26 * Math.cos(u), 0.5 + 0.07 * i / 9, 0.15 + 0.26 * Math.sin(u)));
+  }
+  var helix = new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(helixPts), 70, 0.04, 8, false), std(0x8f877a, 0.35, 0.6));
+  chip.add(helix);
+  var fluxon = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 10), std(0xe8e0d2, 0.2, 0.1)); chip.add(fluxon);
+  var track = new THREE.Mesh(new THREE.TorusGeometry(1.5, 0.07, 10, 48), std(0x3a3028, 0.6, 0.2));
+  track.rotation.x = Math.PI / 2; track.position.set(3.85, 0.42, -2.1); chip.add(track);
+  var hops = [];
+  for (i = 0; i < 5; i++) {
+    var h = new THREE.Mesh(new THREE.TorusGeometry(0.14, 0.04, 8, 16), std(0xc08a4e, 0.35, 0.2));
+    h.rotation.x = Math.PI / 2; chip.add(h); hops.push(h);
+  }
+  var bolo = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.2, 0.45), std(0x8aa37b, 0.4, 0.15));
+  bolo.position.set(-5.15, 0.42, 2.8); chip.add(bolo);
+  var flash = new THREE.Mesh(new THREE.BoxGeometry(1.05, 0.12, 0.65), std(0xd7c4a3, 0.5, 0.1));
+  flash.position.set(-4.95, 0.38, -2.15); chip.add(flash);
+
+  var LOOK = [
+    { p: [8.6, 6.4, 10.4], t: [0, 0.45, 0] },
+    { p: [-1.4, 3.8, 4.6], t: [-3.4, 0.55, 0.2] },
+    { p: [1.6, 3.6, 2.0], t: [-0.3, 0.45, -2.05] },
+    { p: [6.2, 3.8, 6.4], t: [2.6, 1.1, 2.5] },
+    { p: [7.8, 4.2, -1.0], t: [3.85, 0.5, -2.1] },
+    { p: [-2.2, 5.0, 7.6], t: [-4.2, 0.5, 2.0] }
+  ];
+  function look() {
+    if (!camera || !controls || !LOOK) return;
+    var L = LOOK[P.tab] || LOOK[0];
+    if (!L || !L.p || !L.t) return;
+    camera.position.set(L.p[0], L.p[1], L.p[2]);
+    controls.target.set(L.t[0], L.t[1], L.t[2]);
+  }
+  writeDark();
+  setView(0);
+
+  function step(dt) {
+    if (!P.running) return;
+    var dtps = dt * 12 * P.speed;
+    S.t += dtps;
+    if (S.clock > 0) S.clock = Math.max(0, S.clock - dt * 2);
+    evolve(dtps);
+    var al = alphaOf(P.lam);
+    var dF = foldDelta(al);
+    var Astar = P.pump > 0.12 ? LOCK.AresAc : 0.12;
+    var det = (S.Delta - dF) / Math.max(dF, 0.05);
+    var Lr = 1 / (1 + det * det);
+    S.A += (0.08 * P.pump * P.speed * Lr * (Astar - S.A) - 0.01 * S.A) * dtps;
+    S.A = Math.max(0.02, Math.min(1.15, S.A));
+    S.Delta = dF * (1 - 0.15 * S.A) * (1 - 0.08 * P.fe);
+    if (S.shuttling && !S.dumped) {
+      S.soliton += dtps * 0.045;
+      if (S.soliton >= 15) { S.soliton = 15; S.shuttling = false; logAct("Shuttle complete"); }
+    }
+    if (S.dumped) S.fidelity = Math.max(0.04, S.fidelity - dt * 0.35);
+    if (S.braiding) {
+      S.braid = Math.min(1, S.braid + dtps * 0.012);
+      if (S.braid >= 1) { S.braiding = false; S.theta += Math.PI / (2 * P.N); logAct("θ += π/(2N)"); pulseClick(0.3); }
+    }
+    var prevF = S.fluxon;
+    S.fluxon = (S.fluxon + dtps * 0.02 * (0.2 + P.flux)) % 1;
+    if (S.fluxon < prevF) pulseClick(0.2);
+    if (P.fege > 0.5) S.hopPos = (S.hopPos + dtps * 0.008) % 1;
+    if (S.flash > 0) S.flash = Math.max(0, S.flash - dt * 1.4);
+  }
+
+  function readout() {
+    var o = occ(), vals = specG(), ratio = vals[0] ? vals[vals.length - 1] / vals[0] : -4;
+    var rows = [
+      ["t", S.t.toFixed(1) + " ps"],
+      ["λ_max / λ_min", ratio.toFixed(3) + "  (lock −4)"],
+      ["p_dark", o.pDark.toFixed(3)],
+      ["p_bright", o.pBright.toFixed(3)],
+      ["α / α_c", (alphaOf(P.lam) / LOCK.alphac).toFixed(3)],
+      ["Δ", S.Delta.toFixed(4) + " meV"],
+      ["A / A*", (S.A / LOCK.AresAc).toFixed(3)],
+      ["ξ_SSH", sshXi().toFixed(2) + " nm"],
+      ["fidelity", S.fidelity.toFixed(3)],
+      ["θ", S.theta.toFixed(4) + " / " + (Math.PI / (2 * P.N)).toFixed(4)],
+      ["δσ_xy", hallS().toExponential(3) + " S"],
+      ["E_vac / h", evacGHz().toFixed(2) + " GHz"],
+      ["audible f₀", (220 * P.g0 / LOCK.g0).toFixed(1) + " Hz"],
+      ["f_bright", (880 * P.g0 / LOCK.g0).toFixed(1) + " Hz"]
+    ];
+    document.getElementById("read").innerHTML = rows.map(function (r) {
+      var bad = (r[0] === "α / α_c" && P.lam > LOCK.lfold) || (r[0] === "fidelity" && S.fidelity < 0.4);
+      return '<div class="kv' + (bad ? " bad" : "") + '"><span>' + r[0] + "</span><span>" + r[1] + "</span></div>";
+    }).join("");
+    var meters = document.getElementById("meters");
+    var spec = specG();
+    meters.innerHTML = spec.map(function (v, i) {
+      var h = 12 + 90 * Math.abs(v) / Math.max(4 * P.g0, 1e-9);
+      var dark = v < 0;
+      return '<div class="col"><div class="bar' + (dark ? " dark" : "") + '" style="height:' + h + 'px"></div><div class="nm">' + (dark ? "d" + (i + 1) : "B") + "</div></div>";
+    }).join("");
+  }
+
+  var specC = document.getElementById("spec"), waveC = document.getElementById("wave");
+  var specB = new Uint8Array(1024), waveB = new Uint8Array(2048);
+  function drawAudio() {
+    var sg = specC.getContext("2d"), wg = waveC.getContext("2d");
+    sg.fillStyle = "#0c0b0a"; sg.fillRect(0, 0, specC.width, specC.height);
+    wg.fillStyle = "#0c0b0a"; wg.fillRect(0, 0, waveC.width, waveC.height);
+    if (!audio.analyser) {
+      sg.fillStyle = "#8f877a"; sg.font = "16px Outfit"; sg.fillText("Enable listening to hear Spec(G) as partials.", 16, 80);
+      return;
+    }
+    if (specB.length !== audio.analyser.frequencyBinCount) {
+      specB = new Uint8Array(audio.analyser.frequencyBinCount);
+    }
+    if (waveB.length !== audio.analyser.fftSize) {
+      waveB = new Uint8Array(audio.analyser.fftSize);
+    }
+    audio.analyser.getByteFrequencyData(specB);
+    audio.analyser.getByteTimeDomainData(waveB);
+    var i, x, h, n = specB.length / 2;
+    for (i = 0; i < n; i++) {
+      h = specB[i] / 255 * specC.height;
+      x = i / n * specC.width;
+      sg.fillStyle = i < n * 0.18 ? "#8aa37b" : "#c08a4e";
+      sg.fillRect(x, specC.height - h, specC.width / n + 0.4, h);
+    }
+    wg.strokeStyle = "#d7c4a3"; wg.beginPath();
+    for (i = 0; i < waveB.length; i++) {
+      x = i / waveB.length * waveC.width;
+      var y = (waveB[i] / 255) * waveC.height;
+      if (i === 0) wg.moveTo(x, y); else wg.lineTo(x, y);
+    }
+    wg.stroke();
+  }
+
+  function resize() {
+    var r = canvas.parentElement.getBoundingClientRect();
+    renderer.setSize(r.width, r.height, false);
+    camera.aspect = r.width / Math.max(1, r.height);
+    camera.updateProjectionMatrix();
+  }
+  window.addEventListener("resize", resize); resize();
+
+  var last = performance.now();
+  function tick(now) {
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    step(dt);
+    var o = occ(), i, ang;
+    for (i = 0; i < islands.length; i++) {
+      var p = (o.arr && o.arr[i]) || 0;
+      islands[i].scale.y = 1 + 1.6 * p + 0.4 * S.clock;
+      islands[i].material.emissive = new THREE.Color(0xc08a4e);
+      islands[i].material.emissiveIntensity = 0.12 * p;
+    }
+    pent.rotation.y += dt * 0.12 * P.speed;
+    soliton.position.x = -3.5 + S.soliton * 0.46;
+    soliton.visible = !S.dumped || S.fidelity > 0.08;
+    for (i = 0; i < sshSites.length; i++) {
+      sshSites[i].scale.setScalar(1 + 0.45 * Math.exp(-Math.pow(i - S.soliton, 2) / 1.7) * S.fidelity);
+    }
+    squid.rotation.z = S.t * 0.03;
+    var hi = Math.max(0, Math.min(helixPts.length - 1, Math.floor(S.fluxon * (helixPts.length - 1))));
+    if (helixPts[hi]) fluxon.position.copy(helixPts[hi]);
+    track.material.opacity = P.fege ? 1 : 0.25; track.material.transparent = true;
+    for (i = 0; i < 5; i++) {
+      hops[i].visible = P.fege > 0.5 && S.hopBits[i];
+      ang = S.hopPos * Math.PI * 2 + i * 1.15;
+      hops[i].position.set(3.85 + 1.5 * Math.cos(ang), 0.5, -2.1 + 1.5 * Math.sin(ang));
+    }
+    flash.scale.y = 1 + S.flash;
+    controls.update();
+    renderer.render(scene, camera);
+    setAudio();
+    if ((now | 0) % 2 === 0) { readout(); drawAudio(); }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>

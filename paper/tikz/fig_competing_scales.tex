@@ -1,0 +1,40 @@
+% Competing IR scales along the locked physical branch (C1/C3 at T*)
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=6.4cm,
+  ymode=log,
+  xlabel={$\alpha/\alpha_c$},
+  ylabel={$K=\kappa/T^*$},
+  xmin=0, xmax=1.02,
+  ymin=0.3, ymax=70,
+  legend style={draw=none, fill=white, fill opacity=0.85, at={(0.02,0.02)}, anchor=south west, font=\small, cells={anchor=west}},
+  tick label style={font=\small},
+  label style={font=\small},
+  grid=both,
+  major grid style={line width=0.3pt, draw=black!20},
+  minor grid style={line width=0.15pt, draw=black!8},
+  minor x tick num=4,
+]
+\addplot[oiBlue, line width=1.5pt]
+  table[x index=0, y index=1, skip first n=1] {data/competing_scales.dat};
+\addlegendentry{primary $K$ (C1)}
+\addplot[oiOrange, line width=1.5pt, dashed]
+  table[x index=0, y index=2, skip first n=1] {data/competing_scales.dat};
+\addlegendentry{conventional-only}
+\addplot[oiVerm, densely dashed, line width=0.8pt]
+  coordinates {(0,0.63662) (1.02,0.63662)};
+\addlegendentry{$K_c=2/\pi$ (bosonic)}
+\addplot[oiPurple, densely dotted, line width=0.8pt]
+  coordinates {(0,0.4074) (1.02,0.4074)};
+\addlegendentry{$K_c^{\mathrm{anyon}}$ (labeled)}
+\addplot[oiGreen, densely dashed, line width=0.8pt]
+  coordinates {(0.90,0.3) (0.90,70)};
+\addlegendentry{$\lambda^\star$ ($\alpha/\alpha_c=0.90$)}
+\node[font=\small, oiGreen, anchor=south west, rotate=90] at (axis cs:0.91,1.0)
+  {$\alpha/\alpha_c=0.90$};
+\addplot[only marks, mark=*, mark size=2.4pt, oiOrange]
+  coordinates {(0.945, 4.04)};
+\addlegendentry{conv.\ IR plasma $\approx 0.945\,\alpha_c$}
+\end{axis}
+\end{tikzpicture}

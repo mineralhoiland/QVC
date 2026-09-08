@@ -1,0 +1,21 @@
+% Coupled GPE: coherence and DCE amplitude
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=5.4cm,
+  xlabel={$t$ (ps)},
+  ylabel={$g^{(1)}$,\ $A/A_c^{\mathrm{fold}}$},
+  xmin=0, xmax=1.02,
+  ymin=0.82, ymax=1.02,
+  legend style={draw=none, at={(0.02,0.02)}, anchor=south west, font=\footnotesize},
+  tick label style={font=\small},
+  label style={font=\small},
+]
+\addplot[oiPurple, thick]
+  table[col sep=comma, x=t_ps, y=g1] {data/coupled_timeseries_plot.csv};
+\addlegendentry{$g^{(1)}$}
+\addplot[oiBlue, thick, dashed]
+  table[col sep=comma, x=t_ps, y expr={\thisrow{A_um_inv}/1.558248}] {data/coupled_timeseries_plot.csv};
+\addlegendentry{$A/A_c^{\mathrm{fold}}$}
+\end{axis}
+\end{tikzpicture}

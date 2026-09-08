@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDVT Particle Lab — Hopfion Crystal · Horizons · TEGR · Quantum Geometry</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090d;
+    --panel: #0e141c;
+    --stroke: #1c2a38;
+    --text: #e8eef4;
+    --mute: #7d8d9c;
+    --cyan: #3ec8e0;
+    --gold: #d4a017;
+    --amber: #e0a54a;
+    --mint: #4ecf9a;
+    --mag: #e05aa3;
+    --warn: #e07a4a;
+    --fail: #e05656;
+    --ok: #4ecf9a;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+  body { display: grid; grid-template-rows: auto auto 1fr auto; }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .5rem 1rem; border-bottom: 1px solid var(--stroke); background: #0a1016;
+  }
+  .brand { display: flex; align-items: baseline; gap: .75rem; flex-wrap: wrap; }
+  .brand h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .06em; }
+  .brand h1 span { color: var(--cyan); }
+  .brand p { font-family: "IBM Plex Mono", monospace; font-size: .68rem; color: var(--mute); }
+  .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .pill {
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; letter-spacing: .06em;
+    border: 1px solid var(--stroke); padding: .18rem .42rem; color: var(--mute);
+  }
+  .pill.on { color: #071018; background: var(--cyan); border-color: var(--cyan); }
+  .pill.conj { color: var(--gold); border-color: #6a5410; }
+  .pill.warn { color: var(--warn); border-color: #6a3a18; }
+  nav.tabs {
+    display: flex; overflow-x: auto; border-bottom: 1px solid var(--stroke); background: #080c12;
+  }
+  nav.tabs button {
+    background: transparent; border: 0; border-bottom: 2px solid transparent;
+    color: var(--mute); padding: .5rem .85rem; cursor: pointer; white-space: nowrap;
+    font: 500 .78rem "IBM Plex Sans", sans-serif; letter-spacing: .04em;
+  }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.on { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .workspace { display: grid; grid-template-columns: 1fr 380px; min-height: 0; }
+  @media (max-width: 1100px) { .workspace { grid-template-columns: 1fr; } }
+  .stage {
+    position: relative; min-height: 0;
+    background: radial-gradient(ellipse at 45% 38%, #12202c 0%, #07090d 68%);
+  }
+  canvas#gpu { width: 100%; height: 100%; display: block; cursor: grab; }
+  canvas#gpu:active { cursor: grabbing; }
+  .hud-frame {
+    pointer-events: none; position: absolute; inset: 10px;
+    border: 1px solid rgba(62,200,224,.16);
+  }
+  .hud-tl, .hud-tr {
+    position: absolute; top: 16px; pointer-events: none;
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; color: var(--cyan);
+    text-shadow: 0 0 10px rgba(62,200,224,.35);
+  }
+  .hud-tl { left: 18px; }
+  .hud-tr { right: 18px; text-align: right; }
+  .inset {
+    position: absolute; right: 14px; bottom: 14px; width: 228px; height: 168px;
+    border: 1px solid var(--stroke); background: #05080c; z-index: 2;
+  }
+  .inset label {
+    position: absolute; top: 4px; left: 8px; z-index: 3;
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; color: var(--gold);
+  }
+  canvas#bjs { width: 100%; height: 100%; display: block; }
+  .dock {
+    overflow: auto; border-left: 1px solid var(--stroke); background: var(--panel);
+    padding: .65rem .75rem 1.1rem;
+  }
+  .dock h2 { font-size: .92rem; color: var(--cyan); letter-spacing: .04em; }
+  .blurb { color: var(--mute); font-size: .78rem; line-height: 1.45; margin: .3rem 0 .55rem; }
+  .eq {
+    font-family: "IBM Plex Mono", monospace; font-size: .62rem; color: #b7e4ee;
+    background: #081018; border-left: 2px solid var(--mag); padding: .42rem .5rem;
+    white-space: pre-wrap; line-height: 1.45; margin-bottom: .55rem;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: .28rem; margin-bottom: .55rem; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; padding: .12rem .38rem;
+    border: 1px solid var(--stroke); color: var(--mute);
+  }
+  .chip.lock { color: var(--mint); border-color: #1e5a44; }
+  .chip.prov { color: #8ec8ff; border-color: #2a5a88; }
+  .chip.conj { color: var(--gold); border-color: #6a5410; }
+  .chip.analogue { color: var(--amber); border-color: #6a4a18; }
+  .presets, .btns { display: flex; flex-wrap: wrap; gap: .28rem; margin-bottom: .5rem; }
+  .presets button, .btns button {
+    background: #101820; color: var(--text); border: 1px solid var(--stroke);
+    padding: .26rem .48rem; cursor: pointer; font-size: .74rem;
+  }
+  .presets button:hover, .btns button:hover { border-color: var(--cyan); color: var(--cyan); }
+  .ctrl { margin-bottom: .38rem; }
+  .ctrl label { display: flex; justify-content: space-between; font-size: .74rem; color: var(--mute); }
+  .ctrl b { font-family: "IBM Plex Mono", monospace; color: var(--gold); font-weight: 500; }
+  input[type=range] { width: 100%; accent-color: var(--cyan); }
+  h3.sec {
+    font-size: .66rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute);
+    margin: .55rem 0 .28rem;
+  }
+  .row {
+    display: flex; justify-content: space-between; gap: .45rem; font-size: .74rem;
+    border-bottom: 1px dashed #1c2a38; padding: .16rem 0;
+  }
+  .row span:last-child { font-family: "IBM Plex Mono", monospace; color: var(--mint); }
+  .row.warn span:last-child { color: var(--gold); }
+  .row.fail span:last-child { color: var(--fail); }
+  #plotly { width: 100%; height: 210px; background: #080c12; border: 1px solid var(--stroke); }
+  canvas#spark { width: 100%; height: 72px; display: block; background: #080c12; border: 1px solid var(--stroke); }
+  footer {
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    border-top: 1px solid var(--stroke); padding: .32rem 1rem;
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; color: var(--mute); background: #080c12;
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.175.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.175.0/examples/jsm/"
+  }
+}
+</script>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1><span>TDVT</span> Particle Lab</h1>
+    <p>GPGPU hopfion crystal · acoustic horizons · hyperspherical flow · TEGR · quantum geometry</p>
+  </div>
+  <div class="pills">
+    <span class="pill on" id="pillL1">L1 LOCK</span>
+    <span class="pill" id="pillL2">L2 ANALOGUE</span>
+    <span class="pill conj" id="pillL3">L3 OPEN</span>
+    <span class="pill" id="pillGpu">GPGPU —</span>
+  </div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<div class="workspace">
+  <section class="stage" id="stage">
+    <canvas id="gpu"></canvas>
+    <div class="hud-frame"></div>
+    <div class="hud-tl" id="hudTl">TDVT // STANDBY</div>
+    <div class="hud-tr" id="hudTr">N=524288</div>
+    <div class="inset">
+      <label id="bjsLabel">BABYLON · FIELD GEOMETRY</label>
+      <canvas id="bjs"></canvas>
+    </div>
+  </section>
+  <aside class="dock">
+    <h2 id="title">—</h2>
+    <p class="blurb" id="blurb"></p>
+    <div class="chips" id="chips"></div>
+    <div class="eq" id="eq"></div>
+    <div class="presets" id="presets"></div>
+    <div class="btns">
+      <button id="btnPause">PAUSE</button>
+      <button id="btnReset">RESET CAM</button>
+      <button id="btnKick">KICK FIELD</button>
+      <button id="btnReinit">RESEED GPGPU</button>
+    </div>
+    <div id="controls"></div>
+    <h3 class="sec">Live numerics</h3>
+    <div id="tele"></div>
+    <h3 class="sec" id="plotTitle">Analysis</h3>
+    <div id="plotly"></div>
+    <h3 class="sec">Time series</h3>
+    <canvas id="spark" width="680" height="144"></canvas>
+  </aside>
+</div>
+<footer>
+  <span>Locked: fold not BKT · Q_H=1/N · Spec(G) democratic · T_H matched ≠ dual · Einstein not claimed</span>
+  <span id="fps">fps —</span>
+</footer>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { GPUComputationRenderer } from "three/addons/misc/GPUComputationRenderer.js";
+
+const TAU = Math.PI * 2;
+const LOCK = {
+  N: 5, QH: 0.2, kCS: 10,
+  J: 0.300, Delta0: 0.600, hcs: 0.070,
+  nu0THz: 0.188, omega0: 1.182e12,
+  GammaSch: 4.73e8, deltaC: 0.182, ell: -2.791,
+  etaRet: 3.10, Teq: 255, Tstar: 285,
+  ECas: 0.244, dxy: 3.87e-6,
+  kB: 0.08617333262,
+};
+
+const WORLDS = [
+  {
+    id: "crystal", mode: 0, layer: 2,
+    name: "Hopfion Crystal",
+    blurb: "BCC hopfion crystal with linked toroidal tubes. GPU tracers follow Faddeev–Niemi cores plus phonon breathing. VK E≥C|Q|^{3/4} favors binding. Five Goldstones: 2 TA analogues, 1 LA dilaton, 2 fiber magnons. Einstein equivalence is not claimed.",
+    eq: "π₃(S²)=ℤ    Q=(1/4π²)∫ A∧dA\nE(Q)≥C|Q|^{3/4}\nG_lat = T(3) ⋊ O_h × SU(2)_fiber",
+    chips: [["lock","π₃(S²)=ℤ"],["lock","VK 3/4"],["lock","5 Goldstones"],["analogue","not Einstein"]],
+  },
+  {
+    id: "horizon", mode: 1, layer: 2,
+    name: "Acoustic Horizon",
+    blurb: "Unruh–Visser phonons on g_eff. Horizon is |v_s|=c_s. Particles critically slow at the wall (CST-SSH analogue). T_H is matched to T* by choosing R_WS — matching, not a derived duality.",
+    eq: "g_μν=(ρ_s/c_s)[−(c_s²−v²), −v; −v, δ]\nT_H=ℏ κ_H/(2π k_B)\nR_WS=ℏ c_s/(π k_B T*)   [matching]",
+    chips: [["lock","Unruh–Visser"],["analogue","horizon |v|=c_s"],["lock","match ≠ dual"],["prov","T*=285 mK"]],
+  },
+  {
+    id: "hypersphere", mode: 2, layer: 2,
+    name: "Hypersphere / Vortices",
+    blurb: "Hopf chain S³→S² with pullback of superfluid phase and axial torsion onto a laboratory sphere. Vortex worldlines carry 2π winding. H-VTOR1: vortex density may mix G_ij (conjecture).",
+    eq: "ϑ = r*(dθ_sf + 𝒜)\nS_{S²} = r* S\n∮∇θ·dl = 2π n",
+    chips: [["lock","Hopf π:S³→S²"],["lock","linking"],["conj","H-VTOR1"],["analogue","S² flow"]],
+  },
+  {
+    id: "tegr", mode: 3, layer: 2,
+    name: "TEGR Torsion",
+    blurb: "Weitzenböck geometry: R^(W)=0, torsion carries the analogue connection. Hopf current sources T∝ε ∂q_H. Contortion encodes 4π spinorial holonomy. H-TEGR1 (G from overlaps) remains open.",
+    eq: "Γ^(W)=e^{-1} ∂ e    T=2∂_{[μ}e_{ν]}\nT^μ_νρ ∝ ε^μ_νρσ ∂^σ q_H\nω_TA² = c_T²k² + α_T² (Q²/a⁴) sin²(ka/2)",
+    chips: [["lock","T ∝ ∇q_H"],["conj","H-TEGR1"],["analogue","TEGR not GR"],["lock","Q_H=1/N"]],
+  },
+  {
+    id: "qgeom", mode: 4, layer: 1,
+    name: "Quantum Geometry",
+    blurb: "Catalyzon dark subspace of democratic G=g₀(J−I). Flat-band D_s bounded by Fubini–Study metric (Herzog-Arbeitman / Peotta–Törmä). Hall step δσ_xy=e²/(2Nh). Gap map is a fold, not BKT.",
+    eq: "λ_max=(N−1)g₀   λ_min=−g₀ (×N−1)\n[D_s]_ij ≥ 2|Δ|ν(1−ν)∫ g_ij(k)\nδ=1+α(lnδ+ℓ)  fold √(α_c−α)",
+    chips: [["lock","Spec(G)"],["lock","fold not BKT"],["lock","δσ_xy"],["prov","D_s bound form"]],
+  },
+  {
+    id: "lattice", mode: 5, layer: 1,
+    name: "Lattice / Audit",
+    blurb: "Wigner–Seitz cell of the hopfion lattice with live lock audit: CS/linking Q_H=1/N, fold critical point, Bessel vacuum form, retardation η_ret. Geometry (r,R) is not frozen — meV vacuum energy stays provisional.",
+    eq: "CS[A_k]=k²/N    Q_H=1/N\nE_vac=(1/4π²)(ℏc_s/r) F(2π r/R)\nF=Σ K₀(nx)   η_ret=2Δ₀ ξ / ℏc_s",
+    chips: [["lock","CS/linking"],["lock","F=ΣK₀"],["prov","meV freeze"],["lock","η_ret form"]],
+  },
+];
+
+const P = {
+  tab: 0, count: 524288, speed: 1, running: true,
+  Q: 1, N: 5, g0: 0.21, alpha: 0.45, alphaT: 0.8,
+  Mach: 1.25, flow: 1.15, lattice: 1.55, link: 0.85, twist: 1.1,
+  pointSize: 0.82, glow: 0.42, opacity: 0.55, damp: 0.18, kick: 0,
+};
+
+const PRESETS = {
+  "Crystal rest": { tab: 0, Q: 1, lattice: 1.55, speed: 0.7, count: 524288 },
+  "Binding Q=3": { tab: 0, Q: 3, link: 1.15, twist: 1.4, count: 393216 },
+  "Horizon wall": { tab: 1, Mach: 1.55, flow: 1.4, count: 524288 },
+  "Subsonic": { tab: 1, Mach: 0.55, flow: 0.6, count: 393216 },
+  "S² vortices": { tab: 2, Q: 2, twist: 1.6, count: 524288 },
+  "TEGR steer": { tab: 3, Q: 4, alphaT: 1.6, twist: 1.8, count: 393216 },
+  "Fold edge": { tab: 4, alpha: 0.92, g0: 0.28, N: 5, count: 262144 },
+  "Dark catalyzon": { tab: 4, alpha: 0.35, g0: 0.21, N: 5, count: 393216 },
+  "WS audit": { tab: 5, lattice: 1.4, Q: 1, count: 393216 },
+};
+
+const posFrag = /* glsl */ `
+uniform float uDt, uSpeed, uTwist;
+void main() {
+  vec2 uv = gl_FragCoord.xy / resolution.xy;
+  vec4 p = texture2D(texturePosition, uv);
+  vec4 v = texture2D(textureVelocity, uv);
+  float dt = clamp(uDt * uSpeed, 0.0, 0.05);
+  vec3 pos = p.xyz + v.xyz * dt;
+  float ph = p.w + dt * (0.7 + 0.4 * uTwist);
+  gl_FragColor = vec4(pos, ph);
+}
+`;
+
+const velFrag = /* glsl */ `
+uniform float uTime, uDt, uSpeed, uQ, uTwist, uLattice, uLink, uFlow;
+uniform float uAlpha, uN, uG0, uMach, uAlphaT, uDamp, uKick;
+uniform int uMode;
+void main() {
+  vec2 uv = gl_FragCoord.xy / resolution.xy;
+  vec4 p = texture2D(texturePosition, uv);
+  vec4 v = texture2D(textureVelocity, uv);
+  float dt = clamp(uDt * uSpeed, 0.0, 0.05);
+  vec3 pos = p.xyz;
+  vec3 vel = v.xyz;
+  float id = v.w;
+  float r = max(length(pos), 0.04);
+  vec3 n = pos / r;
+  vec3 force = vec3(0.0);
+  if (uMode == 0) {
+    float a = uLattice;
+    vec3 site = vec3(mod(id,3.0)-1.0, mod(floor(id/3.0),3.0)-1.0, mod(floor(id/9.0),3.0)-1.0)*a;
+    if (mod(id,2.0)>0.5) site += vec3(0.5*a);
+    float breathe = 1.0 + 0.06*sin(uTime*1.7);
+    vec3 tgt = site * breathe;
+    force += (tgt - pos)*1.8;
+    vec3 az = vec3(-pos.z, 0.0, pos.x);
+    force += normalize(az+vec3(0.001))*uTwist*0.35;
+    force += vec3(0.0, 0.12*sin(uTime*2.1 + id), 0.0)*uLink;
+  } else if (uMode == 1) {
+    float vs = uMach * uFlow / max(r, 0.12);
+    float slow = 1.0 / (1.0 + exp(12.0*(vs-1.0)));
+    force += -n * vs * (0.35 + 0.55*slow);
+    vec3 az = vec3(-pos.z, 0.0, pos.x);
+    force += normalize(az+vec3(0.001))*0.15*uTwist*(1.0-slow);
+    if (r < 0.18) force += n*4.0;
+  } else if (uMode == 2) {
+    vec3 sph = n * 1.35;
+    vec3 ePhi = normalize(vec3(-pos.z, 0.0, pos.x)+vec3(0.001));
+    vec3 eTh = normalize(cross(ePhi, n));
+    force += (sph - pos)*2.2;
+    force += ePhi * uTwist * 0.55;
+    force += eTh * 0.22 * sin(uTime*1.4 + uQ*atan(pos.z,pos.x));
+  } else if (uMode == 3) {
+    float tor = uQ / (r*r);
+    vec3 az = normalize(vec3(-pos.z, 0.0, pos.x)+vec3(0.001));
+    force += az * uAlphaT * tor * 0.18;
+    force += vec3(0.0, 0.25*uAlphaT*uQ/(r+0.2), 0.0);
+    force += -n * 0.08;
+  } else if (uMode == 4) {
+    float N = max(2.0, uN);
+    float mode = mod(floor(id), N);
+    float isB = step(N-1.5, mode);
+    float lam = mix(-uG0, (N-1.0)*uG0, isB);
+    float rad = 0.55 + 0.38*mode/N;
+    float melt = smoothstep(0.3, 0.95, uAlpha);
+    rad += melt*0.9*(1.0-isB);
+    float ang = atan(pos.z, pos.x);
+    vec3 tgt = vec3(cos(ang)*rad, lam*0.7, sin(ang)*rad);
+    force += (tgt - pos)*2.4;
+    force += vec3(-pos.z, 0.0, pos.x)*0.25*(0.4+abs(lam));
+  } else {
+    float a = uLattice;
+    vec3 site = vec3(mod(id,3.0)-1.0, mod(floor(id/3.0),3.0)-1.0, mod(floor(id/9.0),3.0)-1.0)*a*0.55;
+    force += (site - pos)*1.4;
+    force += vec3(-pos.z, 0.12*sin(uTime+id), pos.x)*0.2*uTwist;
+  }
+  force += vec3(sin(id*12.9+uTime), cos(id*4.1), sin(id*7.3))*uKick*6.0;
+  vel += force * dt;
+  vel *= exp(-uDamp * 3.2 * dt);
+  gl_FragColor = vec4(vel, id);
+}
+`;
+
+const vert = /* glsl */ `
+precision highp float;
+attribute vec4 aSeed;
+attribute float aRand;
+attribute float aIndex;
+uniform sampler2D tPos;
+uniform float uTexSize;
+uniform float uTime, uSpeed, uQ, uScale, uTwist, uLattice, uLink, uFlow;
+uniform float uAlpha, uN, uG0, uPointSize, uGlow, uMach, uAlphaT;
+uniform int uMode;
+varying vec3 vColor;
+varying float vAlpha;
+#define PI 3.14159265
+#define TAU 6.2831853
+vec3 hsv2rgb(vec3 c){
+  vec4 K = vec4(1., 2./3., 1./3., 3.);
+  vec3 p = abs(fract(c.xxx + K.xyz)*6. - K.www);
+  return c.z * mix(K.xxx, clamp(p-K.xxx, 0., 1.), c.y);
+}
+vec3 hopfionTube(float u, float v, float R, float r, float Q, float t){
+  float ang = u*TAU*Q + t;
+  float tube = v*TAU + t*0.37;
+  float rr = r*(0.85 + 0.15*sin(3.0*tube + ang));
+  return vec3((R + rr*cos(tube))*cos(ang), rr*sin(tube), (R + rr*cos(tube))*sin(ang));
+}
+vec3 hopfStereo(float eta, float phi, float psi){
+  float ce=cos(eta*0.5), se=sin(eta*0.5);
+  float x=ce*cos(psi), y=ce*sin(psi), z=se*cos(phi), w=se*sin(phi);
+  float d=max(1.05-w, 0.12);
+  vec3 p=vec3(x,y,z)/d;
+  float L=length(p);
+  if (L>3.5) p *= 3.5*(1.0+0.35*log(L/3.5))/L;
+  return p;
+}
+vec3 bccSite(float id, float a){
+  float n=floor(id+0.5);
+  vec3 c=vec3(mod(n,3.)-1., mod(floor(n/3.),3.)-1., mod(floor(n/9.),3.)-1.)*a;
+  if (mod(n,2.)>0.5) c += vec3(0.5*a);
+  return c;
+}
+void main(){
+  float eta=aSeed.x, phi=aSeed.y, psi0=aSeed.z, sid=aSeed.w;
+  float t=uTime*uSpeed;
+  vec2 uv = vec2(mod(aIndex,uTexSize)+0.5, floor(aIndex/uTexSize)+0.5)/uTexSize;
+  vec4 gp = texture2D(tPos, uv);
+  vec3 pos=vec3(0.); vec3 col=vec3(1.); float alpha=0.22;
+  if (uMode==0){
+    vec3 center=bccSite(mod(sid,27.), uLattice);
+    vec3 local=hopfionTube(fract(eta/PI+t*0.02), fract(phi/TAU+psi0), 0.42, 0.16, max(1.,uQ), t+sid*0.11);
+    float fiber=step(0.72, aRand);
+    pos=(center+local+normalize(center+vec3(0.001))*0.14*uLink*fiber)*0.48;
+    pos = mix(pos, gp.xyz*0.42, 0.38);
+    col=hsv2rgb(vec3(fract(length(center)*0.15+sid*0.037+0.55), 0.9, 0.95));
+    alpha=0.16+0.16*fiber;
+  } else if (uMode==1){
+    vec3 tube=hopfionTube(eta/PI, phi/TAU, 1.0, 0.32, max(1.,uQ), t*0.2);
+    float rad=length(tube.xz);
+    float rH=1.0/max(uFlow*uMach, 0.15);
+    float nearH=exp(-abs(rad-rH)*6.0);
+    pos = mix((tube)*0.7, gp.xyz*0.55, 0.55);
+    if (length(pos)<0.12) pos *= 6.5;
+    col=hsv2rgb(vec3(mix(0.5, 0.05, nearH), 0.92, 0.7+0.3*nearH));
+    alpha=0.13+0.42*nearH;
+  } else if (uMode==2){
+    float pop=fract(sid*0.173+aRand*0.02);
+    if (pop<0.55){
+      float psi=psi0+t*(1.0+0.35*uQ);
+      pos=hopfStereo(eta, phi+t*0.07*uTwist, psi)*0.55;
+      col=hsv2rgb(vec3(fract(phi/TAU+0.08*eta/PI), 0.85, 0.7));
+      alpha=0.20;
+    } else {
+      pos = mix(normalize(gp.xyz+vec3(0.001))*1.35, gp.xyz*0.7, 0.35);
+      float circ=atan(pos.z,pos.x);
+      col=hsv2rgb(vec3(fract(0.08+circ/TAU), 0.95, 0.9));
+      alpha=0.22;
+    }
+  } else if (uMode==3){
+    float r=0.18+2.6*aRand;
+    float tor=uQ/max(r*r,0.04);
+    float th=psi0+t*uTwist*(0.35+0.85*tor)*uAlphaT;
+    pos=vec3(r*cos(th), (fract(sid)-0.5)*3.2+0.18*sin(th*uQ), r*sin(th))*0.62;
+    pos=mix(pos, gp.xyz*0.5, 0.45);
+    col=hsv2rgb(vec3(fract(0.78+0.12*tor), 0.9, 0.55+0.4*clamp(tor*0.15,0.,1.)));
+    alpha=0.12+0.3*clamp(tor*0.2,0.,1.);
+  } else if (uMode==4){
+    float N=max(2.,uN);
+    float mode=mod(floor(sid), N);
+    float isB=step(N-1.5, mode);
+    float lam=mix(-uG0,(N-1.)*uG0,isB);
+    pos=mix(gp.xyz*0.85, gp.xyz, 0.5);
+    col=hsv2rgb(vec3(fract(mix(0.58,0.08,isB)+0.05*mode/N), 0.9, 0.92));
+    alpha=mix(0.16,0.42,isB);
+  } else {
+    vec3 center=bccSite(mod(sid,27.), uLattice*0.85);
+    vec3 local=hopfionTube(fract(eta/PI), fract(phi/TAU+psi0), 0.28, 0.11, max(1.,uQ), t*0.5);
+    pos=mix((center+local)*0.5, gp.xyz*0.5, 0.4);
+    col=hsv2rgb(vec3(fract(0.45+sid*0.03), 0.88, 0.9));
+    alpha=0.18;
+  }
+  vColor=col;
+  vAlpha=alpha*smoothstep(12.,0.4,length(pos));
+  vec4 mv=modelViewMatrix*vec4(pos,1.0);
+  gl_Position=projectionMatrix*mv;
+  gl_PointSize=clamp(uPointSize*(180./max(2.,-mv.z)), 0.4, 4.5);
+}
+`;
+const frag = /* glsl */ `
+precision highp float;
+varying vec3 vColor; varying float vAlpha;
+uniform float uGlow, uOpacity;
+void main(){
+  vec2 uv=gl_PointCoord*2.-1.;
+  float d=dot(uv,uv);
+  if(d>1.) discard;
+  float core=exp(-d*4.5);
+  float halo=exp(-d*1.6)*uGlow*0.35;
+  float a=(core*0.85+halo)*vAlpha*uOpacity;
+  if(a<0.02) discard;
+  gl_FragColor=vec4(vColor*(0.55+0.7*core), a);
+}
+`;
+
+/* ===== locked numerics (CPU) ===== */
+function besselK0(z) {
+  if (z <= 0) return Infinity;
+  if (z < 0.5) {
+    const z2 = (z * z) / 4;
+    let i0 = 1, term = 1;
+    for (let k = 1; k < 24; k++) { term *= z2 / (k * k); i0 += term; }
+    return -(Math.log(z / 2) + 0.5772156649) * i0;
+  }
+  const inv = 1 / z;
+  const poly = 1 - 0.125 * inv + 9 / 128 * inv * inv;
+  return Math.sqrt(Math.PI / (2 * z)) * Math.exp(-z) * poly;
+}
+function Fsum(x) { let s = 0; for (let n = 1; n <= 60; n++) s += besselK0(n * x); return s; }
+function eVacTierC(rNm, RNm, hcs) {
+  const rUm = rNm / 1000;
+  return (1 / (4 * Math.PI * Math.PI)) * (hcs / rUm) * Fsum(TAU * rNm / RNm);
+}
+function foldCritical(ell) {
+  let lo = 1e-4, hi = 1;
+  for (let i = 0; i < 70; i++) {
+    const m = 0.5 * (lo + hi);
+    if (m * (1 - Math.log(m) - ell) - 1 > 0) hi = m; else lo = m;
+  }
+  const dc = 0.5 * (lo + hi);
+  return { alphaC: dc, deltaC: dc };
+}
+function foldBranches(alpha, ell) {
+  const { alphaC } = foldCritical(ell);
+  if (alpha <= 0) return { phys: 1, unst: null, alphaC };
+  if (alpha >= alphaC * 0.999999) return { phys: null, unst: null, alphaC };
+  const roots = [];
+  let prev = 1e-4 - (1 + alpha * (Math.log(1e-4) + ell));
+  for (let i = 1; i <= 2500; i++) {
+    const d = 1e-4 + (1 - 1e-4) * i / 2500;
+    const f = d - (1 + alpha * (Math.log(d) + ell));
+    if (prev * f < 0) roots.push(d);
+    prev = f;
+  }
+  roots.sort((a, b) => b - a);
+  return { phys: roots[0] ?? null, unst: roots[1] ?? null, alphaC };
+}
+function kappaH(Mach, sigma) { return 0.5 * Math.abs((Mach * Mach - 1) * sigma); }
+
+/* ===== Three.js ===== */
+const canvas = document.getElementById("gpu");
+const stage = document.getElementById("stage");
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: "high-performance" });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setClearColor(0x07090d, 1);
+renderer.sortObjects = false;
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x07090d, 0.028);
+const camera = new THREE.PerspectiveCamera(55, 1, 0.05, 200);
+camera.position.set(4.4, 2.2, 5.2);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.minDistance = 0.6;
+controls.maxDistance = 50;
+
+const TEX = 1024;
+const MAX = TEX * TEX;
+const seed = new Float32Array(MAX * 4);
+const rand = new Float32Array(MAX);
+const indexArr = new Float32Array(MAX);
+const golden = 0.61803398875;
+for (let i = 0; i < MAX; i++) {
+  seed[i * 4] = Math.acos(1 - 2 * ((i * golden) % 1));
+  seed[i * 4 + 1] = TAU * ((i * golden * 1.324) % 1);
+  seed[i * 4 + 2] = TAU * ((i * golden * 2.618) % 1);
+  seed[i * 4 + 3] = (i % 54) + (i + 0.5) / MAX;
+  let r = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+  if (r < 0) r += 1;
+  rand[i] = r;
+  indexArr[i] = i;
+}
+const geo = new THREE.BufferGeometry();
+geo.setAttribute("aSeed", new THREE.BufferAttribute(seed, 4));
+geo.setAttribute("aRand", new THREE.BufferAttribute(rand, 1));
+geo.setAttribute("aIndex", new THREE.BufferAttribute(indexArr, 1));
+geo.setAttribute("position", new THREE.BufferAttribute(new Float32Array(MAX * 3), 3));
+geo.setDrawRange(0, P.count);
+
+const uniforms = {
+  tPos: { value: null },
+  uTexSize: { value: TEX },
+  uTime: { value: 0 }, uSpeed: { value: 1 }, uMode: { value: 0 },
+  uQ: { value: 1 }, uScale: { value: 1 }, uTwist: { value: 1 },
+  uLattice: { value: 1.55 }, uLink: { value: 0.85 }, uFlow: { value: 1.15 },
+  uAlpha: { value: 0.45 }, uN: { value: 5 }, uG0: { value: 0.21 },
+  uPointSize: { value: 0.82 }, uGlow: { value: 0.42 }, uOpacity: { value: 0.55 },
+  uMach: { value: 1.25 }, uAlphaT: { value: 0.8 },
+};
+const mat = new THREE.ShaderMaterial({
+  vertexShader: vert, fragmentShader: frag, uniforms,
+  transparent: true, depthWrite: false, blending: THREE.AdditiveBlending,
+});
+const points = new THREE.Points(geo, mat);
+points.frustumCulled = false;
+scene.add(points);
+scene.add(new THREE.Mesh(
+  new THREE.SphereGeometry(3.5, 36, 24),
+  new THREE.MeshBasicMaterial({ color: 0x143044, wireframe: true, transparent: true, opacity: 0.045 }),
+));
+
+function resize() {
+  const w = stage.clientWidth, h = stage.clientHeight;
+  camera.aspect = w / Math.max(h, 1);
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h, false);
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+
+/* ===== GPGPU ===== */
+let gpuCompute, posVar, velVar, gpuOk = false, dtPosTex, dtVelTex;
+function fillTextures(dtPos, dtVel) {
+  const pos = dtPos.image.data;
+  const vel = dtVel.image.data;
+  for (let i = 0; i < MAX; i++) {
+    const eta = seed[i * 4], phi = seed[i * 4 + 1], psi = seed[i * 4 + 2];
+    const r = 0.4 + 2.2 * rand[i];
+    pos[i * 4] = r * Math.sin(eta) * Math.cos(phi);
+    pos[i * 4 + 1] = r * Math.cos(eta) * 0.7;
+    pos[i * 4 + 2] = r * Math.sin(eta) * Math.sin(phi);
+    pos[i * 4 + 3] = psi;
+    vel[i * 4] = 0; vel[i * 4 + 1] = 0; vel[i * 4 + 2] = 0;
+    vel[i * 4 + 3] = i % 54;
+  }
+}
+try {
+  gpuCompute = new GPUComputationRenderer(TEX, TEX, renderer);
+  dtPosTex = gpuCompute.createTexture();
+  dtVelTex = gpuCompute.createTexture();
+  fillTextures(dtPosTex, dtVelTex);
+  posVar = gpuCompute.addVariable("texturePosition", posFrag, dtPosTex);
+  velVar = gpuCompute.addVariable("textureVelocity", velFrag, dtVelTex);
+  gpuCompute.setVariableDependencies(posVar, [posVar, velVar]);
+  gpuCompute.setVariableDependencies(velVar, [posVar, velVar]);
+  Object.assign(posVar.material.uniforms, {
+    uDt: { value: 0.016 }, uSpeed: { value: 1 }, uTwist: { value: 1 },
+  });
+  Object.assign(velVar.material.uniforms, {
+    uTime: { value: 0 }, uDt: { value: 0.016 }, uSpeed: { value: 1 },
+    uQ: { value: 1 }, uTwist: { value: 1 }, uLattice: { value: 1.55 },
+    uLink: { value: 0.85 }, uFlow: { value: 1.15 }, uAlpha: { value: 0.45 },
+    uN: { value: 5 }, uG0: { value: 0.21 }, uMach: { value: 1.25 },
+    uAlphaT: { value: 0.8 }, uDamp: { value: 0.18 }, uKick: { value: 0 },
+    uMode: { value: 0 },
+  });
+  const err = gpuCompute.init();
+  if (err) throw err;
+  gpuOk = true;
+} catch (e) {
+  console.warn("GPGPU init failed, kinematic fallback", e);
+  gpuOk = false;
+}
+document.getElementById("pillGpu").textContent = gpuOk ? "GPGPU ON" : "GPGPU OFF";
+document.getElementById("pillGpu").classList.toggle("on", gpuOk);
+
+function reseedGpu() {
+  if (!gpuOk || !dtPosTex) return;
+  fillTextures(dtPosTex, dtVelTex);
+  gpuCompute.renderTexture(dtPosTex, gpuCompute.getCurrentRenderTarget(posVar));
+  gpuCompute.renderTexture(dtVelTex, gpuCompute.getCurrentRenderTarget(velVar));
+}
+
+/* ===== Babylon inset ===== */
+const B = window.BABYLON;
+const bjsCanvas = document.getElementById("bjs");
+const bEngine = new B.Engine(bjsCanvas, true, { adaptToDeviceRatio: true });
+const bScene = new B.Scene(bEngine);
+bScene.clearColor = new B.Color4(0.02, 0.03, 0.05, 1);
+const bCam = new B.ArcRotateCamera("c", 0.9, 1.15, 4.4, B.Vector3.Zero(), bScene);
+bCam.attachControl(bjsCanvas, true);
+bCam.lowerRadiusLimit = 2; bCam.upperRadiusLimit = 11;
+new B.HemisphericLight("l", new B.Vector3(0.3, 1, 0.2), bScene);
+const hull = B.MeshBuilder.CreateSphere("hull", { diameter: 2.2, segments: 18 }, bScene);
+const hullMat = new B.StandardMaterial("hm", bScene);
+hullMat.wireframe = true; hullMat.emissiveColor = new B.Color3(0.2, 0.75, 0.9); hullMat.alpha = 0.65;
+hull.material = hullMat;
+const torus = B.MeshBuilder.CreateTorus("tor", { diameter: 0.85, thickness: 0.18, tessellation: 36 }, bScene);
+const tMat = new B.StandardMaterial("tm", bScene);
+tMat.emissiveColor = new B.Color3(0.95, 0.25, 0.65); tMat.wireframe = true; torus.material = tMat;
+const ring = B.MeshBuilder.CreateTorus("hz", { diameter: 2.1, thickness: 0.03, tessellation: 48 }, bScene);
+const rMat = new B.StandardMaterial("rm", bScene);
+rMat.emissiveColor = new B.Color3(1.0, 0.55, 0.1); ring.material = rMat;
+const axis = B.MeshBuilder.CreateCylinder("ax", { height: 1.5, diameterTop: 0, diameterBottom: 0.1 }, bScene);
+axis.rotation.z = -Math.PI / 2; axis.position.x = 1.25;
+const aMat = new B.StandardMaterial("am", bScene);
+aMat.emissiveColor = new B.Color3(0.95, 0.75, 0.15); axis.material = aMat;
+
+function syncBabylon() {
+  const w = WORLDS[P.tab];
+  torus.rotation.y += 0.012 * P.speed;
+  hull.rotation.x += 0.004 * P.speed;
+  const s = 0.8 + 0.18 * P.lattice * 0.3;
+  hull.scaling.setAll(s);
+  const showH = w.id === "horizon" && P.Mach > 1;
+  ring.scaling.setAll(showH ? s : 0.01);
+  axis.scaling.x = w.id === "tegr" ? P.alphaT : 1;
+  document.getElementById("bjsLabel").textContent =
+    ({ crystal: "BABYLON · BCC HULL", horizon: "BABYLON · g_eff / r_H",
+       hypersphere: "BABYLON · S² SHELL", tegr: "BABYLON · TORSION AXIS",
+       qgeom: "BABYLON · 5-MODE", lattice: "BABYLON · WS CELL" })[w.id];
+}
+
+/* ===== UI ===== */
+const tabsEl = document.getElementById("tabs");
+WORLDS.forEach((t, i) => {
+  const b = document.createElement("button");
+  b.textContent = t.name;
+  if (i === 0) b.classList.add("on");
+  b.onclick = () => setTab(i);
+  tabsEl.appendChild(b);
+});
+function setTab(i) {
+  P.tab = i;
+  [...tabsEl.children].forEach((el, j) => el.classList.toggle("on", j === i));
+  const L = WORLDS[i].layer;
+  document.getElementById("pillL1").classList.toggle("on", L === 1);
+  document.getElementById("pillL2").classList.toggle("on", L === 2);
+  renderDock();
+  drawPlotly();
+}
+function fmt(k, v) {
+  if (k === "count") return Math.round(v).toLocaleString();
+  if (["Q", "N"].includes(k)) return Number(v).toFixed(0);
+  if (["g0", "alpha"].includes(k)) return Number(v).toFixed(3);
+  return Number(v).toFixed(2);
+}
+function slider(key, label, min, max, step) {
+  return `<div class="ctrl"><label>${label}<b id="v_${key}">${fmt(key, P[key])}</b></label>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${P[key]}" data-k="${key}"></div>`;
+}
+function renderDock() {
+  const t = WORLDS[P.tab];
+  document.getElementById("title").textContent = t.name;
+  document.getElementById("blurb").textContent = t.blurb;
+  document.getElementById("eq").textContent = t.eq;
+  document.getElementById("chips").innerHTML = t.chips.map(([k, x]) => `<span class="chip ${k}">${x}</span>`).join("");
+  document.getElementById("presets").innerHTML = Object.keys(PRESETS).map(n => `<button data-p="${n}">${n}</button>`).join("");
+  document.getElementById("presets").onclick = (e) => {
+    const n = e.target.dataset.p; if (!n) return;
+    Object.assign(P, PRESETS[n]);
+    setTab(P.tab);
+  };
+  const common = slider("count", "Particles", 65536, 1048576, 16384)
+    + slider("speed", "Time rate", 0, 2.4, 0.02)
+    + slider("damp", "GPGPU damping", 0.02, 0.6, 0.01)
+    + slider("pointSize", "Point size", 0.3, 2.2, 0.05)
+    + slider("glow", "Glow", 0, 1.2, 0.02)
+    + slider("opacity", "Opacity", 0.15, 1, 0.02);
+  let extra = "";
+  if (t.id === "crystal") extra = slider("Q", "Hopf Q", 1, 8, 1) + slider("lattice", "Lattice a", 0.7, 2.8, 0.05) + slider("link", "Filaments", 0, 1.4, 0.02) + slider("twist", "Fiber ω", 0.2, 2.5, 0.02);
+  if (t.id === "horizon") extra = slider("Mach", "Mach v/c_s", 0.15, 2.4, 0.02) + slider("flow", "Flow scale", 0.3, 2.4, 0.02) + slider("Q", "Core Q", 1, 6, 1);
+  if (t.id === "hypersphere") extra = slider("Q", "Winding / Q", 1, 8, 1) + slider("twist", "S² flow", 0.2, 3, 0.02);
+  if (t.id === "tegr") extra = slider("Q", "Charge Q", 1, 8, 1) + slider("alphaT", "α_T torsion", 0.1, 2.5, 0.02) + slider("twist", "Azimuth", 0.2, 3, 0.02);
+  if (t.id === "qgeom") extra = slider("alpha", "α / α_c proxy", 0.02, 0.99, 0.01) + slider("N", "N modes", 2, 8, 1) + slider("g0", "g₀", 0.05, 0.5, 0.005);
+  if (t.id === "lattice") extra = slider("lattice", "WS / a", 0.7, 2.8, 0.05) + slider("Q", "Q", 1, 6, 1) + slider("N", "N layers", 2, 8, 1);
+  document.getElementById("controls").innerHTML = extra + common;
+  document.getElementById("controls").querySelectorAll("input").forEach((inp) => {
+    inp.addEventListener("input", () => {
+      const k = inp.dataset.k;
+      P[k] = parseFloat(inp.value);
+      document.getElementById("v_" + k).textContent = fmt(k, P[k]);
+    });
+  });
+  document.getElementById("plotTitle").textContent = ({
+    crystal: "VK bound vs fragmentation",
+    horizon: "v_s(r) and acoustic horizon",
+    hypersphere: "Berry / solid-angle holonomy",
+    tegr: "Axial |T| ∼ Q/r² + TA correction",
+    qgeom: "Spec(G) and fold map",
+    lattice: "Vacuum F(x) and Hall step",
+  })[t.id];
+}
+
+document.getElementById("btnPause").onclick = () => {
+  P.running = !P.running;
+  document.getElementById("btnPause").textContent = P.running ? "PAUSE" : "RUN";
+};
+document.getElementById("btnReset").onclick = () => {
+  camera.position.set(4.4, 2.2, 5.2);
+  controls.target.set(0, 0, 0);
+};
+document.getElementById("btnKick").onclick = () => { P.kick = 1; };
+document.getElementById("btnReinit").onclick = () => reseedGpu();
+
+function applySimUniforms(dt) {
+  geo.setDrawRange(0, Math.min(MAX, Math.max(16384, Math.floor(P.count))));
+  const dens = Math.sqrt(65536 / Math.max(P.count, 65536));
+  uniforms.uSpeed.value = P.speed;
+  uniforms.uMode.value = WORLDS[P.tab].mode;
+  uniforms.uQ.value = P.Q;
+  uniforms.uTwist.value = P.twist;
+  uniforms.uLattice.value = P.lattice;
+  uniforms.uLink.value = P.link;
+  uniforms.uFlow.value = P.flow;
+  uniforms.uAlpha.value = P.alpha;
+  uniforms.uN.value = P.N;
+  uniforms.uG0.value = P.g0;
+  uniforms.uMach.value = P.Mach;
+  uniforms.uAlphaT.value = P.alphaT;
+  uniforms.uPointSize.value = P.pointSize * (0.65 + 0.35 * dens);
+  uniforms.uGlow.value = P.glow;
+  uniforms.uOpacity.value = P.opacity * dens;
+  if (gpuOk) {
+    const U = velVar.material.uniforms;
+    U.uDt.value = dt;
+    U.uSpeed.value = P.speed;
+    U.uMode.value = WORLDS[P.tab].mode;
+    U.uQ.value = P.Q; U.uTwist.value = P.twist; U.uLattice.value = P.lattice;
+    U.uLink.value = P.link; U.uFlow.value = P.flow; U.uAlpha.value = P.alpha;
+    U.uN.value = P.N; U.uG0.value = P.g0; U.uMach.value = P.Mach;
+    U.uAlphaT.value = P.alphaT; U.uDamp.value = P.damp; U.uKick.value = P.kick;
+    posVar.material.uniforms.uDt.value = dt;
+    posVar.material.uniforms.uSpeed.value = P.speed;
+    posVar.material.uniforms.uTwist.value = P.twist;
+  }
+}
+
+function telemetry() {
+  const w = WORLDS[P.tab];
+  const fold = foldBranches(P.alpha * LOCK.deltaC, LOCK.ell);
+  const spec = { lmax: (P.N - 1) * P.g0, lmin: -P.g0 };
+  const TH = kappaH(P.Mach, 8) / TAU;
+  const QH = 1 / P.N;
+  const Evac = eVacTierC(8, 50, LOCK.hcs);
+  const rows = [["Particles", Math.floor(P.count).toLocaleString()], ["GPGPU", gpuOk ? "ping-pong 1024²" : "fallback"]];
+  if (w.id === "crystal") {
+    rows.push(["VK |Q|^{3/4}", Math.pow(P.Q, 0.75).toFixed(4)]);
+    rows.push(["Binding vs Q·E(1)", Math.pow(P.Q, 0.75) < P.Q ? "favors crystal" : "—"]);
+    rows.push(["Goldstones", "5 (analogue)"]);
+    rows.push(["Einstein lab", "not claimed"]);
+  }
+  if (w.id === "horizon") {
+    rows.push(["Mach", P.Mach.toFixed(3)]);
+    rows.push(["Horizon", P.Mach > 1 ? "present" : "none (M≤1)"]);
+    rows.push(["T_H (ℏ=k_B=1)", TH.toFixed(4)]);
+    rows.push(["T* (prov)", LOCK.Tstar + " mK"]);
+    rows.push(["Claim", "matching, not duality"]);
+  }
+  if (w.id === "hypersphere") {
+    rows.push(["Hopf linking", "1 (unit fibers)"]);
+    rows.push(["H-VTOR1", "open (conj)"]);
+  }
+  if (w.id === "tegr") {
+    rows.push(["Q_H = 1/N", QH.toFixed(3)]);
+    rows.push(["k_CS = 2N", String(2 * P.N)]);
+    rows.push(["α_T", P.alphaT.toFixed(2)]);
+    rows.push(["H-TEGR1", "open (conj)"]);
+  }
+  if (w.id === "qgeom") {
+    rows.push(["λ_min / λ_max", spec.lmin.toFixed(3) + " / " + spec.lmax.toFixed(3)]);
+    rows.push(["δ_c (lock)", LOCK.deltaC.toFixed(3)]);
+    rows.push(["fold δ_phys", fold.phys != null ? fold.phys.toFixed(3) : "collapsed"]);
+    rows.push(["δσ_xy N=5 (aud)", LOCK.dxy.toExponential(2) + " S"]);
+    rows.push(["ν₀ (aud)", LOCK.nu0THz.toFixed(3) + " THz"]);
+  }
+  if (w.id === "lattice") {
+    rows.push(["CS[A_1]", (1 / P.N).toFixed(3)]);
+    rows.push(["E_vac fat-torus (prov)", Evac.toFixed(4) + " meV"]);
+    rows.push(["Freeze", "geometry not frozen"]);
+    rows.push(["η_ret form", "2Δ₀ξ/ℏc_s = 3.10 (corr.)"]);
+  }
+  document.getElementById("tele").innerHTML = rows.map(([a, b]) => {
+    const s = String(b);
+    const cls = /open|prov|not frozen|matching/.test(s) ? "warn" : "";
+    return `<div class="row ${cls}"><span>${a}</span><span>${b}</span></div>`;
+  }).join("");
+  document.getElementById("hudTl").textContent = `TDVT // ${w.name.toUpperCase()}`;
+  document.getElementById("hudTr").textContent = `${gpuOk ? "GPGPU" : "KIN"} · N=${Math.floor(P.count).toLocaleString()}`;
+}
+
+function drawPlotly() {
+  const el = document.getElementById("plotly");
+  if (!window.Plotly) return;
+  const id = WORLDS[P.tab].id;
+  const layout = {
+    margin: { l: 38, r: 10, t: 8, b: 28 }, paper_bgcolor: "#080c12", plot_bgcolor: "#080c12",
+    font: { color: "#7d8d9c", size: 10, family: "IBM Plex Mono" },
+    xaxis: { gridcolor: "#1c2a38", zeroline: false },
+    yaxis: { gridcolor: "#1c2a38", zeroline: false },
+    legend: { font: { size: 9 }, x: 0.02, y: 0.98 },
+    showlegend: true,
+  };
+  let data = [];
+  if (id === "crystal") {
+    const Q = [...Array(80)].map((_, i) => 0.1 + i * 0.1);
+    data = [
+      { x: Q, y: Q.map(q => Math.pow(q, 0.75)), type: "scatter", mode: "lines", name: "C|Q|^{3/4}", line: { color: "#3ec8e0" } },
+      { x: Q, y: Q, type: "scatter", mode: "lines", name: "Q·E(1)", line: { color: "#e05aa3" } },
+    ];
+  } else if (id === "horizon") {
+    const r = [...Array(120)].map((_, i) => 0.12 + 2.4 * i / 119);
+    data = [
+      { x: r, y: r.map(x => P.Mach * P.flow / (TAU * x) * 2), type: "scatter", mode: "lines", name: "v_s(r)", line: { color: "#3ec8e0" } },
+      { x: [r[0], r.at(-1)], y: [1, 1], type: "scatter", mode: "lines", name: "c_s", line: { color: "#d4a017", dash: "dash" } },
+    ];
+  } else if (id === "hypersphere") {
+    const xi = [...Array(80)].map((_, i) => i * 0.5 * Math.PI / 79);
+    data = [{ x: xi, y: xi.map(x => P.Q * Math.sin(2 * x)), type: "scatter", mode: "lines", name: "F~n sin(2ξ)", line: { color: "#4ecf9a" } }];
+  } else if (id === "tegr") {
+    const r = [...Array(120)].map((_, i) => 0.2 + 2.6 * i / 119);
+    data = [{ x: r, y: r.map(x => P.Q / (x * x)), type: "scatter", mode: "lines", name: "Q/r²", line: { color: "#e05aa3" } }];
+  } else if (id === "qgeom") {
+    const eigs = [...Array(P.N - 1).fill(-P.g0), (P.N - 1) * P.g0];
+    data = [{ x: eigs.map((_, i) => i + 1), y: eigs, type: "bar", name: "Spec(G)", marker: { color: eigs.map((l, i) => i === eigs.length - 1 ? "#d4a017" : "#3ec8e0") } }];
+  } else {
+    const x = [...Array(80)].map((_, i) => 0.05 + 2.4 * i / 79);
+    data = [{ x, y: x.map(Fsum), type: "scatter", mode: "lines", name: "F=ΣK₀(nx)", line: { color: "#3ec8e0" } }];
+  }
+  Plotly.react(el, data, layout, { displayModeBar: false, staticPlot: true });
+}
+
+const sparkHist = [];
+function drawSpark() {
+  const c = document.getElementById("spark");
+  const ctx = c.getContext("2d");
+  const W = c.width, H = c.height;
+  ctx.fillStyle = "#080c12"; ctx.fillRect(0, 0, W, H);
+  if (sparkHist.length < 2) return;
+  const lo = Math.min(...sparkHist), hi = Math.max(...sparkHist);
+  ctx.strokeStyle = "#3ec8e0"; ctx.lineWidth = 2; ctx.beginPath();
+  sparkHist.forEach((v, i) => {
+    const x = (i / (sparkHist.length - 1)) * W;
+    const y = H - 8 - (H - 16) * ((v - lo) / Math.max(hi - lo, 1e-9));
+    i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+  });
+  ctx.stroke();
+}
+
+let kickT = 0;
+let t0 = performance.now() / 1000, frames = 0, fpsT = 0;
+function loop(now) {
+  requestAnimationFrame(loop);
+  const t = now / 1000;
+  const dt = Math.min(0.05, t - t0); t0 = t;
+  if (P.kick > 0) {
+    kickT += dt;
+    P.kick = Math.max(0, 1 - kickT / 0.7);
+    if (P.kick === 0) kickT = 0;
+  }
+  applySimUniforms(dt);
+  if (P.running) {
+    uniforms.uTime.value += dt;
+    if (gpuOk) {
+      velVar.material.uniforms.uTime.value = uniforms.uTime.value;
+      gpuCompute.compute();
+      uniforms.tPos.value = gpuCompute.getCurrentRenderTarget(posVar).texture;
+    }
+  }
+  controls.update();
+  renderer.render(scene, camera);
+  syncBabylon();
+  bScene.render();
+  frames++; fpsT += dt;
+  if (fpsT > 0.4) {
+    document.getElementById("fps").textContent =
+      `${Math.round(frames / fpsT)} fps · ${Math.floor(P.count).toLocaleString()} points · Three.js GPGPU + Babylon + Plotly`;
+    frames = 0; fpsT = 0;
+    telemetry();
+    drawPlotly();
+    const fold = foldBranches(P.alpha * LOCK.deltaC, LOCK.ell);
+    const metric = WORLDS[P.tab].id === "qgeom"
+      ? (fold.phys ?? 0)
+      : WORLDS[P.tab].id === "horizon" ? P.Mach
+      : Math.pow(P.Q, 0.75);
+    sparkHist.push(metric);
+    if (sparkHist.length > 120) sparkHist.shift();
+    drawSpark();
+  }
+}
+
+renderDock();
+drawPlotly();
+requestAnimationFrame(loop);
+window.addEventListener("resize", () => { bEngine.resize(); drawPlotly(); });
+</script>
+</body>
+</html>

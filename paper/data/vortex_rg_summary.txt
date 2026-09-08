@@ -1,0 +1,9 @@
+QVC vortex-RG C1–C6 summary (frozen α, Option A*)
+kappa_UV=0.4775 meV  kappa_fold=0.1081 meV
+K(0,T*)=46.694  K(alpha_c,T*)=10.573  K_c=2/pi=0.6366
+E_core/kappa=0.3427  a_c=xi=0.0080 um
+primary T* KT-before-fold=False
+conv-only T* KT-before-fold=True  IR plasma alpha/ac=0.945
+C5 free slope=0.542  dlle=431.3
+C6 jump_vs_crossover=sharp_jump_possible
+No T_BKT^bare input. No diagnostic beta_alpha. CS truncated in default scan.

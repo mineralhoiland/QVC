@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TDVT Spacetime Evolution — Revision B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090d; --panel: #0e141c; --stroke: #1c2a38; --text: #e8eef4;
+    --mute: #7d8d9c; --cyan: #3ec8e0; --gold: #d4a017; --mint: #4ecf9a;
+    --mag: #e05aa3; --warn: #e07a4a; --fail: #e05656;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--text); overflow: hidden; }
+  body { display: grid; grid-template-rows: auto auto 1fr auto; }
+  header {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding: .5rem 1rem; border-bottom: 1px solid var(--stroke); background: #0a1016;
+  }
+  .brand { display: flex; align-items: baseline; gap: .7rem; flex-wrap: wrap; }
+  .brand h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .06em; }
+  .brand h1 span { color: var(--cyan); }
+  .brand p { font-family: "IBM Plex Mono", monospace; font-size: .66rem; color: var(--mute); }
+  .pills { display: flex; gap: .3rem; flex-wrap: wrap; }
+  .pill {
+    font-family: "IBM Plex Mono", monospace; font-size: .58rem; letter-spacing: .06em;
+    border: 1px solid var(--stroke); padding: .16rem .4rem; color: var(--mute);
+  }
+  .pill.on { color: #071018; background: var(--cyan); border-color: var(--cyan); }
+  .pill.conj { color: var(--gold); border-color: #6a5410; }
+  nav.tabs {
+    display: flex; overflow-x: auto; border-bottom: 1px solid var(--stroke); background: #080c12;
+  }
+  nav.tabs button {
+    background: transparent; border: 0; border-bottom: 2px solid transparent;
+    color: var(--mute); padding: .5rem .9rem; cursor: pointer; white-space: nowrap;
+    font: 500 .78rem "IBM Plex Sans", sans-serif; letter-spacing: .04em;
+  }
+  nav.tabs button:hover { color: var(--text); }
+  nav.tabs button.on { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .workspace { display: grid; grid-template-columns: 1fr 372px; min-height: 0; height: 100%; }
+  @media (max-width: 1100px) { .workspace { grid-template-columns: 1fr; } }
+  .stage {
+    position: relative; min-height: 480px; height: 100%;
+    background: radial-gradient(ellipse at 44% 36%, #12202c 0%, #07090d 68%);
+  }
+  canvas#gpu { width: 100%; height: 100%; display: block; cursor: grab; }
+  #err {
+    display: none; position: absolute; left: 16px; right: 16px; top: 48px; z-index: 20;
+    background: #2a1010; border: 1px solid #e05656; color: #ffd0d0;
+    font-family: "IBM Plex Mono", monospace; font-size: .68rem; padding: .6rem .7rem;
+    white-space: pre-wrap; max-height: 40%; overflow: auto;
+  }
+  canvas#gpu:active { cursor: grabbing; }
+  .hud-frame { pointer-events: none; position: absolute; inset: 10px; border: 1px solid rgba(62,200,224,.16); }
+  .hud-tl, .hud-tr {
+    position: absolute; top: 16px; pointer-events: none;
+    font-family: "IBM Plex Mono", monospace; font-size: .66rem; color: var(--cyan);
+    text-shadow: 0 0 10px rgba(62,200,224,.35);
+  }
+  .hud-tl { left: 18px; } .hud-tr { right: 18px; text-align: right; }
+  .inset {
+    position: absolute; right: 14px; bottom: 14px; width: 220px; height: 158px;
+    border: 1px solid var(--stroke); background: #05080c; z-index: 2;
+  }
+  .inset label {
+    position: absolute; top: 4px; left: 8px; z-index: 3;
+    font-family: "IBM Plex Mono", monospace; font-size: .56rem; color: var(--gold);
+  }
+  canvas#bjs { width: 100%; height: 100%; display: block; }
+  .dock {
+    overflow: auto; border-left: 1px solid var(--stroke); background: var(--panel);
+    padding: .65rem .75rem 1.1rem;
+  }
+  .dock h2 { font-size: .92rem; color: var(--cyan); }
+  .blurb { color: var(--mute); font-size: .78rem; line-height: 1.42; margin: .28rem 0 .5rem; }
+  .eq {
+    font-family: "IBM Plex Mono", monospace; font-size: .61rem; color: #b7e4ee;
+    background: #081018; border-left: 2px solid var(--mag); padding: .4rem .48rem;
+    white-space: pre-wrap; line-height: 1.42; margin-bottom: .5rem;
+  }
+  .chips { display: flex; flex-wrap: wrap; gap: .26rem; margin-bottom: .5rem; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace; font-size: .56rem; padding: .12rem .36rem;
+    border: 1px solid var(--stroke); color: var(--mute);
+  }
+  .chip.lock { color: var(--mint); border-color: #1e5a44; }
+  .chip.prov { color: #8ec8ff; border-color: #2a5a88; }
+  .chip.conj { color: var(--gold); border-color: #6a5410; }
+  .chip.viz { color: var(--warn); border-color: #6a3a18; }
+  .presets, .btns { display: flex; flex-wrap: wrap; gap: .26rem; margin-bottom: .48rem; }
+  .presets button, .btns button {
+    background: #101820; color: var(--text); border: 1px solid var(--stroke);
+    padding: .24rem .46rem; cursor: pointer; font-size: .73rem;
+  }
+  .presets button:hover, .btns button:hover { border-color: var(--cyan); color: var(--cyan); }
+  .ctrl { margin-bottom: .36rem; }
+  .ctrl label { display: flex; justify-content: space-between; font-size: .73rem; color: var(--mute); }
+  .ctrl b { font-family: "IBM Plex Mono", monospace; color: var(--gold); font-weight: 500; }
+  input[type=range] { width: 100%; accent-color: var(--cyan); }
+  h3.sec {
+    font-size: .64rem; letter-spacing: .12em; text-transform: uppercase; color: var(--mute);
+    margin: .5rem 0 .26rem;
+  }
+  .row {
+    display: flex; justify-content: space-between; gap: .4rem; font-size: .73rem;
+    border-bottom: 1px dashed #1c2a38; padding: .15rem 0;
+  }
+  .row span:last-child { font-family: "IBM Plex Mono", monospace; color: var(--mint); }
+  .row.warn span:last-child { color: var(--gold); }
+  canvas#plot, canvas#spark {
+    width: 100%; display: block; background: #080c12; border: 1px solid var(--stroke);
+  }
+  canvas#plot { height: 168px; } canvas#spark { height: 70px; margin-top: .35rem; }
+  footer {
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+    border-top: 1px solid var(--stroke); padding: .3rem 1rem;
+    font-family: "IBM Plex Mono", monospace; font-size: .6rem; color: var(--mute); background: #080c12;
+  }
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./vendor/three/build/three.module.js",
+    "three/addons/": "./vendor/three/examples/jsm/"
+  }
+}
+</script>
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <h1><span>TDVT</span> Spacetime Evolution</h1>
+    <p>Revision B · analytic GPU Hopf / Unruh–Visser / TEGR / lattice · analogue gravity</p>
+  </div>
+  <div class="pills">
+    <span class="pill on">ANALOGUE</span>
+    <span class="pill">EINSTEIN NOT CLAIMED</span>
+    <span class="pill conj">H-TEGR1 OPEN</span>
+  </div>
+</header>
+<nav class="tabs" id="tabs"></nav>
+<div class="workspace">
+  <section class="stage" id="stage">
+    <canvas id="gpu"></canvas>
+    <div id="err"></div>
+    <div class="hud-frame"></div>
+    <div class="hud-tl" id="hudTl">TDVT // —</div>
+    <div class="hud-tr" id="hudTr">N=524288</div>
+    <div class="inset">
+      <label id="bjsLabel">BABYLON · S³ HULL</label>
+      <canvas id="bjs"></canvas>
+    </div>
+  </section>
+  <aside class="dock">
+    <h2 id="title">—</h2>
+    <p class="blurb" id="blurb"></p>
+    <div class="chips" id="chips"></div>
+    <div class="eq" id="eq"></div>
+    <div class="presets" id="presets"></div>
+    <div class="btns">
+      <button id="btnPause">PAUSE</button>
+      <button id="btnReset">RESET CAM</button>
+      <button id="btnKick">PULSE β</button>
+      <button id="btn4d">TOGGLE 4D</button>
+    </div>
+    <div id="controls"></div>
+    <h3 class="sec">Live audit</h3>
+    <div id="tele"></div>
+    <h3 class="sec" id="plotTitle">Evolution</h3>
+    <canvas id="plot" width="680" height="336"></canvas>
+    <canvas id="spark" width="680" height="140"></canvas>
+  </aside>
+</div>
+<footer>
+  <span>π:S³→S² · v_s=κ/(2πr) · T∝J_Hopf · fractal d_H not a result · holography = 2+1D boundary encoding</span>
+  <span id="fps">fps —</span>
+</footer>
+<script>
+window.__tdvtBoot=setTimeout(function(){
+  var t=document.getElementById("title");
+  var err=document.getElementById("err");
+  if(t && t.textContent==="—" && err && err.style.display!=="block"){
+    err.style.display="block";
+    err.textContent="GPU module did not start. Serve sim-suites/standalone over HTTP, then hard-refresh.\npython3 -m http.server 8765";
+  }
+}, 2500);
+</script>
+
+<script type="module">
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+function showErr(msg){
+  const el=document.getElementById("err");
+  if(!el) return;
+  el.style.display="block";
+  el.textContent=String(msg && msg.stack ? msg.stack : msg);
+  console.error(msg);
+}
+window.addEventListener("error", e=>showErr(e.error||e.message));
+window.addEventListener("unhandledrejection", e=>showErr(e.reason));
+
+const TAU = Math.PI * 2;
+const TABS = [
+  {
+    id: "hopf", name: "Hopf S³", mode: 0, sec: "§2",
+    blurb: "Exact Hopf map π:S³→S². Fibers are great circles, linked once. β has period 4π (spinor). Clifford rotation of (z₁,z₂) is a visualization of the S³ total space — not a tesseract spacetime ontology. Fractal d_H is omitted (Rev B).",
+    eq: "π(z₁,z₂)=(2 Re(z₁z̄₂), 2 Im(z₁z̄₂), |z₁|²−|z₂|²)\nA=dβ+sin²ξ·n dα    F=n sin(2ξ) dξ∧dα\nc₁=n    Φ_Berry=n Ω    β ∈ [0,4π)",
+    chips: [["lock","π(z₁,z₂)"],["lock","linking=1"],["lock","4π fiber"],["viz","S³ Clifford rot."]],
+  },
+  {
+    id: "horizon", name: "Acoustic BH", mode: 1, sec: "§4",
+    blurb: "Unruh–Visser phonons on g_eff. Circulation v_s=κ/(2πr) around a hopfion core; horizon where v_s=c_s. T_H is kinematic. Analogue gravity — not a GR black hole.",
+    eq: "g_eff=(ρ_s/c_s)[−(c_s²−v²), −v; −v, δ]\nv_s=κ/(2πr)    r_H: v_s=c_s\nκ_H=½|∂_r(v²−c_s²)|    T_H=ℏκ_H/(2πk_B)",
+    chips: [["lock","Unruh–Visser"],["lock","r_H, T_H"],["viz","analogue only"]],
+  },
+  {
+    id: "torsion", name: "TEGR Torsion", mode: 2, sec: "§5 / §TEGR",
+    blurb: "Hopf current sources Cartan/Weitzenböck torsion. Axial S^r∼α_T Q/r² inside the core. TA branch gets a roton-like lattice correction. H-TEGR1 (G_ij from overlaps) remains open.",
+    eq: "T^λ_μν=e_a^λ(∂_μ e^a_ν−∂_ν e^a_μ)\nS^r=(α_T Q/(4π r²)) f(r/R₀)\nω_TA²=c_T²k² + α_T² Q²/a⁴ sin²(ka/2)",
+    chips: [["lock","T∝J_Hopf"],["lock","TA roton"],["conj","H-TEGR1"]],
+  },
+  {
+    id: "lattice", name: "Lattice / Boundary", mode: 3, sec: "§3 + §8",
+    blurb: "BCC hopfion crystal: G=T(3)⋊O_h×SU(2)_fiber → five Goldstones (2 TA, 1 LA, 2 magnons). The 2+1D plane is the holographic boundary encoding of the bulk lattice — a dictionary, not a proven duality.",
+    eq: "G=T(3)⋊O_h×SU(2)_fiber\nGoldstones: 2 TA + 1 LA + 2 magnons\nQ_H=1/N    k=2N    θ=π/(2N)\nS_TDVT=S_FN+S_sf+S_TEGR+S_CS+…",
+    chips: [["lock","5 Goldstones"],["lock","Q_H=1/N"],["viz","holography overlay"]],
+  },
+];
+
+const P = {
+  tab: 0, count: 524288, speed: 1, running: true,
+  n: 1, Q: 1, omega: 0.85, rot4: 0.35, fourD: true,
+  flow: 1.15, xi: 0.35, twist: 1,
+  alphaT: 0.25, lattice: 1.55, link: 0.8, N: 5, g0: 0.21,
+  pointSize: 1.15, glow: 0.55, opacity: 0.72, pulse: 0,
+};
+const hist=[], hist2=[];
+
+const PRESETS = {
+  "Fiber lock": { tab: 0, n: 1, omega: 0.6, rot4: 0.15, fourD: true, count: 524288 },
+  "Linked Q=2": { tab: 0, n: 2, Q: 2, omega: 1.1, rot4: 0.55, count: 393216 },
+  "Sonic core": { tab: 1, flow: 1.45, xi: 0.28, Q: 1, count: 524288 },
+  "Torsion steer": { tab: 2, Q: 3, alphaT: 0.4, twist: 1.6, count: 393216 },
+  "BCC crystal": { tab: 3, lattice: 1.6, link: 0.9, N: 5, count: 524288 },
+  "Hypersphere": { tab: 0, n: 1, rot4: 1.2, omega: 0.4, fourD: true, count: 524288 },
+};
+
+const tabsEl=document.getElementById("tabs");
+TABS.forEach((t,i)=>{
+  const b=document.createElement("button");
+  b.textContent=t.sec+"  "+t.name;
+  if(i===0) b.classList.add("on");
+  b.onclick=()=>setTab(i);
+  tabsEl.appendChild(b);
+});
+function setTab(i){
+  P.tab=i;
+  [...tabsEl.children].forEach((el,j)=>el.classList.toggle("on", j===i));
+  hist.length=0; hist2.length=0;
+  renderDock();
+}
+function fmt(k,v){
+  if(k==="count") return Math.round(v).toLocaleString();
+  if(["n","Q","N"].includes(k)) return Number(v).toFixed(0);
+  return Number(v).toFixed(2);
+}
+function slider(key,label,min,max,step){
+  return `<div class="ctrl"><label>${label}<b id="v_${key}">${fmt(key,P[key])}</b></label>
+    <input type="range" min="${min}" max="${max}" step="${step}" value="${P[key]}" data-k="${key}"></div>`;
+}
+function plotName(id){
+  return ({hopf:"F density n sin(2ξ)  ·  c₁=n", horizon:"v_s(r) vs c_s(r)  ·  g_tt", torsion:"S^r(r) and ω_TA(k)", lattice:"VK bound and Spec(G)"})[id];
+}
+function renderDock(){
+  const t=TABS[P.tab];
+  document.getElementById("title").textContent=t.name;
+  document.getElementById("blurb").textContent=t.blurb;
+  document.getElementById("eq").textContent=t.eq;
+  document.getElementById("chips").innerHTML=t.chips.map(([k,x])=>`<span class="chip ${k}">${x}</span>`).join("");
+  document.getElementById("presets").innerHTML=Object.keys(PRESETS).map(n=>`<button data-p="${n}">${n}</button>`).join("");
+  document.getElementById("presets").onclick=(e)=>{
+    const n=e.target.dataset.p; if(!n) return;
+    Object.assign(P, PRESETS[n]);
+    setTab(P.tab);
+  };
+  const common=slider("count","Particles",65536,1048576,16384)
+    +slider("speed","Time rate",0,2.4,0.02)
+    +slider("pointSize","Point size",0.3,2.0,0.05)
+    +slider("glow","Glow",0,1.2,0.02)
+    +slider("opacity","Opacity",0.12,1,0.02);
+  let extra="";
+  if(t.id==="hopf") extra=slider("n","Winding n",1,5,1)+slider("omega","Fiber ω (β̇)",0,2.5,0.02)+slider("rot4","S³ Clifford ω",0,2,0.02);
+  if(t.id==="horizon") extra=slider("flow","Circulation κ̃",0.3,2.4,0.02)+slider("xi","Healing ξ",0.08,0.8,0.01)+slider("Q","Core Q",1,6,1);
+  if(t.id==="torsion") extra=slider("Q","Hopf Q",1,8,1)+slider("alphaT","α_T",0.05,0.8,0.01)+slider("twist","Stream ω",0.2,2.8,0.02);
+  if(t.id==="lattice") extra=slider("lattice","Lattice a",0.7,2.6,0.05)+slider("link","Filaments",0,1.4,0.02)+slider("N","N layers",2,8,1)+slider("Q","Q",1,6,1);
+  document.getElementById("controls").innerHTML=extra+common;
+  document.getElementById("controls").querySelectorAll("input").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      P[inp.dataset.k]=parseFloat(inp.value);
+      document.getElementById("v_"+inp.dataset.k).textContent=fmt(inp.dataset.k, P[inp.dataset.k]);
+    });
+  });
+  document.getElementById("plotTitle").textContent=plotName(t.id);
+}
+renderDock();
+if(window.__tdvtBoot) clearTimeout(window.__tdvtBoot);
+
+const vert = /* glsl */ `
+precision highp float;
+attribute vec4 aSeed;
+attribute float aRand;
+uniform float uTime, uSpeed, uQ, uNwind, uOmega, uRot4, uFourD;
+uniform float uFlow, uXi, uTwist, uAlphaT, uLattice, uLink, uN, uG0;
+uniform float uPointSize, uGlow, uPulse, uMode;
+varying vec3 vColor;
+varying float vAlpha;
+#define PI 3.14159265
+#define TAU 6.2831853
+vec3 hsv2rgb(vec3 c){
+  vec4 K=vec4(1.,2./3.,1./3.,3.);
+  vec3 p=abs(fract(c.xxx+K.xyz)*6.-K.www);
+  return c.z*mix(K.xxx,clamp(p-K.xxx,0.,1.),c.y);
+}
+vec3 hopfionTube(float u,float v,float R,float r,float Q,float t){
+  float ang=u*TAU*Q+t;
+  float tube=v*TAU+t*0.37;
+  float rr=r*(0.85+0.15*sin(3.*tube+ang));
+  return vec3((R+rr*cos(tube))*cos(ang), rr*sin(tube), (R+rr*cos(tube))*sin(ang));
+}
+void main(){
+  float t=uTime*uSpeed;
+  float xi=clamp(aSeed.x*0.5, 0.02, 1.55);
+  float al=aSeed.y;
+  float beta=aSeed.z*2.0 + t*uOmega + uPulse*1.2*sin(t*3.0);
+  float n=max(1., uNwind);
+  float c=cos(xi), s=sin(xi);
+  float z1r=c*cos(beta), z1i=c*sin(beta);
+  float z2r=s*cos(beta+n*al), z2i=s*sin(beta+n*al);
+  if (uFourD>0.5){
+    float a12=uRot4*t, a34=uRot4*t*0.618;
+    float c12=cos(a12), s12=sin(a12), c34=cos(a34), s34=sin(a34);
+    float w=z1r*c12-z1i*s12; float x=z1r*s12+z1i*c12;
+    float y=z2r*c34-z2i*s34; float z=z2r*s34+z2i*c34;
+    z1r=w; z1i=x; z2r=y; z2i=z;
+  }
+  float nx=2.*(z1r*z2r+z1i*z2i);
+  float ny=2.*(z1i*z2r-z1r*z2i);
+  float nz=c*c-s*s;
+  vec3 pos=vec3(0.); vec3 col=vec3(1.); float alpha=0.22;
+  if (uMode < 0.5){
+    float den=max(1.08-z1r, 0.14);
+    pos=vec3(z1i,z2r,z2i)/den;
+    float L=length(pos);
+    if (L>3.4) pos*=3.4*(1.+0.32*log(L/3.4))/L;
+    pos*=0.72;
+    col=hsv2rgb(vec3(fract(0.52+0.5*atan(ny,nx)/PI), 0.88, 0.55+0.4*(0.5+0.5*nz)));
+    alpha=0.18+0.16*(0.5+0.5*cos(beta));
+  } else if (uMode < 1.5){
+    vec3 tube=hopfionTube(aSeed.x/PI, aSeed.y/TAU, 1.05, 0.34, max(1.,uQ), t*0.18);
+    float rad=length(tube.xz);
+    float vs=uFlow/(rad+0.08);
+    float cs=sqrt(rad*rad/(rad*rad+uXi*uXi));
+    float nearH=exp(-abs(vs-cs)*7.0);
+    vec3 flow=-normalize(tube+vec3(0.001))*clamp(vs,0.,2.2)*0.22;
+    vec3 az=normalize(vec3(-tube.z,0.,tube.x)+vec3(0.001));
+    pos=(tube+flow*(t*0.12+aRand)+az*0.08*sin(t*2.4+rad*6.))*0.68;
+    if (length(pos)<0.12) pos*=8.;
+    col=hsv2rgb(vec3(mix(0.52,0.06,nearH),0.92,0.65+0.35*nearH));
+    alpha=0.12+0.42*nearH;
+  } else if (uMode < 2.5){
+    float r=0.16+2.55*aRand;
+    float Sr=uAlphaT*uQ/(4.*PI*max(r*r,0.03))*exp(-(r*0.55)*(r*0.55));
+    float th=aSeed.z+t*uTwist*(0.3+2.2*abs(Sr));
+    float z=(fract(aSeed.w)-0.5)*3.1+0.16*sin(th*uQ);
+    pos=vec3(r*cos(th),z,r*sin(th))*0.68;
+    col=hsv2rgb(vec3(fract(0.82+0.14*abs(Sr)*8.),0.9,0.5+0.45*clamp(abs(Sr)*6.,0.,1.)));
+    alpha=0.11+0.32*clamp(abs(Sr)*8.,0.,1.);
+  } else {
+    float id=mod(aSeed.w,27.);
+    vec3 site=vec3(mod(id,3.)-1., mod(floor(id/3.),3.)-1., mod(floor(id/9.),3.)-1.)*uLattice;
+    if (mod(id,2.)>0.5) site+=vec3(0.5*uLattice);
+    vec3 local=hopfionTube(fract(aSeed.x/PI+t*0.02), fract(aSeed.y/TAU+aSeed.z), 0.40, 0.15, max(1.,uQ), t+id*0.11);
+    float fiber=step(0.74, aRand);
+    pos=(site+local+normalize(site+vec3(0.001))*0.13*uLink*fiber)*0.50;
+    float bdry=smoothstep(0.55, 0.05, abs(pos.y));
+    pos.y=mix(pos.y, pos.y*0.12, bdry*0.55);
+    col=hsv2rgb(vec3(fract(length(site)*0.14+id*0.037+mix(0.55,0.08,bdry)),0.9,0.95));
+    alpha=0.15+0.18*fiber+0.12*bdry;
+  }
+  vColor=col;
+  vAlpha=alpha*smoothstep(11.,0.4,length(pos));
+  vec4 mv=modelViewMatrix*vec4(pos,1.);
+  gl_Position=projectionMatrix*mv;
+  gl_PointSize=max(2.2, min(7.0, uPointSize*(240./max(1.5, -mv.z))));
+}
+`;
+const frag = /* glsl */ `
+precision highp float;
+varying vec3 vColor; varying float vAlpha;
+uniform float uGlow, uOpacity;
+void main(){
+  vec2 uv=gl_PointCoord*2.-1.;
+  float d=dot(uv,uv);
+  if(d>1.) discard;
+  float core=exp(-d*4.5);
+  float halo=exp(-d*1.6)*uGlow*0.35;
+  float a=(core*0.85+halo)*vAlpha*uOpacity;
+  if(a<0.02) discard;
+  gl_FragColor=vec4(vColor*(0.55+0.7*core), a);
+}
+`;
+
+const canvas=document.getElementById("gpu");
+const stage=document.getElementById("stage");
+const renderer=new THREE.WebGLRenderer({canvas, antialias:false, powerPreference:"high-performance"});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 1.75));
+renderer.setClearColor(0x07090d,1);
+renderer.sortObjects=false;
+renderer.toneMapping=THREE.NoToneMapping;
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.debug.checkShaderErrors=true;
+renderer.debug.onShaderError=(gl, program, vs, fs)=>{
+  const log=[gl.getShaderInfoLog(vs), gl.getShaderInfoLog(fs), gl.getProgramInfoLog(program)].filter(Boolean).join("\n");
+  showErr("Shader compile failed:\n"+log);
+};
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(55,1,0.05,200);
+camera.position.set(4.0,2.15,4.8);
+const controls=new OrbitControls(camera, canvas);
+controls.enableDamping=true; controls.dampingFactor=0.06;
+controls.minDistance=0.7; controls.maxDistance=40;
+
+const MAX=1048576;
+const seed=new Float32Array(MAX*4);
+const rand=new Float32Array(MAX);
+const dummyPos=new Float32Array(MAX*3);
+const gld=0.61803398875;
+let seededN=0;
+let geo=null;
+function ensureSeeded(n){
+  n=Math.min(MAX, Math.max(0, n|0));
+  const grew=n>seededN;
+  for(let i=seededN;i<n;i++){
+    seed[i*4]=Math.acos(1-2*((i*gld)%1));
+    seed[i*4+1]=TAU*((i*gld*1.324)%1);
+    seed[i*4+2]=TAU*((i*gld*2.618)%1);
+    seed[i*4+3]=(i%54)+(i+0.5)/MAX;
+    let r=(Math.sin(i*12.9898)*43758.5453)%1; if(r<0) r+=1;
+    rand[i]=r;
+    dummyPos[i*3]=Math.sin(i*0.31)*0.02;
+    dummyPos[i*3+1]=Math.cos(i*0.17)*0.02;
+    dummyPos[i*3+2]=Math.sin(i*0.53)*0.02;
+  }
+  seededN=n;
+  if(grew && geo){
+    geo.attributes.aSeed.needsUpdate=true;
+    geo.attributes.aRand.needsUpdate=true;
+    geo.attributes.position.needsUpdate=true;
+  }
+}
+ensureSeeded(P.count);
+geo=new THREE.BufferGeometry();
+geo.setAttribute("aSeed", new THREE.BufferAttribute(seed,4));
+geo.setAttribute("aRand", new THREE.BufferAttribute(rand,1));
+geo.setAttribute("position", new THREE.BufferAttribute(dummyPos,3));
+geo.setDrawRange(0, P.count);
+geo.boundingSphere=new THREE.Sphere(new THREE.Vector3(0,0,0), 50);
+geo.computeBoundingSphere=()=>{};
+
+const uniforms={
+  uTime:{value:0}, uSpeed:{value:1}, uMode:{value:0},
+  uQ:{value:1}, uNwind:{value:1}, uOmega:{value:0.85}, uRot4:{value:0.35}, uFourD:{value:1},
+  uFlow:{value:1.15}, uXi:{value:0.35}, uTwist:{value:1}, uAlphaT:{value:0.25},
+  uLattice:{value:1.55}, uLink:{value:0.8}, uN:{value:5}, uG0:{value:0.21},
+  uPointSize:{value:1.15}, uGlow:{value:0.55}, uOpacity:{value:0.72}, uPulse:{value:0},
+};
+const mat=new THREE.ShaderMaterial({
+  vertexShader:vert, fragmentShader:frag, uniforms,
+  transparent:true, depthWrite:false, depthTest:false,
+  blending:THREE.AdditiveBlending, toneMapped:false, fog:false,
+});
+const points=new THREE.Points(geo, mat);
+points.frustumCulled=false;
+scene.add(points);
+scene.add(new THREE.Mesh(
+  new THREE.SphereGeometry(3.3, 36, 22),
+  new THREE.MeshBasicMaterial({color:0x0a3344, wireframe:true, transparent:true, opacity:0.08, toneMapped:false}),
+));
+
+function resize(){
+  const w=Math.max(stage.clientWidth, 16);
+  const h=Math.max(stage.clientHeight, 16);
+  camera.aspect=w/h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w,h,false);
+}
+new ResizeObserver(resize).observe(stage);
+resize();
+
+let bEngine=null, bScene=null, bOk=false;
+let hull, torus, ring, axis;
+(function initBabylon(){
+  const B=window.BABYLON;
+  const inset=document.querySelector(".inset");
+  if(!B){
+    if(inset) inset.style.display="none";
+    document.getElementById("bjsLabel").textContent="BABYLON OFFLINE";
+    return;
+  }
+  try{
+    bEngine=new B.Engine(document.getElementById("bjs"), true, {adaptToDeviceRatio:true, preserveDrawingBuffer:false});
+    bScene=new B.Scene(bEngine);
+    bScene.clearColor=new B.Color4(0.02,0.03,0.05,1);
+    const bCam=new B.ArcRotateCamera("c", 0.85, 1.15, 4.0, B.Vector3.Zero(), bScene);
+    bCam.attachControl(document.getElementById("bjs"), true);
+    new B.HemisphericLight("l", new B.Vector3(0.2,1,0.3), bScene);
+    hull=B.MeshBuilder.CreateSphere("h", {diameter:2.05, segments:16}, bScene);
+    const hm=new B.StandardMaterial("hm", bScene);
+    hm.wireframe=true; hm.emissiveColor=new B.Color3(0.2,0.75,0.9); hull.material=hm;
+    torus=B.MeshBuilder.CreateTorus("t", {diameter:0.85, thickness:0.14, tessellation:28}, bScene);
+    const tm=new B.StandardMaterial("tm", bScene);
+    tm.wireframe=true; tm.emissiveColor=new B.Color3(0.9,0.25,0.55); torus.material=tm;
+    ring=B.MeshBuilder.CreateTorus("r", {diameter:2.0, thickness:0.03, tessellation:48}, bScene);
+    const rm=new B.StandardMaterial("rm", bScene);
+    rm.emissiveColor=new B.Color3(1.0,0.5,0.08); ring.material=rm;
+    axis=B.MeshBuilder.CreateCylinder("ax", {height:1.8, diameter:0.05}, bScene);
+    const am=new B.StandardMaterial("am", bScene);
+    am.emissiveColor=new B.Color3(0.3,1.0,0.6); axis.material=am;
+    bOk=true;
+  }catch(e){
+    bOk=false;
+    if(inset) inset.style.display="none";
+    document.getElementById("bjsLabel").textContent="BABYLON FAILED";
+    console.warn("Babylon inset disabled", e);
+  }
+})();
+
+function syncBabylon(){
+  if(!bOk) return;
+  const id=TABS[P.tab].id;
+  document.getElementById("bjsLabel").textContent =
+    id==="hopf" ? "BABYLON · S³ / FIBER" :
+    id==="horizon" ? "BABYLON · HORIZON" :
+    id==="torsion" ? "BABYLON · T_μ AXIS" : "BABYLON · BCC CELL";
+  torus.rotation.y += 0.012*P.speed*(P.fourD?1.4:0.6);
+  ring.setEnabled(id==="horizon");
+  axis.setEnabled(id==="torsion");
+  hull.scaling.setAll(id==="lattice"?0.7:1);
+}
+
+let pulseT = 0;
+document.getElementById("btnPause").onclick=()=>{
+  P.running=!P.running;
+  document.getElementById("btnPause").textContent=P.running?"PAUSE":"RUN";
+};
+document.getElementById("btnReset").onclick=()=>{ camera.position.set(4.0,2.15,4.8); controls.target.set(0,0,0); };
+document.getElementById("btnKick").onclick=()=>{ P.pulse=1; pulseT=0; };
+document.getElementById("btn4d").onclick=()=>{ P.fourD=!P.fourD; };
+
+function applyUniforms(){
+  const dens=Math.sqrt(65536/Math.max(P.count,65536));
+  const nDraw=Math.min(MAX, Math.max(16384, Math.floor(P.count)));
+  ensureSeeded(nDraw);
+  geo.setDrawRange(0, nDraw);
+  uniforms.uSpeed.value=P.speed;
+  uniforms.uMode.value=TABS[P.tab].mode;
+  uniforms.uQ.value=P.Q;
+  uniforms.uNwind.value=P.n;
+  uniforms.uOmega.value=P.omega;
+  uniforms.uRot4.value=P.rot4;
+  uniforms.uFourD.value=P.fourD?1:0;
+  uniforms.uFlow.value=P.flow;
+  uniforms.uXi.value=P.xi;
+  uniforms.uTwist.value=P.twist;
+  uniforms.uAlphaT.value=P.alphaT;
+  uniforms.uLattice.value=P.lattice;
+  uniforms.uLink.value=P.link;
+  uniforms.uN.value=P.N;
+  uniforms.uG0.value=P.g0;
+  uniforms.uPointSize.value=P.pointSize*(0.65+0.35*dens);
+  uniforms.uGlow.value=P.glow;
+  uniforms.uOpacity.value=P.opacity*Math.max(0.5, dens);
+  uniforms.uPulse.value=P.pulse;
+}
+
+function rH_solve(){
+  let lo=0.02, hi=4;
+  for(let i=0;i<50;i++){
+    const m=0.5*(lo+hi);
+    const vs=P.flow/(m+0.08);
+    const cs=Math.sqrt(m*m/(m*m+P.xi*P.xi));
+    if(vs>cs) lo=m; else hi=m;
+  }
+  return 0.5*(lo+hi);
+}
+function kappaH_num(rH){
+  const dr=1e-3;
+  const vs=r=>P.flow/(r+0.08);
+  const cs=r=>Math.sqrt(r*r/(r*r+P.xi*P.xi));
+  const g=r=>vs(r)*vs(r)-cs(r)*cs(r);
+  return 0.5*Math.abs((g(rH+dr)-g(rH-dr))/(2*dr));
+}
+
+function telemetry(){
+  const t=TABS[P.tab];
+  const rows=[];
+  if(t.id==="hopf"){
+    const F=P.n*Math.sin(2*0.7);
+    rows.push(["c₁ = n", String(P.n)]);
+    rows.push(["β period", "4π"]);
+    rows.push(["F ~ n sin(2ξ)|_ξ=0.7", F.toFixed(4)]);
+    rows.push(["S³ Clifford", P.fourD?"on (viz)":"off"]);
+    rows.push(["linking of fibers", "1 (Hopf)"]);
+    hist.push(F); hist2.push(P.omega);
+  } else if(t.id==="horizon"){
+    const rH=rH_solve();
+    const kH=kappaH_num(rH);
+    const TH=kH/TAU;
+    rows.push(["r_H (sim units)", rH.toFixed(4)]);
+    rows.push(["T_H (ℏ=k_B=1)", TH.toFixed(4)]);
+    rows.push(["claim", "analogue only"]);
+    rows.push(["Einstein lab", "not claimed"]);
+    hist.push(TH); hist2.push(rH);
+  } else if(t.id==="torsion"){
+    const Sr=P.alphaT*P.Q/(4*Math.PI);
+    rows.push(["α_T Q", (P.alphaT*P.Q).toFixed(3)]);
+    rows.push(["S^r R₀² / f(0)", Sr.toFixed(4)]);
+    rows.push(["Φ_tor / Ω", (P.alphaT*P.Q).toFixed(3)]);
+    rows.push(["G_ij from TEGR", "H-TEGR1 open"]);
+    hist.push(Sr); hist2.push(P.alphaT);
+  } else {
+    const lmin=-P.g0, lmax=(P.N-1)*P.g0;
+    const QH=1/P.N;
+    rows.push(["Goldstones", "5"]);
+    rows.push(["λ_min / λ_max", lmin.toFixed(3)+" / "+lmax.toFixed(3)]);
+    rows.push(["Q_H=1/N", QH.toFixed(3)]);
+    rows.push(["θ=π/(2N)", (Math.PI/(2*P.N)).toFixed(4)]);
+    rows.push(["holography", "dictionary (not dual)"]);
+    hist.push(lmax); hist2.push(QH);
+  }
+  while(hist.length>120){ hist.shift(); hist2.shift(); }
+  document.getElementById("tele").innerHTML=rows.map(([a,b])=>{
+    const cls=/open|dictionary|analogue|viz/.test(String(b))?"warn":"";
+    return `<div class="row ${cls}"><span>${a}</span><span>${b}</span></div>`;
+  }).join("");
+  document.getElementById("hudTl").textContent=`TDVT // ${t.sec} ${t.name.toUpperCase()}`;
+  document.getElementById("hudTr").textContent=`t=${uniforms.uTime.value.toFixed(1)} · N=${Math.floor(P.count).toLocaleString()}`;
+}
+
+function drawPlot(){
+  const c=document.getElementById("plot");
+  const ctx=c.getContext("2d");
+  const W=c.width, H=c.height;
+  ctx.fillStyle="#080c12"; ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle="#1c2a38"; ctx.strokeRect(48,14,W-64,H-46);
+  const xs=(i,n)=>48+(W-64)*i/(n-1);
+  const ys=(v,lo,hi)=>14+(H-46)*(1-(v-lo)/Math.max(hi-lo,1e-9));
+  const id=TABS[P.tab].id;
+  ctx.lineWidth=2;
+  if(id==="hopf"){
+    ctx.beginPath(); ctx.strokeStyle="#3ec8e0";
+    for(let i=0;i<120;i++){
+      const xi=i/119*Math.PI/2;
+      const F=P.n*Math.sin(2*xi);
+      i?ctx.lineTo(xs(i,120), ys(F,-P.n,P.n)):ctx.moveTo(xs(i,120), ys(F,-P.n,P.n));
+    }
+    ctx.stroke();
+    legend(ctx,[["#3ec8e0","n sin(2ξ)"]]);
+  } else if(id==="horizon"){
+    ctx.beginPath(); ctx.strokeStyle="#3ec8e0";
+    for(let i=1;i<160;i++){
+      const r=0.05+2.6*i/159;
+      const vs=P.flow/(r+0.08);
+      i===1?ctx.moveTo(xs(i,160), ys(vs,0,3)):ctx.lineTo(xs(i,160), ys(vs,0,3));
+    }
+    ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle="#d4a017";
+    for(let i=1;i<160;i++){
+      const r=0.05+2.6*i/159;
+      const cs=Math.sqrt(r*r/(r*r+P.xi*P.xi));
+      i===1?ctx.moveTo(xs(i,160), ys(cs,0,3)):ctx.lineTo(xs(i,160), ys(cs,0,3));
+    }
+    ctx.stroke();
+    legend(ctx,[["#3ec8e0","v_s"],["#d4a017","c_s"]]);
+  } else if(id==="torsion"){
+    ctx.beginPath(); ctx.strokeStyle="#e05aa3";
+    for(let i=1;i<160;i++){
+      const r=0.12+2.6*i/159;
+      const Sr=P.alphaT*P.Q/(4*Math.PI*r*r)*Math.exp(-((r*0.55)**2));
+      i===1?ctx.moveTo(xs(i,160), ys(Sr,0,0.4)):ctx.lineTo(xs(i,160), ys(Sr,0,0.4));
+    }
+    ctx.stroke();
+    legend(ctx,[["#e05aa3","S^r(r)"]]);
+  } else {
+    ctx.beginPath(); ctx.strokeStyle="#4ecf9a";
+    for(let i=1;i<=80;i++){
+      const Q=i/10;
+      const y=Math.pow(Q,0.75);
+      i===1?ctx.moveTo(xs(i-1,80), ys(y,0,8)):ctx.lineTo(xs(i-1,80), ys(y,0,8));
+    }
+    ctx.stroke();
+    ctx.beginPath(); ctx.strokeStyle="#e05656";
+    for(let i=1;i<=80;i++){
+      const Q=i/10;
+      i===1?ctx.moveTo(xs(i-1,80), ys(Q,0,8)):ctx.lineTo(xs(i-1,80), ys(Q,0,8));
+    }
+    ctx.stroke();
+    legend(ctx,[["#4ecf9a","|Q|^{3/4}"],["#e05656","Q·E(1)"]]);
+  }
+}
+function legend(ctx, items){
+  items.forEach((it,i)=>{
+    ctx.fillStyle=it[0]; ctx.fillRect(56+i*150, 6, 10, 10);
+    ctx.fillStyle="#7d8d9c"; ctx.font="18px 'IBM Plex Mono'";
+    ctx.fillText(it[1], 70+i*150, 16);
+  });
+}
+function drawSpark(){
+  const c=document.getElementById("spark");
+  const ctx=c.getContext("2d");
+  const W=c.width, H=c.height;
+  ctx.fillStyle="#080c12"; ctx.fillRect(0,0,W,H);
+  if(hist.length<2) return;
+  const mn=Math.min(...hist), mx=Math.max(...hist);
+  ctx.strokeStyle="#3ec8e0"; ctx.beginPath();
+  hist.forEach((v,i)=>{
+    const x=8+(W-16)*i/Math.max(hist.length-1,1);
+    const y=8+(H-16)*(1-(v-mn)/Math.max(mx-mn,1e-9));
+    i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+  });
+  ctx.stroke();
+  ctx.fillStyle="#7d8d9c"; ctx.font="16px 'IBM Plex Mono'";
+  ctx.fillText("time series of tab observable", 10, H-8);
+}
+
+let t0=performance.now()/1000, frames=0, fpsT=0, shaderChecked=false;
+function loop(now){
+  requestAnimationFrame(loop);
+  try{
+    const t=now/1000, dt=Math.min(0.05, t-t0); t0=t;
+    if(P.pulse>0){ pulseT+=dt; P.pulse=Math.max(0,1-pulseT/1.6); if(P.pulse===0) pulseT=0; }
+    applyUniforms();
+    if(P.running) uniforms.uTime.value+=dt;
+    controls.update();
+    renderer.render(scene, camera);
+    if(!shaderChecked){
+      shaderChecked=true;
+      try{
+        const prog=renderer.properties.get(mat)?.program;
+        if(prog && prog.diagnostics) showErr("Shader diagnostics:\n"+JSON.stringify(prog.diagnostics));
+      }catch(_){}
+    }
+    syncBabylon();
+    if(bOk && bScene) bScene.render();
+    frames++; fpsT+=dt;
+    if(fpsT>0.4){
+      document.getElementById("fps").textContent=
+        `${Math.round(frames/fpsT)} fps · ${Math.floor(P.count).toLocaleString()} gpu points · Three.js`+(bOk?" + Babylon.js":"");
+      frames=0; fpsT=0;
+      telemetry(); drawPlot(); drawSpark();
+    }
+  }catch(e){
+    showErr(e);
+  }
+}
+requestAnimationFrame(loop);
+window.addEventListener("resize", ()=>{ if(bOk && bEngine) bEngine.resize(); });
+</script>
+</body>
+</html>

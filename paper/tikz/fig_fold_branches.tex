@@ -1,0 +1,31 @@
+% Saddle-node fold from locked solver data
+\begin{tikzpicture}
+\begin{axis}[
+  width=0.92\linewidth,
+  height=6.2cm,
+  xlabel={$\alpha/\alpha_c$},
+  ylabel={$\delta=\Delta/\Delta_0$},
+  xmin=0, xmax=1.05,
+  ymin=0, ymax=1.08,
+  legend style={draw=none, at={(0.02,0.02)}, anchor=south west, font=\footnotesize, cells={anchor=west}},
+  tick label style={font=\small},
+  label style={font=\small},
+  clip=false,
+]
+\addplot[oiBlue, thick, forget plot]
+  table[x index=0, y index=2, skip first n=1] {data/fold_phys.dat};
+\addlegendimage{oiBlue, thick}
+\addlegendentry{physical $\delta_+$}
+\addplot[oiVerm, thick, dashed, forget plot]
+  table[x index=0, y index=2, skip first n=1] {data/fold_unst.dat};
+\addlegendimage{oiVerm, thick, dashed}
+\addlegendentry{unstable $\delta_-$}
+\addplot[only marks, mark=*, mark size=2.4pt, oiVerm]
+  coordinates {(1.0, 0.1818)};
+\addlegendentry{fold $(\alpha_c,\delta_c)$}
+\addplot[only marks, mark=square*, mark size=2.4pt, oiOrange]
+  coordinates {(0.90, 0.3874)};
+\addlegendentry{$\lambda^\star$ ($\alpha/\alpha_c=0.90$)}
+\draw[oiGreen, densely dotted] (axis cs:0,0.1818) -- (axis cs:1.0,0.1818);
+\end{axis}
+\end{tikzpicture}

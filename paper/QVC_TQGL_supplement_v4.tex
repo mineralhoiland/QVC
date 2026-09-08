@@ -1,0 +1,244 @@
+\documentclass[11pt,letterpaper]{article}
+\input{macros}
+
+\title{\textbf{Supplemental Material: Honest Topological Ginzburg--Landau Dynamics}\\
+\large Truncated GPE, live gap, dynamical Casimir ODE, and $G_{ij}$\\
+\large Companion to QVC arXiv v4 (Option A*)}
+\author{Mineral Hoiland\\
+\textit{Independent Researcher}}
+\date{August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This supplement specifies the dynamical content of the Quantum Vacuum Catalyzation (\QVC) program that is \emph{actually} integrated, as distinct from the parent Topological Ginzburg--Landau (\TQGL) functional written in the companion preprint. The time stepper is a truncated two-dimensional Gross--Pitaevskii equation (\GPE) coupled to a first-order dynamical Casimir (\DCE) amplitude. Chern--Simons, Berry, and Skyrme terms are omitted from the equation of motion. The gap is $\Delta_{\mathrm{live}}[\psi]$. Over $1$\,ps the live gap rises from $0.6000$\,meV to $\Deltaliveone$; it does not collapse to $0.032$\,meV. Fold-slaved DCE over $80$\,ps saturates at $A^*/A_c^{\mathrm{fold}}=\AresAc$ (resonant) and $\AdetAc$ (detuned), not $0.52$. Static comparison remains the Option~A* fold at $\lambda^\star=\lstar$, $\Delta^\star=\Deltastar$.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+\section{Scope and relation to the preprint}
+\label{sec:scope}
+
+The companion preprint freezes Option~A* (fat torus, Tier-C vacuum form, derived $\alpha$--$E_{\mathrm{vac}}$ bridge) and proves that the static gap map is a saddle-node fold. That paper also writes a parent functional
+\begin{equation}
+\mathcal{F}[\Psi,\mathbf{a}]=\mathcal{F}_{\mathrm{bulk}}+\mathcal{F}_{\mathrm{CS}}+\mathcal{F}_{\mathrm{Berry}}+\mathcal{F}_{\mathrm{ZPF}}+\mathcal{F}_{\mathrm{Skyrme}}.
+\end{equation}
+The present document answers a narrower question: which pieces of $\mathcal{F}$ enter a time-dependent integrator, how the gap is read from the field, and how $G_{ij}$ is presently computed. We do not derive \TDVT{} spacetime, and we do not upgrade Wigner--Seitz overlaps to a torsion vertex (hypothesis H-TOR1 is parked and not accepted).
+
+Numbers used without further comment are the locked macros: $E_{\mathrm{vac}}=\Evac$, $F=\Flock$, $\alpha_c=\alphac$, $\lambda_{\mathrm{fold}}=\lfold$, $\lambda^\star=\lstar$, $\Delta_0=\Deltaex$, $\Delta_c=\Deltac$, $\Delta^\star=\Deltastar$, $Q_H=1/N$, $\hbar c_s=\hbarcs$.
+
+\section{What is in the equation of motion}
+\label{sec:eom}
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_gpe_truncation}
+\caption{Terms retained in the integrator (left) versus terms retained only in the parent functional or withdrawn as a gap schedule (right).}
+\label{fig:trunc-s}
+\end{figure}
+
+The condensate field $\psi(x,y,t)$ obeys a cubic--quintic \GPE{} in two spatial dimensions,
+\begin{equation}
+i\hbar\partial_t\psi=\Bigl[-\frac{\hbar^2}{2m^*}\nabla^2+\alpha_0|\psi|^2+\beta|\psi|^4+V_{\mathrm{ZPF}}(\mathbf{r};A)+V_{\mathrm{ph}}(\mathbf{r},t)\Bigr]\psi,
+\label{eq:gpe}
+\end{equation}
+with $\hbar=0.6582119569$\,meV$\cdot$ps in the integrator units. The vacuum potential is localized on the torus ring,
+\begin{equation}
+V_{\mathrm{ZPF}}(\mathbf{r};A)=-A\,E_{\mathrm{vac}}\exp\Bigl(-\frac{(\rho-R)^2}{2r^2}\Bigr),\qquad\rho=\sqrt{x^2+y^2},
+\end{equation}
+and $E_{\mathrm{vac}}$ is the locked Tier-C value $\Evac$, never $0.244$\,meV. Explicitly, $V_{\mathrm{ZPF}}=-E_{\mathrm{vac}}(A(t)/A(0))$ times a ring Gaussian. The phonon drive on the $1$\,ps window is $V_{\mathrm{ph}}=0.1\Delta_0\sin(\omega_0 t)$ on the same ring, with $\omega_0=2\Delta_0/\hbar$.
+
+The dynamical Casimir amplitude obeys the first-order law actually coded in the suite,
+\begin{equation}
+\dot A=\bigl[\Lambda(\Delta)\,\mathcal{L}(\delta\omega/\Gamma)-\Lambda_{\mathrm{loss}}\bigr]A,\qquad
+\Lambda(\Delta)=\frac{m\Delta}{2\hbar}\frac{Q}{2\pi},\qquad
+\mathcal{L}(x)=\frac{1}{1+x^2},
+\label{eq:dce}
+\end{equation}
+with $\Lambda_{\mathrm{loss}}=\Gamma_{\mathrm{cav}}(\Delta^\star)$ the cavity linewidth, not a parameter fitted to $A^*/A_c=0.52$. Resonant driving uses $\omega_{\mathrm{pump}}/2=2\Delta^\star/\hbar$; the detuning-feedback run uses $\omega_{\mathrm{pump}}/2=2\Delta^\star/\hbar+2\Gamma$. On the coupled $1$\,ps window, $\Delta=\Delta_{\mathrm{live}}[\psi]$. On the $80$\,ps window, $\Delta$ is slaved to the physical fold branch $\Delta(A)$. The fold critical amplitude is $A_c^{\mathrm{fold}}=\Acfold$, not a BKT value.
+
+Chern--Simons $\mathbf{a}\wedge d\mathbf{a}$, Berry $\Omega(\mathbf{k})\cdot\mathbf{j}$, and Skyrme $|\nabla^2\Psi|^2$ do \emph{not} appear in Eq.~\eqref{eq:gpe}. Any Hall staircase or hopfion charge quoted from dynamics is therefore an interpretation using the parent functional, not a flux measured on the grid.
+
+\section{Live gap estimator}
+\label{sec:live}
+
+A previous solver stored
+\begin{equation}
+\Delta(t)\in\{0.600,0.389,0.200,0.032\}\,\mathrm{meV}
+\end{equation}
+as a function of time and did not use $\psi$. That function is not reimplemented.
+
+Let $w(x,y)=\exp[-(\rho-R)^2/(2r^2)]$ be the ring weight. Define
+\begin{equation}
+n_w[\psi]=\frac{\sum_{ij} w_{ij}\,|\psi_{ij}|^2}{\sum_{ij} w_{ij}}.
+\end{equation}
+The primary estimator is
+\begin{equation}
+\Delta_{\mathrm{live}}[\psi]=\Delta_0\sqrt{\frac{n_w[\psi]}{n_{\mathrm{ref}}}},\qquad n_{\mathrm{ref}}=n_w[\psi(\,\cdot\,,0)].
+\label{eq:dlive}
+\end{equation}
+Equation~\eqref{eq:dlive} has no time argument. If $n_w(0)=n_{\mathrm{ref}}$ then $\Delta_{\mathrm{live}}(0)=\Delta_0$. Secondary diagnostics are the density-weighted cubic--quintic potential $\langle\alpha_0|\psi|^2+\beta|\psi|^4\rangle_n$ and the first-order coherence
+\begin{equation}
+g^{(1)}=\frac{|\langle\psi\rangle|^2}{\langle|\psi|^2\rangle}.
+\end{equation}
+Coherence is a reportable output, not a license to omit Lindblad dissipation. The present truncation is Hamiltonian plus the DCE ODE; laboratory collapse would be weaker.
+
+\section{Static comparison (fold, not a schedule)}
+\label{sec:static}
+
+Every dynamical run is compared to the locked fold, not to withdrawn stages. At working participation,
+\begin{equation}
+\lambda^\star=\lstar,\qquad\alpha^\star=0.90\,\alpha_c,\qquad\Delta^\star=\Deltastar
+\end{equation}
+on the physical branch. The integrator should be initialized near this static point (or near $\Delta_0$ with $\lambda$ ramped), never at $0.389$\,meV. The fold theorem forbids a static physical target of $0.032$\,meV: $\delta=0.032/0.6<\delta_c=\alphac$. Maximum static reduction is $\redmax$ at $\Delta_c=\Deltac$.
+
+Drive-scale diagnostics that multiply historical rates by $E_{\mathrm{vac}}/0.244\approx 0.527$ are not split-step results and are not tabulated as physics.
+
+\section{Initial data and grid}
+\label{sec:grid}
+
+The completed run uses a square box of side $200$\,nm, grid $128\times 128$, and $\mathrm{d}t=2$\,fs for a $1$\,ps coupled window. Kinetic coefficient $\hbar^2/(2m^*)=\Delta_0 a_H^2$ with $a_H=r=8$\,nm; cubic--quintic parameters $\alpha=-\Delta_0$, $\beta=\Delta_0/n_0$, $n_0=1$. The initial field is a hopfion with $10\%$ core depletion, phase $Q_H\theta$ with $Q_H=1/N=1/5$, and $3\%$ noise. The reference density $n_{\mathrm{ref}}$ is computed once from this field so that $\Delta_{\mathrm{live}}(0)=\Delta_0$. Time stepping is split-step Fourier for Eq.~\eqref{eq:gpe} and RK4 for Eq.~\eqref{eq:dce}. No output column named \texttt{delta\_prescribed} exists.
+
+\section{Coupled GPE results ($1$\,ps)}
+\label{sec:coupled}
+
+\begin{table}[H]
+\centering
+\caption{Live-gap GPE window. All entries use $\psi$; none is a time schedule.}
+\label{tab:gpe}
+\begin{tabular}{@{}lc@{}}
+\toprule
+Quantity & Value \\
+\midrule
+$\Delta_{\mathrm{live}}(0)$ & $0.6000$\,meV \\
+$\Delta_{\mathrm{live}}(1\,\mathrm{ps})$ & $\Deltaliveone$ \\
+$\min\Delta_{\mathrm{live}}$ & $0.6000$\,meV \\
+live ${}<{}\Delta_c$ & False \\
+$g^{(1)}(1\,\mathrm{ps})$ & $\goneps$ \\
+$A(1\,\mathrm{ps})/A_c^{\mathrm{fold}}$ & $\AoneAc$ \\
+$\|\psi\|$ relative drift & $1.30\times 10^{-14}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The live gap \emph{increases}. That is the result. It is not a $92\%$ collapse, and it is not spun as a delayed catalyzation: the truncated Hamiltonian plus a $1$\,ps drive simply did not deplete the ring-weighted density below $n_{\mathrm{ref}}$.
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_live_gap}
+\caption{Live gap versus the instantaneous fold branch $\Delta(A)$ on the $1$\,ps window. Guides: $\Delta_0$ and $\Delta_c$.}
+\label{fig:live-s}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_g1_A}
+\caption{Coherence $g^{(1)}$ and $A/A_c^{\mathrm{fold}}$ on the same window.}
+\label{fig:g1-s}
+\end{figure}
+
+\section{Fold-slaved DCE ($80$\,ps)}
+\label{sec:dcerun}
+
+\begin{table}[H]
+\centering
+\caption{DCE saturation. Ratios are computed from $A_c^{\mathrm{fold}}=\Acfold$; $0.52$ is not imposed.}
+\label{tab:dce}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Case & $A^*/A_c^{\mathrm{fold}}$ & $\Delta_{\mathrm{ss}}$ (meV) & $L(0)$ \\
+\midrule
+resonant & $\AresAc$ & $0.2240$ & $1.000$ \\
+detuning & $\AdetAc$ & $0.2461$ & $0.200$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Neither run folded out. Two-timescale justification: $\Gamma_{\mathrm{cav}}^{-1}$ is tens of picoseconds, much longer than the $1$\,ps GPE window, so the $80$\,ps amplitude uses $\Delta$ slaved to the physical fold branch rather than a live $\psi$.
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_dce}
+\caption{Fold-slaved DCE amplitude in units of $A_c^{\mathrm{fold}}$. Resonant (solid) and detuned (dashed) saturations are $\AresAc$ and $\AdetAc$.}
+\label{fig:dce-s}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_lorentzian}
+\caption{Lorentzian $\mathcal{L}(\delta\omega/\Gamma)$ on the same $80$\,ps runs.}
+\label{fig:lor-s}
+\end{figure}
+
+\section{Coupling matrix $G_{ij}$}
+\label{sec:gij}
+
+\subsection{Democratic lock}
+
+For $G=g_0(J_N-I_N)$ the spectrum is exact:
+\begin{equation}
+\lambda_{\max}=(N-1)g_0\quad(\mathrm{mult.\ }1),\qquad
+\lambda_{\min}=-g_0\quad(\mathrm{mult.\ }N-1).
+\end{equation}
+Helmert (sum-zero) vectors span the dark subspace. The catalyzon shift is $\Delta_{\mathrm{cat}}=\Delta_{\mathrm{ex}}-g_0$. Working $g_0=0.21$\,meV is larger than $E_{\mathrm{vac}}$ and is withdrawn as a vacuum scale. The suite identification used in Schwinger/Berry diagnostics is $g_0=\lambda^\star E_{\mathrm{vac}}=\gzerostar$, so $|\lambda_{\min}|=\gzerostar$. The older scaling $g_0\approx\gzeroscaled$ ($\lambda_{\mathrm{cat}}\approx\lamcat$) remains a distinct guess from $0.1\times E_{\mathrm{vac}}/0.244$ and is not mixed with $\gzerostar$.
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_spectrum}
+\caption{Democratic spectrum used as the algebraic lock. WS numerics are compared to this figure, not to $\lambda_{\min}=-4g_0$.}
+\label{fig:spec-s}
+\end{figure}
+
+\subsection{Wigner--Seitz program computation}
+
+Five Gaussians of width $\sigma\approx 0.18\,\lambda_M$ are placed at the vertices of a regular pentagon inscribed in the moir\'e hexagon of period $\lambda_M=13$\,nm. Off-diagonal entries are overlaps against $K_0(|\mathbf{r}-\mathbf{r}'|/\xi_K)$ with $\xi_K=R=50$\,nm; the diagonal is set to zero. Democratic $J-I$ is not inserted. Reported acceptance tests are: Hermitian, $G_{ii}=0$, $\operatorname{Tr} G=0$, $\lambda_{\min}<0$, and relative Frobenius distance $\approx 7.0\%$ to the democratic matrix at $\langle G_{\mathrm{off}}\rangle$. Dark multiplicity is split, as expected for a pentagon in a hexagon. Eigenvalues remain $\mathcal{O}(10^{-4})$ in kernel units; converting to meV requires the missing prefactor $\kappa$ such that $g_0=\lambda_G E_{\mathrm{vac}}$.
+
+Archival heatmaps \texttt{figures/Gij\_heatmap.png} and \texttt{figures/Gij\_spectrum.png} document this run. They are program-level, not a torsion variation of $S_{\mathrm{FN}}+S_{\mathrm{sf}}+S_{\mathrm{int}}$.
+
+\subsection{H-TOR1 is parked and not accepted}
+
+The conjectured vertex
+\begin{equation}
+G_{ij}\stackrel{?}{=}\frac{\kappa_{\mathrm{tor}}}{4\pi^2}\int_{\mathrm{WS}}\varepsilon^{\mu}{}_{\nu\rho\sigma}\,
+\partial_\sigma q_H\,\Phi_i^{*\nu}\Phi_j^\rho\,\mathrm{d}^3x
+\end{equation}
+is not evaluated. Passing WS acceptance tests does not close H-TOR1. The two-dimensional proxy of the main-text closure is not democratic; a 3D Weitzenb\"ock quadrature is left for future work and is not used to set $G_{ij}$ or $g_0^\star$.
+
+\section{Parallel channels (do not stack)}
+\label{sec:parallel}
+
+\begin{figure}[H]
+\centering
+\input{tikz/fig_channels}
+\caption{Fold, catalyzon, and GPE/DCE are parallel. The withdrawn $35/52/92$ stack mixed baselines and a prescribed $\Delta(t)$.}
+\label{fig:ch-s}
+\end{figure}
+
+The completed $1$\,ps run has $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone>\Delta_c$, so it is not an overshoot of the fold. A future run that did fall below $\Delta_c$ would be flagged unphysical versus the static branch and would still not resurrect $0.032$\,meV.
+
+\section{Schwinger and Berry (not in the EOM)}
+\label{sec:schberry}
+
+With $g_0=\lambda^\star E_{\mathrm{vac}}=\gzerostar$ one has $E_{\mathrm{pair}}=2|\lambda_{\min}|=\Epair$, replacing withdrawn $0.172$\,meV. The diagnostic crossover is $T^*=\Tstar$. The GOE/GUE Monte Carlo ratio of mean $|\lambda_{\min}|$ is $R_{\mathrm{mean}}=\BerryR$, not a forced $1.43$ enhancement. These numbers are not terms in Eq.~\eqref{eq:gpe}.
+
+\section{Withdrawn dynamical claims}
+\label{sec:withdrawn}
+
+The v3 ``three-stage collapse'' identified (i)~bare $\to$ self-consistent $0.600\to 0.389$\,meV as a $35\%$ static loop at $E_{\mathrm{Cas}}=0.244$\,meV; (ii)~a $52\%$ catalyzon mix $(\Delta_{\mathrm{QVC}}-0.1)/\Delta_{\mathrm{ex}}$; (iii)~a coherent $92\%$ drop $(0.389-0.032)/0.389$ over $1$\,ps with $V_{\mathrm{ZPF}}=-0.244$\,meV. Stage~(i) is fold-out under the derived bridge. Stage~(ii) is not $\mathrm{Spec}(G)$ at $g_0=\gzerostar$. Stage~(iii) used a gap function of time, not of $\psi$, and landed below $\delta_c$. The live-gap suite instead gives $\Deltaliveone$ at $1$\,ps.
+
+\section{Reading of the completed run}
+\label{sec:readout}
+
+Figures~\ref{fig:live-s}--\ref{fig:lor-s} report $\Delta_{\mathrm{live}}(t)$, $g^{(1)}(t)$, and $A(t)$ with guides at $\Delta_0$ and $\Delta_c$. Because $\Delta_{\mathrm{live}}$ rose while $g^{(1)}$ stayed of order one, the $1$\,ps window is a coherent non-collapse of the truncated GPE, not catalyzation through the fold and not dephasing. Hall conductance is not an output of Eq.~\eqref{eq:gpe}; it remains a prediction of $Q_H=1/N$ awaiting a Chern--Simons integrator.
+
+\section{Reproducibility}
+\label{sec:repro}
+
+Freeze and fold numbers are regenerated from \texttt{qvc.bridge}, \texttt{qvc.gap\_fold}, and \texttt{qvc.gap\_reduction}. Dynamics are in \texttt{output/tqgl\_v4/results.json} and \texttt{csv/}, ingested here as \texttt{data/coupled\_timeseries.csv} and \texttt{data/dce\_*.csv}. The live-gap estimator is \texttt{qvc.tqgl.delta\_live\_from\_psi}. Compilation of this PDF does not re-execute the GPE.
+
+\bibliographystyle{unsrt}
+\bibliography{qvc_refs}
+
+\end{document}

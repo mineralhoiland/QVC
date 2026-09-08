@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDVT Convergence Suite — 10 Hypotheses, 500K Particles</title>
+<style>
+:root {
+  --bg: #060a10; --panel: #0c1018; --panel2: #101824; --border: #1a2236;
+  --text: #c8cdd8; --gold: #E69F00; --sky: #56B4E9; --green: #009E73;
+  --verm: #D55E00; --purp: #CC79A7; --yellow: #F0E442; --blue: #0072B2;
+  --dim: #3a4560; --dim2: #283040;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; overflow:hidden; }
+body { background:var(--bg); color:var(--text); font-family:'SF Mono','Fira Code','Courier New',monospace;
+  display:flex; flex-direction:column; font-size:11px; }
+
+/* ─── TABS ─── */
+#tabs { display:flex; gap:3px; padding:5px 10px; background:var(--panel);
+  border-bottom:1px solid var(--border); flex-shrink:0; overflow-x:auto; }
+.tab { padding:4px 9px; font-size:10px; cursor:pointer; border:1px solid transparent;
+  border-bottom:2px solid transparent; border-radius:3px 3px 0 0;
+  background:transparent; color:var(--dim); transition:all .15s;
+  white-space:nowrap; font-family:inherit; letter-spacing:0.5px; }
+.tab:hover { color:var(--text); background:rgba(255,255,255,.02); }
+.tab.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(230,159,0,.06); }
+
+/* ─── MAIN LAYOUT ─── */
+#main { display:flex; flex:1; min-height:0; }
+
+/* ─── LEFT PANEL ─── */
+#left { width:240px; padding:10px 12px; background:var(--panel);
+  border-right:1px solid var(--border); overflow-y:auto; flex-shrink:0; }
+.section { margin-bottom:14px; }
+.section-title { color:var(--gold); font-size:9px; text-transform:uppercase;
+  letter-spacing:1.5px; margin-bottom:6px; padding-bottom:4px;
+  border-bottom:1px solid var(--border); font-weight:600; }
+.row { display:flex; justify-content:space-between; align-items:baseline;
+  margin-bottom:2px; padding:1px 0; }
+.row .label { color:var(--dim); font-size:10px; }
+.row .value { color:var(--sky); font-weight:bold; font-size:10px; }
+
+/* ─── SLIDERS ─── */
+.slider-group { margin-bottom:6px; }
+.slider-group label { display:flex; justify-content:space-between; align-items:baseline;
+  font-size:9px; color:var(--dim); margin-bottom:3px; letter-spacing:0.3px; }
+.slider-group .sval { color:var(--sky); font-weight:bold; font-size:10px; }
+.slider-group input[type=range] { width:100%; height:3px; -webkit-appearance:none;
+  background:var(--border); border-radius:2px; outline:none; cursor:pointer; }
+.slider-group input[type=range]::-webkit-slider-thumb { -webkit-appearance:none;
+  width:10px; height:10px; border-radius:50%; background:var(--gold); cursor:pointer;
+  border:1px solid rgba(0,0,0,.3); }
+.slider-group input[type=range]::-moz-range-thumb { width:10px; height:10px;
+  border-radius:50%; background:var(--gold); cursor:pointer; border:none; }
+.audio-btn { background:var(--border); color:var(--dim); border:none; padding:4px 10px;
+  border-radius:3px; cursor:pointer; font-family:inherit; font-size:9px;
+  letter-spacing:0.5px; transition:all .15s; width:100%; }
+.audio-btn:hover { background:var(--dim2); color:var(--text); }
+.audio-btn.on { background:rgba(0,158,115,.15); border:1px solid rgba(0,158,115,.3);
+  color:var(--green); }
+
+/* ─── VIEWPORT ─── */
+#viewport { flex:1; position:relative; min-width:200px; min-height:200px;
+  background:var(--bg); overflow:hidden; }
+#loadmsg { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  color:var(--gold); font-size:13px; z-index:15; text-align:center;
+  letter-spacing:2px; pointer-events:none; }
+#errmsg { position:absolute; bottom:10px; left:10px; right:10px;
+  color:var(--verm); font-size:10px; z-index:20; text-align:left;
+  pointer-events:none; background:rgba(6,10,16,.85); padding:6px 10px;
+  border:1px solid rgba(213,94,0,.3); border-radius:3px;
+  display:none; max-height:60px; overflow:hidden; }
+
+/* ─── RIGHT PANEL ─── */
+#right { width:280px; padding:10px 12px; background:var(--panel);
+  border-left:1px solid var(--border); overflow-y:auto; flex-shrink:0; }
+#mode-name { font-size:13px; font-weight:bold; letter-spacing:1px;
+  margin-bottom:6px; }
+#desc { color:var(--text); font-size:10px; line-height:1.5; margin-bottom:10px;
+  min-height:40px; opacity:0.85; }
+.info-box { border-radius:3px; padding:7px 9px; margin-bottom:8px; font-size:10px; }
+.info-box .box-label { font-size:8px; text-transform:uppercase; letter-spacing:1px;
+  margin-bottom:3px; font-weight:600; }
+#prediction { background:rgba(230,159,0,.05); border:1px solid rgba(230,159,0,.15); }
+#prediction .box-label { color:var(--gold); }
+#prediction .box-value { color:var(--text); line-height:1.4; }
+#falsifier { background:rgba(213,94,0,.05); border:1px solid rgba(213,94,0,.15); }
+#falsifier .box-label { color:var(--verm); }
+#falsifier .box-value { color:var(--verm); opacity:0.8; line-height:1.4; }
+#graph { width:100%; height:160px; border:1px solid var(--border); border-radius:3px;
+  background:rgba(0,0,0,.25); margin-bottom:10px; }
+.readout-grid { display:grid; grid-template-columns:1fr 1fr; gap:2px 8px; }
+.readout-item { display:flex; justify-content:space-between; padding:2px 0; }
+.readout-item .rl { color:var(--dim); font-size:9px; }
+.readout-item .rv { color:var(--sky); font-weight:bold; font-size:10px;
+  font-variant-numeric:tabular-nums; }
+
+/* ─── BOTTOM BAR ─── */
+#bottom { height:32px; padding:0 12px; background:var(--panel);
+  border-top:1px solid var(--border); display:flex; align-items:center;
+  gap:16px; font-size:10px; flex-shrink:0; }
+#eq { flex:1; color:var(--purp); overflow:hidden; white-space:nowrap; font-size:11px; }
+#eq b { color:var(--gold); }
+#status { color:var(--dim); }
+#fps { color:var(--green); font-variant-numeric:tabular-nums; }
+</style>
+</head>
+<body>
+
+<div id="tabs"></div>
+<div id="main">
+  <div id="left">
+    <div class="section">
+      <div class="section-title">Locked Parameters (A*)</div>
+      <div class="row"><span class="label">g&#8320;</span><span class="value">0.0982 meV</span></div>
+      <div class="row"><span class="label">E<sub>vac</sub></span><span class="value">0.1287 meV</span></div>
+      <div class="row"><span class="label">F</span><span class="value">0.58068</span></div>
+      <div class="row"><span class="label">&#955;*</span><span class="value">0.7628</span></div>
+      <div class="row"><span class="label">A*/A<sub>c</sub></span><span class="value">0.9117</span></div>
+      <div class="row"><span class="label">N</span><span class="value">5 islands</span></div>
+      <div class="row"><span class="label">&#958;</span><span class="value">50 nm</span></div>
+      <div class="row"><span class="label">T*</span><span class="value">118.7 mK</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Derived Quantities</div>
+      <div class="row"><span class="label">&#955;<sub>max</sub></span><span class="value">0.3928 meV</span></div>
+      <div class="row"><span class="label">&#955;<sub>min</sub></span><span class="value">&#8722;0.0982 meV</span></div>
+      <div class="row"><span class="label">Ratio</span><span class="value">&#8722;4</span></div>
+      <div class="row"><span class="label">k = 2N</span><span class="value">10</span></div>
+      <div class="row"><span class="label">&#952;</span><span class="value">&#960;/10</span></div>
+      <div class="row"><span class="label">Q<sub>H</sub></span><span class="value">1/5</span></div>
+    </div>
+    <div class="section">
+      <div class="section-title">Physics Controls</div>
+      <div class="slider-group">
+        <label>Temperature<span class="sval" id="sv-temp">118.7 mK</span></label>
+        <input type="range" id="sl-temp" min="0" max="500" value="119" step="1">
+      </div>
+      <div class="slider-group">
+        <label>Drive A/A<sub>c</sub><span class="sval" id="sv-amp">0.912</span></label>
+        <input type="range" id="sl-amp" min="0" max="150" value="91" step="1">
+      </div>
+      <div class="slider-group">
+        <label>Coupling g/g&#8320;<span class="sval" id="sv-coup">1.00</span></label>
+        <input type="range" id="sl-coup" min="10" max="300" value="100" step="1">
+      </div>
+      <div class="slider-group">
+        <label>Mag. Flux &#934;/&#934;&#8320;<span class="sval" id="sv-flux">0.200</span></label>
+        <input type="range" id="sl-flux" min="0" max="500" value="200" step="1">
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-title">Display Controls</div>
+      <div class="slider-group">
+        <label>Time Scale<span class="sval" id="sv-tscale">1.0x</span></label>
+        <input type="range" id="sl-tscale" min="1" max="50" value="10" step="1">
+      </div>
+      <div class="slider-group">
+        <label>Particle Size<span class="sval" id="sv-psize">1.0</span></label>
+        <input type="range" id="sl-psize" min="2" max="40" value="10" step="1">
+      </div>
+      <div class="slider-group">
+        <label>Fog Density<span class="sval" id="sv-fog">0.03</span></label>
+        <input type="range" id="sl-fog" min="0" max="100" value="30" step="1">
+      </div>
+      <div style="margin-top:8px">
+        <button class="audio-btn" id="btn-audio">&#9834; Audio Off</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewport">
+    <div id="loadmsg">INITIALIZING TDVT CONVERGENCE SUITE...</div>
+    <div id="errmsg"></div>
+  </div>
+
+  <div id="right">
+    <div id="mode-name">CHIP OVERVIEW</div>
+    <div id="desc"></div>
+    <div class="info-box" id="prediction">
+      <div class="box-label">Key Prediction</div>
+      <div class="box-value" id="pred-text"></div>
+    </div>
+    <div class="info-box" id="falsifier">
+      <div class="box-label">Falsifier</div>
+      <div class="box-value" id="falsifier-text"></div>
+    </div>
+    <canvas id="graph" width="260" height="160"></canvas>
+    <div class="section">
+      <div class="section-title">Live Readout</div>
+      <div class="readout-grid">
+        <div class="readout-item"><span class="rl">&#969;<sub>bright</sub></span><span class="rv" id="r-wbright">--</span></div>
+        <div class="readout-item"><span class="rl">&#969;<sub>dark</sub></span><span class="rv" id="r-wdark">--</span></div>
+        <div class="readout-item"><span class="rl">&#916;<sub>F</sub></span><span class="rv" id="r-df">--</span></div>
+        <div class="readout-item"><span class="rl">&#969;<sub>cat</sub></span><span class="rv" id="r-wcat">--</span></div>
+        <div class="readout-item"><span class="rl">&#948;&#969;</span><span class="rv" id="r-dw">--</span></div>
+        <div class="readout-item"><span class="rl">N<sub>plat</sub></span><span class="rv" id="r-nplat">--</span></div>
+        <div class="readout-item"><span class="rl">n&#772;<sub>cat</sub></span><span class="rv" id="r-ncat">--</span></div>
+        <div class="readout-item"><span class="rl">k<sub>B</sub>T/g&#8320;</span><span class="rv" id="r-kbt">--</span></div>
+        <div class="readout-item"><span class="rl">&#915;<sub>Sch</sub></span><span class="rv" id="r-schwinger">--</span></div>
+        <div class="readout-item"><span class="rl">&#963;<sub>xy</sub></span><span class="rv" id="r-sigxy">--</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="bottom">
+  <span id="mode-label"></span>
+  <span id="eq"></span>
+  <span style="flex:1"></span>
+  <span id="fps">-- FPS</span>
+  <span id="status">initializing...</span>
+</div>
+
+<script src="vendor-umd/three.min.js"></script>
+<script src="vendor-umd/OrbitControls.js"></script>
+<script>
+/* ===================================================================
+   TDVT CONVERGENCE SUITE — 500K GPU PARTICLES, 11 MODES
+   Three.js r147, PointsMaterial, OrbitControls
+   Clean rewrite: zero shader complexity, guaranteed rendering
+   =================================================================== */
+
+(function() {
+'use strict';
+
+// ─── LOCKED PARAMETERS ───
+var g0 = 0.0982;           // meV, coupling
+var Evac = 0.1287;          // meV, vacuum energy
+var F = 0.58068;            // filling fraction
+var ls = 0.7628;            // lambda*
+var AsAc = 0.9117;          // A*/Ac ratio
+var N_ISL = 5;              // island count
+var xi = 50;                // nm, coherence length
+var cs = 1e4;               // m/s, Bogoliubov sound velocity
+var hbar_meVs = 6.582e-13;  // meV*s
+var kB_meVK = 8.617e-2;     // meV/K
+var Ts = 118.7;             // mK, T*
+
+// ─── DERIVED ───
+var lmax = (N_ISL - 1) * g0;
+var lmin = -g0;
+var hw0 = 2 * g0;
+var wbright = 4 * g0 / hbar_meVs / (2 * Math.PI) * 1e-9;
+var wdark = g0 / hbar_meVs / (2 * Math.PI) * 1e-9;
+var wcat = hw0 / hbar_meVs / (2 * Math.PI) * 1e-9;
+var dw = 5 * g0 / hbar_meVs / (2 * Math.PI) * 1e-9;
+var dF = g0 * Math.sin(Math.PI / N_ISL);
+
+// ─── CONSTANTS ───
+var PI = Math.PI, TAU = 2 * PI;
+var N_P = 500000;
+var GOLD=[0.902,0.624,0.0], SKY=[0.337,0.706,0.914], GRN=[0.0,0.620,0.451];
+var VERM=[0.835,0.369,0.0], PURP=[0.800,0.475,0.655], YLW=[0.941,0.894,0.259];
+var BLU=[0.0,0.447,0.698], WHT=[0.92,0.92,0.92], DIM=[0.15,0.20,0.35];
+
+// ─── MODE DEFINITIONS ───
+var MODES = [
+  { id:'chip', name:'CHIP OVERVIEW', color:'#E69F00',
+    desc:'Full TDVT processor: pentamer register (5 islands at g₀), SSH shuttle links, DCE cavity. Particles trace signal paths through the topological circuit.',
+    eq:'G = g₀(J − I) → Spec = {4g₀, −g₀ ×4}',
+    pred:'Bright/dark eigenvalue ratio = −4 (scale-free)',
+    falsifier:'(Overview mode)'},
+  { id:'jja1', name:'H-JJA1: VORTEX LATTICE', color:'#D55E00',
+    desc:'5×3 aluminium JJA at E_J ≈ g₀, frustrated at Φ/Φ0 = 1/5. Vortex cores form a commensurate lattice.',
+    eq:'ω<sub>bright</sub> / ω<sub>dark</sub> = −(N−1) = <b>−4</b>',
+    pred:'Mode ratio −4 at f = 1/5; E_J within 9% of g₀',
+    falsifier:'Mode ratio ≠ −4; no commensurate state at f = 1/5'},
+  { id:'vh1', name:'H-VH1: VACUUM DARK COHERENCE', color:'#009E73',
+    desc:'5 graphene layers in a planar cavity. Vacuum fluctuations create 1 bright + 4 dark Helmert coherence channels.',
+    eq:'REC<sub>dark</sub> / REC<sub>bright</sub> = 1/(N−1) = <b>1/4</b>',
+    pred:'Dark coherence lifetime exceeds bright by Purcell factor (N−1)² = 16',
+    falsifier:'No Helmert partition; dark coherence vanishes'},
+  { id:'frac1', name:'H-FRAC1: DEVIL\'S STAIRCASE', color:'#CC79A7',
+    desc:'Fractal JJA with σ_xy staircase at d_H = 3/4. Sierpiński geometry. Plateau widths scale as q⁻⁴″³.',
+    eq:'N<sub>plateau</sub>(ε) = (ε<sub>max</sub>/ε)^{3/4} → <b>5.62</b>',
+    pred:'Box-counting dimension d_H = 0.75 ± 0.05',
+    falsifier:'d_H ≠ 0.75; no staircase below T*'},
+  { id:'ffti1', name:'H-FFTI1: FLOQUET SSH', color:'#0072B2',
+    desc:'4-step periodic driving on the pentamer SSH chain. Topological gap opens with Chern C = 1.',
+    eq:'Δ_F = g₀ sin(π/N) = <b>0.0304 meV</b>, θ = π/10',
+    pred:'Soliton transfer ≥ 90%; braid phase π/10 per cycle',
+    falsifier:'No topological gap; θ ≠ π/10; C ≠ 1'},
+  { id:'oam1', name:'H-OAM1: DCE VORTEX ℓ = 10', color:'#F0E442',
+    desc:'DCE photon pairs at A* carry orbital angular momentum ℓ = 2N = 10. 10-fold phase winding.',
+    eq:'ℓ<sub>total</sub> = k = 2N = <b>10</b>, ω<sub>DCE</sub> ≈ 47.5 GHz',
+    pred:'DCE photon pairs carry OAM ℓ = 10',
+    falsifier:'No OAM in DCE emission; ℓ ≠ 10'},
+  { id:'phon1', name:'H-PHON1: HELMERT PHONON LASER', color:'#E69F00',
+    desc:'Pentamer of coupled resonators. 1 bright lasing mode + 4 dark sub-threshold modes. Threshold ratio = 16.',
+    eq:'P<sub>dark</sub> / P<sub>bright</sub> = (N−1)² = <b>16</b>',
+    pred:'Only bright channel lases; dark modes form protected register',
+    falsifier:'All channels lase simultaneously; ratio ≠ 16'},
+  { id:'vmbc1', name:'H-VMBC1: DISPERSIVE READOUT', color:'#56B4E9',
+    desc:'Bright and dark states produce resolved dispersive shifts in a 3D cavity. Splitting = 5g₀/ħ.',
+    eq:'δω = 5g₀/ħ = <b>118.75 GHz</b>',
+    pred:'Bright–dark splitting ≈ 118.75 GHz, trivially resolvable',
+    falsifier:'No splitting; δω ≠ 5g₀/ħ'},
+  { id:'fdss1', name:'H-FDSS1: FRACTAL MEMORY', color:'#CC79A7',
+    desc:'Hall-staircase memory capacity scales as ε⁻³⁄⁴. At pentamer resolution: 5.6 addressable plateaus.',
+    eq:'N<sub>plat</sub>(ε) ∝ ε⁻³⁄⁴ → <b>5.62</b> at ε = e²/(10h)',
+    pred:'Sublinear fractal scaling; ~32 plateaus at 10× finer resolution',
+    falsifier:'Scaling exponent α ≠ 3/4; staircase complete (d_H = 1)'},
+  { id:'cphon1', name:'H-CPHON1: CATALYZON', color:'#009E73',
+    desc:'Quasiparticle of the structured vacuum. Gapped Bogoliubov dispersion at ω₀ = 2g₀/ħ ≈ 47.5 GHz.',
+    eq:'ω(k) = √(ω₀² + cₛ²k²), ω₀ = <b>47.5 GHz</b>',
+    pred:'Spectral peak at 47.5 GHz; suppressed above T* = 118.7 mK',
+    falsifier:'No feature at ~47.5 GHz; no T* dependence'},
+  { id:'fhop1', name:'H-FHOP1: FRACTIONAL HOPF Q = 1/5', color:'#D55E00',
+    desc:'5 linked field components on lens space L(5,1). Each carries Q_H = 1/N = 1/5. Total Q = 1.',
+    eq:'Q<sub>H</sub> = 1/N = <b>1/5</b>, Q<sub>total</sub> = 1, θ = π/10',
+    pred:'Hall steps at δσ_xy = e²/(10h) ≈ 3.874 × 10⁻⁶ S',
+    falsifier:'Q_total ≠ 1; no fractional linking'}
+];
+
+// ─── GLOBALS ───
+var scene, camera, renderer, controls, particles, geo, clock;
+var currentMode = 0;
+var audioCtx = null, audioOn = false, oscBright, oscDark, oscCat, gainNode;
+var graphCtx, frameCount = 0, lastFpsTime = performance.now();
+var animTime = 0;
+
+// User-controlled parameters
+var userTemp = Ts;
+var userAmp = AsAc;
+var userCoup = 1.0;
+var userFlux = 0.2;
+var timeScale = 1.0;
+var pSize = 1.0;
+var fogDensity = 0.03;
+
+// ─── SHARED GEOMETRY ARRAYS ───
+var aPos = new Float32Array(N_P * 3);
+var aCol = new Float32Array(N_P * 3);
+
+// ─── ERROR DISPLAY ───
+var _errCount = 0;
+function showErr(msg) {
+  console.error('[TDVT]', msg);
+  if (_errCount >= 5) return;
+  _errCount++;
+  var el = document.getElementById('errmsg');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML += msg + '<br>';
+  setTimeout(function() { el.style.display = 'none'; el.innerHTML = ''; _errCount = 0; }, 8000);
+}
+
+// ────────────────────────────────────────────────────────────
+//  GEOMETRY GENERATORS — one per mode, fill aPos and aCol
+// ────────────────────────────────────────────────────────────
+function setP(i, x,y,z, cr,cg,cb) {
+  var i3 = i * 3;
+  aPos[i3]=x; aPos[i3+1]=y; aPos[i3+2]=z;
+  aCol[i3]=cr; aCol[i3+1]=cg; aCol[i3+2]=cb;
+}
+
+function rng() { return Math.random(); }
+function rng2() { return Math.random()*2-1; }
+
+// MODE 0: CHIP — pentamer register + SSH links + DCE cavity
+function genChip() {
+  var R = 3.5, idx = 0;
+  var perIsland = Math.floor(N_P * 0.30 / 5);
+  var perLink = Math.floor(N_P * 0.30 / 5);
+  for (var isl = 0; isl < 5; isl++) {
+    var ang = isl/5*TAU - PI*0.5;
+    var cx = Math.cos(ang)*R, cy = Math.sin(ang)*R;
+    var na = ((isl+1)%5)/5*TAU - PI*0.5;
+    var nx = Math.cos(na)*R, ny = Math.sin(na)*R;
+    for (var i = 0; i < perIsland; i++) {
+      var bright = rng() > 0.2;
+      var c = bright ? GOLD : SKY;
+      setP(idx, cx+rng2()*0.4, cy+rng2()*0.4, rng2()*0.3, c[0],c[1],c[2]);
+      idx++;
+    }
+    for (var i = 0; i < perLink; i++) {
+      var t = rng();
+      var mx = cx+(nx-cx)*t, my = cy+(ny-cy)*t;
+      setP(idx, mx+rng2()*0.1, my+rng2()*0.1, Math.sin(t*PI)*0.4+rng2()*0.05, GRN[0],GRN[1],GRN[2]);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    var a = (i/N_P)*TAU*3+rng()*0.3, cr = 5.0+rng2()*0.3;
+    setP(i, Math.cos(a)*cr, Math.sin(a)*cr, rng2()*1.5, DIM[0],DIM[1],DIM[2]);
+  }
+}
+
+// MODE 1: H-JJA1 VORTEX LATTICE
+function genJJA1() {
+  var perCore = Math.floor(N_P*0.7/15), idx = 0;
+  for (var row = 0; row < 3; row++) {
+    for (var col = 0; col < 5; col++) {
+      var cx = (col-2)*2.0, cy = (row-1)*2.5;
+      var isBright = (col===2 && row===1);
+      var c = isBright ? GOLD : SKY;
+      for (var i = 0; i < perCore; i++) {
+        setP(idx, cx+rng2()*0.3, cy+rng2()*0.3, rng2()*0.2, c[0],c[1],c[2]);
+        idx++;
+      }
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    setP(i, rng2()*6, rng2()*4.5, rng2()*0.3, VERM[0]*0.5,VERM[1]*0.5,VERM[2]*0.5);
+  }
+}
+
+// MODE 2: H-VH1 VACUUM DARK COHERENCE
+function genVH1() {
+  var brightN = Math.floor(N_P*0.3), darkN = Math.floor(N_P*0.6/4), idx = 0;
+  for (var i = 0; i < brightN; i++) {
+    var th = rng()*PI, ph = rng()*TAU, r = 1.8*Math.cbrt(rng());
+    setP(idx, r*Math.sin(th)*Math.cos(ph), r*Math.sin(th)*Math.sin(ph), r*Math.cos(th), GOLD[0],GOLD[1],GOLD[2]);
+    idx++;
+  }
+  for (var d = 0; d < 4; d++) {
+    var dang = d/4*TAU+PI/4;
+    var dcx = Math.cos(dang)*3.5, dcy = Math.sin(dang)*3.5;
+    for (var i = 0; i < darkN; i++) {
+      var th = rng()*PI, ph = rng()*TAU, r = 0.9*Math.cbrt(rng());
+      setP(idx, dcx+r*Math.sin(th)*Math.cos(ph), dcy+r*Math.sin(th)*Math.sin(ph), r*Math.cos(th), SKY[0],SKY[1],SKY[2]);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    var d2 = Math.floor(rng()*4), dang2 = d2/4*TAU+PI/4, t = rng();
+    setP(i, Math.cos(dang2)*3.5*t, Math.sin(dang2)*3.5*t, rng2()*0.15, GRN[0],GRN[1],GRN[2]);
+  }
+}
+
+// MODE 3: H-FRAC1 SIERPINSKI
+function genFRAC1() {
+  var verts = [[0,3.5,0],[-3.5,-2,0],[3.5,-2,0]];
+  var cols = [PURP, GOLD, SKY];
+  var x=0, y=0, z=0;
+  for (var i = 0; i < N_P; i++) {
+    var vi = Math.floor(rng()*3);
+    x = (x+verts[vi][0])*0.5; y = (y+verts[vi][1])*0.5; z = (z+verts[vi][2])*0.5;
+    setP(i, x, y, z+rng2()*0.08, cols[vi][0],cols[vi][1],cols[vi][2]);
+  }
+}
+
+// MODE 4: H-FFTI1 FLOQUET SSH CHAIN
+function genFFTI1() {
+  var nSites = 10, perSite = Math.floor(N_P*0.5/nSites);
+  var perBond = Math.floor(N_P*0.4/(nSites-1)), idx = 0;
+  for (var s = 0; s < nSites; s++) {
+    var sx = (s-4.5)*1.2, isEdge = (s===0||s===nSites-1);
+    var c = isEdge ? VERM : BLU;
+    for (var i = 0; i < perSite; i++) {
+      setP(idx, sx+rng2()*0.15, rng2()*0.15, rng2()*0.2, c[0],c[1],c[2]);
+      idx++;
+    }
+    if (s < nSites-1) {
+      var strong = (s%2===0), nxs = (s+1-4.5)*1.2;
+      var bc = strong ? GRN : DIM;
+      for (var i = 0; i < perBond; i++) {
+        var t = rng();
+        setP(idx, sx+(nxs-sx)*t, rng2()*0.15, rng2()*0.15, bc[0],bc[1],bc[2]);
+        idx++;
+      }
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    setP(i, rng2()*6, rng2()*2, rng2()*0.3, DIM[0]*0.5,DIM[1]*0.5,DIM[2]*0.5);
+  }
+}
+
+// MODE 5: H-OAM1 DCE VORTEX l=10
+function genOAM1() {
+  var nArms = 10, perArm = Math.floor(N_P*0.85/nArms), idx = 0;
+  var armCols = [GOLD,SKY,GRN,VERM,PURP,YLW,BLU,WHT,GOLD,SKY];
+  for (var a = 0; a < nArms; a++) {
+    var baseAng = a/nArms*TAU, c = armCols[a];
+    for (var i = 0; i < perArm; i++) {
+      var t = rng(), r = 0.3+t*4.5, ang = baseAng+t*TAU*0.8;
+      setP(idx, r*Math.cos(ang)+rng2()*0.15, r*Math.sin(ang)+rng2()*0.15,
+        (1-t)*1.5*Math.sin(ang*2)+rng2()*0.1, c[0],c[1],c[2]);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    var th = rng()*PI, ph = rng()*TAU, r = 0.4*Math.cbrt(rng());
+    setP(i, r*Math.sin(th)*Math.cos(ph), r*Math.sin(th)*Math.sin(ph), r*Math.cos(th), YLW[0],YLW[1],YLW[2]);
+  }
+}
+
+// MODE 6: H-PHON1 HELMERT PHONON LASER
+function genPHON1() {
+  var brightN = Math.floor(N_P*0.4), darkN = Math.floor(N_P*0.5/4), idx = 0;
+  for (var i = 0; i < brightN; i++) {
+    var th = rng()*PI, ph = rng()*TAU, r = 2.0*Math.cbrt(rng());
+    setP(idx, r*Math.sin(th)*Math.cos(ph), r*Math.sin(th)*Math.sin(ph)+2, r*Math.cos(th), GOLD[0],GOLD[1],GOLD[2]);
+    idx++;
+  }
+  for (var d = 0; d < 4; d++) {
+    var dang = d/4*TAU;
+    var dcx = Math.cos(dang)*3.0, dcy = Math.sin(dang)*3.0-1.5;
+    for (var i = 0; i < darkN; i++) {
+      var th = rng()*PI, ph = rng()*TAU, r = 0.7*Math.cbrt(rng());
+      setP(idx, dcx+r*Math.sin(th)*Math.cos(ph), dcy+r*Math.sin(th)*Math.sin(ph), r*Math.cos(th), SKY[0]*0.6,SKY[1]*0.6,SKY[2]*0.6);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    setP(i, rng2()*5, rng2()*4, rng2()*0.2, DIM[0]*0.3,DIM[1]*0.3,DIM[2]*0.3);
+  }
+}
+
+// MODE 7: H-VMBC1 DISPERSIVE READOUT
+function genVMBC1() {
+  var halfN = Math.floor(N_P*0.45), idx = 0;
+  for (var i = 0; i < halfN; i++) {
+    var x = 3.0+(rng()-0.5)*0.8;
+    var sp = Math.exp(-Math.pow((x-3)/0.5,2)), h = sp*4.0*rng();
+    setP(idx, x, h-1, rng2()*0.3*(1-sp+0.2), GOLD[0],GOLD[1],GOLD[2]);
+    idx++;
+  }
+  for (var i = 0; i < halfN; i++) {
+    var x = -3.0+(rng()-0.5)*0.8;
+    var sp = Math.exp(-Math.pow((x+3)/0.5,2)), h = sp*2.5*rng();
+    setP(idx, x, h-1, rng2()*0.3*(1-sp+0.2), SKY[0],SKY[1],SKY[2]);
+    idx++;
+  }
+  for (var i = idx; i < N_P; i++) {
+    var t = rng();
+    setP(i, -3+t*6, -1.5+rng2()*0.2, rng2()*0.1, VERM[0]*0.4,VERM[1]*0.4,VERM[2]*0.4);
+  }
+}
+
+// MODE 8: H-FDSS1 FRACTAL MEMORY
+function genFDSS1() {
+  var stairs = [0,0.08,0.20,0.24,0.34,0.40,0.60,0.66,0.76,0.80,0.92,1.0];
+  var idx = 0, perStep = Math.floor(N_P*0.8/stairs.length);
+  for (var s = 0; s < stairs.length; s++) {
+    var xc = (stairs[s]-0.5)*8, yc = s/stairs.length*6-3;
+    var c = (s%2===0) ? PURP : GOLD;
+    for (var i = 0; i < perStep; i++) {
+      setP(idx, xc+rng2()*0.4, yc+rng()*0.3, rng2()*0.3, c[0],c[1],c[2]);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    setP(i, rng2()*5, rng2()*4, rng2()*0.5, DIM[0]*0.4,DIM[1]*0.4,DIM[2]*0.4);
+  }
+}
+
+// MODE 9: H-CPHON1 CATALYZON DISPERSION
+function genCPHON1() {
+  var w0 = 2.0, cS = 1.5;
+  for (var i = 0; i < N_P; i++) {
+    var k = rng2()*5, phi = rng()*TAU;
+    var omega = Math.sqrt(w0*w0 + cS*cS*k*k);
+    var x = k*Math.cos(phi)*0.6, y = k*Math.sin(phi)*0.6, z = omega*0.8-2;
+    var bl = Math.abs(k)/5;
+    var cr = GRN[0]*(1-bl)+GOLD[0]*bl, cg = GRN[1]*(1-bl)+GOLD[1]*bl, cb = GRN[2]*(1-bl)+GOLD[2]*bl;
+    var ng = Math.exp(-k*k*2);
+    cr = cr*(1-ng)+YLW[0]*ng; cg = cg*(1-ng)+YLW[1]*ng; cb = cb*(1-ng)+YLW[2]*ng;
+    setP(i, x, y, z, cr, cg, cb);
+  }
+}
+
+// MODE 10: H-FHOP1 FRACTIONAL HOPF
+function genFHOP1() {
+  var perFiber = Math.floor(N_P*0.85/5);
+  var fiberCols = [GOLD, SKY, GRN, VERM, PURP];
+  var idx = 0;
+  for (var f = 0; f < 5; f++) {
+    var azimuth = f/5*TAU, tilt = PI/3, c = fiberCols[f];
+    for (var i = 0; i < perFiber; i++) {
+      var u = rng()*TAU, v = rng()*TAU, Rmaj = 2.5, rmin = 0.35;
+      var x = (Rmaj+rmin*Math.cos(v))*Math.cos(u);
+      var y = (Rmaj+rmin*Math.cos(v))*Math.sin(u);
+      var z = rmin*Math.sin(v);
+      var xt = x*Math.cos(tilt)+z*Math.sin(tilt);
+      var zt = -x*Math.sin(tilt)+z*Math.cos(tilt);
+      var xr = xt*Math.cos(azimuth)-y*Math.sin(azimuth);
+      var yr = xt*Math.sin(azimuth)+y*Math.cos(azimuth);
+      setP(idx, xr, yr, zt, c[0],c[1],c[2]);
+      idx++;
+    }
+  }
+  for (var i = idx; i < N_P; i++) {
+    var th = rng()*PI, ph = rng()*TAU, r = 0.6*Math.cbrt(rng());
+    setP(i, r*Math.sin(th)*Math.cos(ph), r*Math.sin(th)*Math.sin(ph), r*Math.cos(th), WHT[0]*0.5,WHT[1]*0.5,WHT[2]*0.5);
+  }
+}
+
+var generators = [genChip, genJJA1, genVH1, genFRAC1, genFFTI1,
+                  genOAM1, genPHON1, genVMBC1, genFDSS1, genCPHON1, genFHOP1];
+
+// ────────────────────────────────────────────────────────────
+//  RENDERING — PointsMaterial + DynamicDrawUsage
+// ────────────────────────────────────────────────────────────
+
+function initScene() {
+  console.log('[TDVT] initScene');
+  var vp = document.getElementById('viewport');
+  var w = vp.clientWidth;
+  var h = vp.clientHeight;
+  console.log('[TDVT] viewport measured:', w, 'x', h);
+  if (w < 100) w = Math.max(window.innerWidth - 540, 400);
+  if (h < 100) h = Math.max(window.innerHeight - 80, 400);
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x060a10);
+  scene.fog = new THREE.FogExp2(0x060a10, fogDensity);
+
+  camera = new THREE.PerspectiveCamera(55, w / h, 0.1, 200);
+  camera.position.set(0, 4, 12);
+  camera.lookAt(0, 0, 0);
+
+  renderer = new THREE.WebGLRenderer({ antialias: false, alpha: false });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  vp.appendChild(renderer.domElement);
+  console.log('[TDVT] renderer created, canvas:', renderer.domElement.width, 'x', renderer.domElement.height);
+
+  // Clock BEFORE controls — if controls constructor throws, clock still exists
+  clock = new THREE.Clock();
+
+  // OrbitControls
+  if (typeof THREE.OrbitControls === 'function') {
+    controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.minDistance = 2;
+    controls.maxDistance = 50;
+    controls.target.set(0, 0, 0);
+    controls.update();
+    console.log('[TDVT] OrbitControls created');
+  } else {
+    console.error('[TDVT] THREE.OrbitControls not found!');
+    showErr('OrbitControls not available — camera disabled');
+  }
+
+  // Resize handler
+  window.addEventListener('resize', function() {
+    var w2 = vp.clientWidth, h2 = vp.clientHeight;
+    if (w2 > 50 && h2 > 50 && camera && renderer) {
+      camera.aspect = w2 / h2;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w2, h2);
+    }
+  });
+}
+
+function initParticles() {
+  console.log('[TDVT] initParticles: generating chip geometry...');
+  genChip();
+
+  geo = new THREE.BufferGeometry();
+
+  // Position attribute with DynamicDrawUsage for efficient re-upload
+  var posAttr = new THREE.BufferAttribute(aPos, 3);
+  posAttr.setUsage(THREE.DynamicDrawUsage);
+  geo.setAttribute('position', posAttr);
+
+  // Color attribute with DynamicDrawUsage
+  var colAttr = new THREE.BufferAttribute(aCol, 3);
+  colAttr.setUsage(THREE.DynamicDrawUsage);
+  geo.setAttribute('color', colAttr);
+
+  // PointsMaterial — guaranteed to work on every WebGL implementation
+  var mat = new THREE.PointsMaterial({
+    size: 0.06,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.85,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    sizeAttenuation: true
+  });
+
+  particles = new THREE.Points(geo, mat);
+  particles.frustumCulled = false;
+  scene.add(particles);
+
+  console.log('[TDVT] initParticles done: 500K points, PointsMaterial');
+}
+
+function computeGeometry(modeIdx) {
+  console.log('[TDVT] computeGeometry mode', modeIdx);
+  try {
+    generators[modeIdx]();
+  } catch(e) {
+    console.error('[TDVT] generator error:', e);
+    return;
+  }
+  if (!geo || !geo.attributes.position) return;
+  // Flag shared arrays for GPU re-upload
+  geo.attributes.position.needsUpdate = true;
+  geo.attributes.color.needsUpdate = true;
+}
+
+// ─── CAMERA PRESETS PER MODE ───
+var CAM_PRESETS = [
+  [0, 4, 13],   // chip
+  [2, 6, 13],   // jja1 lattice
+  [0, 4, 11],   // vh1 cluster
+  [0, 2, 10],   // frac1 fractal
+  [0, 2, 15],   // ffti1 chain
+  [2, 5, 11],   // oam1 torus
+  [0, 4, 11],   // phon1 cluster
+  [2, 5, 13],   // vmbc1 surface
+  [0, 2, 15],   // fdss1 chain
+  [2, 5, 13],   // cphon1 surface
+  [2, 5, 11]    // fhop1 torus
+];
+
+// ─── TAB BAR ───
+function buildTabs() {
+  var tabsEl = document.getElementById('tabs');
+  if (!tabsEl) return;
+  for (var i = 0; i < MODES.length; i++) {
+    (function(idx) {
+      var btn = document.createElement('button');
+      btn.className = 'tab' + (idx === 0 ? ' active' : '');
+      btn.textContent = MODES[idx].id.toUpperCase();
+      btn.onclick = function() { switchMode(idx); };
+      if (idx === 0) btn.style.borderBottomColor = MODES[0].color;
+      tabsEl.appendChild(btn);
+    })(i);
+  }
+}
+
+// ─── MODE SWITCHING — instant, no fade ───
+function switchMode(idx) {
+  if (idx === currentMode) return;
+
+  // Update tab styling
+  var tabs = document.querySelectorAll('.tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].classList.toggle('active', i === idx);
+    tabs[i].style.borderBottomColor = (i === idx) ? MODES[idx].color : 'transparent';
+  }
+
+  currentMode = idx;
+  computeGeometry(idx);
+
+  // Reset camera to mode preset
+  var cam = CAM_PRESETS[idx] || [0, 4, 13];
+  if (camera) camera.position.set(cam[0], cam[1], cam[2]);
+  if (controls) {
+    controls.target.set(0, 0, 0);
+    controls.update();
+  }
+
+  // Reset particle rotation
+  if (particles) particles.rotation.set(0, 0, 0);
+
+  updateUI();
+  updateReadouts();
+  if (audioCtx && audioOn) updateAudio();
+}
+
+// ─── UI UPDATE ───
+function updateUI() {
+  var m = MODES[currentMode];
+  var el;
+  el = document.getElementById('mode-name');
+  if (el) { el.textContent = m.name; el.style.color = m.color; }
+  el = document.getElementById('desc');
+  if (el) el.textContent = m.desc;
+  el = document.getElementById('pred-text');
+  if (el) el.innerHTML = m.pred;
+  el = document.getElementById('falsifier-text');
+  if (el) el.innerHTML = m.falsifier || '(Overview mode)';
+  el = document.getElementById('eq');
+  if (el) el.innerHTML = m.eq;
+  el = document.getElementById('mode-label');
+  if (el) el.innerHTML = '<span style="color:'+m.color+'">'+m.id.toUpperCase()+'</span>';
+}
+
+// ─── READOUTS — live physics from sliders ───
+function updateReadouts() {
+  var T = userTemp;
+  var g = g0 * userCoup;
+  var kBT = kB_meVK * T * 1e-3;
+  var hw = 2 * g;
+
+  var wb = 4*g / hbar_meVs / (2*PI) * 1e-9;
+  var wd = g / hbar_meVs / (2*PI) * 1e-9;
+  var wc = hw / hbar_meVs / (2*PI) * 1e-9;
+  var split = 5*g / hbar_meVs / (2*PI) * 1e-9;
+  var deltaF = g * Math.sin(PI / N_ISL);
+
+  var ncat = (kBT > 1e-10) ? 1.0 / (Math.exp(hw / kBT) - 1.0) : 0;
+  if (!isFinite(ncat)) ncat = 0;
+
+  var kbtRatio = (g > 0) ? kBT / g : 0;
+
+  var AeffAc = userAmp;
+  var schwinger = (AeffAc > 0.01) ?
+    AeffAc * AeffAc * wc * Math.exp(-PI / AeffAc) : 0;
+
+  var flux = Math.max(userFlux, 0.01);
+  var nPlat = Math.pow(1.0 / flux, 0.75);
+
+  var sigxy = (1.0 / N_ISL) * 3.874e-5;
+
+  function setR(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  setR('r-wbright', wb.toFixed(1) + ' GHz');
+  setR('r-wdark', wd.toFixed(2) + ' GHz');
+  setR('r-df', (deltaF * 1000).toFixed(1) + ' μeV');
+  setR('r-wcat', wc.toFixed(1) + ' GHz');
+  setR('r-dw', split.toFixed(1) + ' GHz');
+  setR('r-nplat', nPlat.toFixed(2));
+  setR('r-ncat', ncat < 0.001 ? ncat.toExponential(1) : ncat.toFixed(3));
+  setR('r-kbt', kbtRatio.toFixed(3));
+  setR('r-schwinger', schwinger < 0.001 ? schwinger.toExponential(1) : schwinger.toFixed(3) + ' GHz');
+  setR('r-sigxy', (sigxy * 1e6).toFixed(2) + ' μS');
+}
+
+// ─── 2D GRAPH ───
+function initGraph() {
+  var cv = document.getElementById('graph');
+  if (cv) graphCtx = cv.getContext('2d');
+}
+
+function drawGraph(t) {
+  if (!graphCtx) return;
+  var ctx = graphCtx, W = 260, H = 160;
+  ctx.fillStyle = 'rgba(6,10,16,0.35)';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.strokeStyle = '#141c2a'; ctx.lineWidth = 0.5;
+  for (var x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (var y = 0; y < H; y += 30) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  ctx.lineWidth = 1.5;
+  var mode = currentMode;
+
+  if (mode === 0) {
+    ctx.fillStyle = '#56B4E9';
+    for (var i = 0; i < 4; i++) ctx.fillRect(25+i*38, H-20-55, 24, 55);
+    ctx.fillStyle = '#E69F00'; ctx.fillRect(190, H-20-110, 30, 110);
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('−g₀ (×4)', 20, H-8);
+    ctx.fillText('4g₀', 192, H-8);
+    ctx.fillText('Spec(G)', W/2-20, 14);
+  }
+  else if (mode === 1) {
+    ctx.strokeStyle = '#D55E00'; ctx.beginPath();
+    for (var x = 0; x < W; x++) {
+      var f = x/W*200, s = -0.8*Math.exp(-Math.pow((f-wbright)/3,2));
+      for (var d = 0; d < 4; d++) s -= 0.2*Math.exp(-Math.pow((f-wdark-d*2)/2,2));
+      var y2 = H/2+s*H*0.4;
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('S₁₁(ω) bright=' + wbright.toFixed(1) + ' GHz', 10, 14);
+  }
+  else if (mode === 2) {
+    ctx.fillStyle = '#E69F00'; ctx.fillRect(40, H-125, 55, 95);
+    ctx.fillStyle = '#56B4E9'; ctx.fillRect(150, H-55, 55, 25);
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('REC partition', 10, 14);
+    ctx.fillText('Bright', 47, H-130); ctx.fillText('Dark (1/4)', 142, H-60);
+  }
+  else if (mode === 3 || mode === 8) {
+    ctx.strokeStyle = '#CC79A7'; ctx.beginPath();
+    var stairs = [0,.08,.20,.24,.34,.40,.60,.66,.76,.80,.92,1.0];
+    for (var x = 0; x < W; x++) {
+      var mu = x/W, sig = 0;
+      for (var s = 0; s < stairs.length; s++) sig += (mu > stairs[s] ? stairs[s] : 0);
+      sig = Math.min(sig/5, 1);
+      var y2 = H-15-sig*(H-30);
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText(mode === 3 ? 'σ_xy vs μ (d_H=3/4)' : 'N_plat vs ε (d_H=3/4)', 10, 14);
+  }
+  else if (mode === 4) {
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('Quasi-energy ε(k)', 10, 14);
+    ctx.strokeStyle = '#0072B2';
+    for (var band = -1; band <= 1; band += 2) {
+      ctx.beginPath();
+      for (var x = 0; x < W; x++) {
+        var k = (x/W-0.5)*PI, e = band*(0.5+0.3*Math.cos(k));
+        var y2 = H/2-e*H*0.35;
+        x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+      } ctx.stroke();
+    }
+    ctx.setLineDash([4,4]); ctx.strokeStyle = '#D55E00';
+    ctx.beginPath();
+    ctx.moveTo(0, H/2-0.2*H*0.35); ctx.lineTo(W, H/2-0.2*H*0.35);
+    ctx.moveTo(0, H/2+0.2*H*0.35); ctx.lineTo(W, H/2+0.2*H*0.35);
+    ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = '#D55E00'; ctx.fillText('Δ_F='+(dF*1000).toFixed(1)+' μeV', W-100, H/2+4);
+  }
+  else if (mode === 5) {
+    ctx.strokeStyle = '#F0E442'; ctx.beginPath();
+    for (var x = 0; x < W; x++) {
+      var phi2 = x/W*TAU, y2 = H/2-Math.sin(10*phi2+t*2)*H*0.35;
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('Phase(φ): ℓ = 10 winding', 10, 14);
+  }
+  else if (mode === 6) {
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('Phonon laser threshold', 10, 14);
+    ctx.fillStyle = '#E69F00'; ctx.fillRect(40, H-50, 45, 30);
+    ctx.fillStyle = '#c8cdd8'; ctx.fillText('Bright', 43, H-55);
+    ctx.fillStyle = '#56B4E9'; ctx.fillRect(155, H-50-16, 45, 16);
+    ctx.fillStyle = '#c8cdd8'; ctx.fillText('Dark (×16)', 148, H-55-16);
+    ctx.setLineDash([4,4]); ctx.strokeStyle = '#D55E00';
+    ctx.beginPath(); ctx.moveTo(20, H-20); ctx.lineTo(W-20, H-20); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle = '#D55E00'; ctx.fillText('threshold', W-70, H-10);
+  }
+  else if (mode === 7) {
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('δω = '+dw.toFixed(1)+' GHz', 10, 14);
+    ctx.strokeStyle = '#E69F00'; ctx.beginPath();
+    for (var x = 0; x < W; x++) {
+      var f2 = x/W*200, b2 = Math.exp(-Math.pow((f2-140)/5,2));
+      var y2 = H-20-b2*(H-40);
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+    ctx.strokeStyle = '#56B4E9'; ctx.beginPath();
+    for (var x = 0; x < W; x++) {
+      var f2 = x/W*200, d2 = Math.exp(-Math.pow((f2-21)/4,2));
+      var y2 = H-20-d2*(H-40);
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+  }
+  else if (mode === 9) {
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('ω(k)=√(ω₀²+c²k²)', 10, 14);
+    ctx.strokeStyle = '#009E73'; ctx.beginPath();
+    for (var x = 0; x < W; x++) {
+      var k = (x/W-0.5)*10, w0 = 47.5, cs2 = 15;
+      var om = Math.sqrt(w0*w0+cs2*cs2*k*k);
+      var y2 = H-15-(om-30)/80*(H-30);
+      x === 0 ? ctx.moveTo(x,y2) : ctx.lineTo(x,y2);
+    } ctx.stroke();
+    ctx.setLineDash([4,4]); ctx.strokeStyle = '#D55E00';
+    var gapY = H-15-(47.5-30)/80*(H-30);
+    ctx.beginPath(); ctx.moveTo(0,gapY); ctx.lineTo(W,gapY); ctx.stroke();
+    ctx.setLineDash([]); ctx.fillStyle = '#D55E00'; ctx.fillText('ω₀=47.5 GHz', W-90, gapY-5);
+  }
+  else if (mode === 10) {
+    ctx.fillStyle = '#c8cdd8'; ctx.font = '9px monospace';
+    ctx.fillText('Linking matrix (Q_H=1/5)', 10, 14);
+    var colors = ['#E69F00','#56B4E9','#009E73','#D55E00','#CC79A7'];
+    var szz = 25;
+    for (var i = 0; i < 5; i++) for (var j = 0; j < 5; j++) {
+      ctx.fillStyle = (i === j) ? '#141c2a' : colors[j];
+      ctx.globalAlpha = (i === j) ? 0.3 : 0.6;
+      ctx.fillRect(55+j*szz, 30+i*szz, szz-2, szz-2);
+    }
+    ctx.globalAlpha = 1; ctx.fillStyle = '#c8cdd8';
+    ctx.fillText('Q_total = 5×1/5 = 1', 55, H-10);
+  }
+}
+
+// ─── AUDIO ───
+function initAudio() {
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  gainNode = audioCtx.createGain(); gainNode.gain.value = 0;
+  gainNode.connect(audioCtx.destination);
+
+  oscBright = audioCtx.createOscillator();
+  oscBright.type = 'sine'; oscBright.frequency.value = wbright*10;
+  oscBright.connect(gainNode); oscBright.start();
+
+  oscDark = audioCtx.createOscillator();
+  oscDark.type = 'triangle'; oscDark.frequency.value = wdark*10;
+  var dg = audioCtx.createGain(); dg.gain.value = 0.25;
+  oscDark.connect(dg); dg.connect(gainNode); oscDark.start();
+
+  oscCat = audioCtx.createOscillator();
+  oscCat.type = 'square'; oscCat.frequency.value = wcat*10;
+  var cg = audioCtx.createGain(); cg.gain.value = 0;
+  oscCat.connect(cg); cg.connect(gainNode); oscCat.start();
+  oscCat._gain = cg;
+}
+
+function toggleAudio() {
+  audioOn = !audioOn;
+  var btn = document.getElementById('btn-audio');
+  if (audioOn) {
+    if (!audioCtx) initAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    gainNode.gain.setTargetAtTime(0.08, audioCtx.currentTime, 0.1);
+    if (btn) { btn.textContent = '♪ Audio On'; btn.classList.add('on'); }
+  } else {
+    if (gainNode) gainNode.gain.setTargetAtTime(0, audioCtx.currentTime, 0.1);
+    if (btn) { btn.textContent = '♪ Audio Off'; btn.classList.remove('on'); }
+  }
+}
+
+function updateAudio() {
+  if (!audioCtx || !audioOn) return;
+  var m = currentMode, now = audioCtx.currentTime;
+  oscCat._gain.gain.setTargetAtTime((m===5||m===9)?0.15:0, now, 0.2);
+}
+
+// ─── SLIDER CONTROLS ───
+function bindSlider(sliderId, callback) {
+  var el = document.getElementById(sliderId);
+  if (el) el.addEventListener('input', function() { callback(parseFloat(this.value)); });
+}
+
+function initControls() {
+  bindSlider('sl-temp', function(v) {
+    userTemp = v;
+    var el = document.getElementById('sv-temp'); if (el) el.textContent = v.toFixed(1)+' mK';
+    updateReadouts();
+  });
+  bindSlider('sl-amp', function(v) {
+    userAmp = v / 100;
+    var el = document.getElementById('sv-amp'); if (el) el.textContent = userAmp.toFixed(3);
+    updateReadouts();
+  });
+  bindSlider('sl-coup', function(v) {
+    userCoup = v / 100;
+    var el = document.getElementById('sv-coup'); if (el) el.textContent = userCoup.toFixed(2);
+    updateReadouts();
+  });
+  bindSlider('sl-flux', function(v) {
+    userFlux = v / 1000;
+    var el = document.getElementById('sv-flux'); if (el) el.textContent = userFlux.toFixed(3);
+    updateReadouts();
+  });
+  bindSlider('sl-tscale', function(v) {
+    timeScale = v / 10;
+    var el = document.getElementById('sv-tscale'); if (el) el.textContent = timeScale.toFixed(1)+'x';
+  });
+  bindSlider('sl-psize', function(v) {
+    pSize = v / 10;
+    var el = document.getElementById('sv-psize'); if (el) el.textContent = pSize.toFixed(1);
+    if (particles && particles.material) particles.material.size = 0.06 * pSize;
+  });
+  bindSlider('sl-fog', function(v) {
+    fogDensity = v / 1000;
+    var el = document.getElementById('sv-fog'); if (el) el.textContent = fogDensity.toFixed(3);
+    if (scene && scene.fog) scene.fog.density = fogDensity;
+  });
+
+  var audioBtn = document.getElementById('btn-audio');
+  if (audioBtn) audioBtn.addEventListener('click', toggleAudio);
+}
+
+// ─── ANIMATION LOOP ───
+function animate() {
+  requestAnimationFrame(animate);
+  if (!clock || !renderer || !scene || !camera) return;
+
+  var dt = clock.getDelta();
+  animTime += dt * timeScale;
+
+  // Gentle rotation for visual animation
+  if (particles) {
+    particles.rotation.y += dt * timeScale * 0.15;
+  }
+
+  // Update controls (required for damping)
+  if (controls) controls.update();
+
+  // Render
+  renderer.render(scene, camera);
+
+  // FPS counter
+  frameCount++;
+  var now = performance.now();
+  if (now - lastFpsTime > 500) {
+    var fps = Math.round(frameCount / ((now - lastFpsTime) / 1000));
+    var fpsEl = document.getElementById('fps');
+    if (fpsEl) fpsEl.textContent = fps + ' FPS';
+    frameCount = 0;
+    lastFpsTime = now;
+  }
+
+  // Graph update every 3 frames
+  if (frameCount % 3 === 0) drawGraph(animTime);
+}
+
+// ─── STARTUP ───
+function startSuite() {
+  console.log('[TDVT] === STARTUP ===');
+  var loadEl = document.getElementById('loadmsg');
+
+  // 1. Check THREE
+  if (typeof THREE === 'undefined') {
+    showErr('THREE.js not loaded — place vendor-umd/three.min.js next to this file');
+    if (loadEl) loadEl.textContent = 'ERROR: THREE.js missing';
+    return;
+  }
+  console.log('[TDVT] THREE.js loaded, REVISION:', THREE.REVISION);
+
+  // 2. Check WebGL
+  try {
+    var tc = document.createElement('canvas');
+    var tgl = tc.getContext('webgl2') || tc.getContext('webgl') || tc.getContext('experimental-webgl');
+    if (!tgl) { showErr('WebGL not available'); return; }
+    console.log('[TDVT] WebGL available');
+  } catch(e) { console.warn('[TDVT] WebGL check:', e); }
+
+  // 3. Build tabs
+  if (loadEl) loadEl.textContent = 'Building interface...';
+  buildTabs();
+
+  // 4. Init scene (renderer, camera, controls, clock)
+  try {
+    initScene();
+  } catch(e) {
+    showErr('Scene init failed: ' + e.message);
+    console.error(e);
+    return;
+  }
+
+  // 5. Init particles
+  try {
+    initParticles();
+  } catch(e) {
+    showErr('Particle init failed: ' + e.message);
+    console.error(e);
+    return;
+  }
+
+  // 6. Init subsystems
+  initGraph();
+  initControls();
+  updateUI();
+  updateReadouts();
+
+  // 7. Hide loading, show status, start animation
+  if (loadEl) loadEl.style.display = 'none';
+  var stEl = document.getElementById('status');
+  if (stEl) stEl.textContent = '500K particles (PointsMaterial)';
+
+  console.log('[TDVT] === READY — starting animation ===');
+  animate();
+}
+
+// ─── AUTO-START ───
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(startSuite, 100);
+} else {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(startSuite, 100);
+  });
+}
+
+})();
+</script>
+</body>
+</html>

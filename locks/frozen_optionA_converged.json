@@ -1,0 +1,30 @@
+{
+  "schema": "qvc_vacuum_lock_v2",
+  "status": "frozen_converged",
+  "option": "A*_fat_torus",
+  "geometry": {
+    "r_nm": 8.0,
+    "R_nm": 50.0,
+    "x": 1.0053096491487339
+  },
+  "hbar_cs_meV_um": 0.07,
+  "F_value": 0.5806751779874608,
+  "E_vac_meV": 0.1287,
+  "convergence": {
+    "N_terms_for_6sig": 14,
+    "rel_residual_at_500": 0.0
+  },
+  "error_budget": {
+    "truncation": 0.0,
+    "boundary_conditions": 0.3974993398944681,
+    "hbar_cs_10pct": 0.10000000000000014,
+    "lattice_discreteness": 0.0,
+    "total_quadrature": 0.4098850146279294,
+    "dominant_source": "hbar_cs calibration"
+  },
+  "deprecated_values": {
+    "E_Cas_0.244_meV": "FALSIFIED \u2014 old formula + geometry mismatch",
+    "Jacobi_theta_F0.596": "FALSIFIED \u2014 different functional form"
+  },
+  "notes": "Option A* fat-torus lock. Dominant uncertainty is \u210fc_s calibration (\u00b110% \u2192 \u00b110% in E_vac), not spectral sum convergence. Upgrade from provisional to frozen_converged."
+}

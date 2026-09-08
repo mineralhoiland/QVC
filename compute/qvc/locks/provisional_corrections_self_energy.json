@@ -1,0 +1,35 @@
+{
+  "lock_schema": "qvc.FrozenVacuumSpec/v1",
+  "frozen_at_utc": "2026-09-05T07:53:11.013524+00:00",
+  "spec": {
+    "formula_id": "corrected_self_energy_2d",
+    "r": 0.000335,
+    "R": 0.0134,
+    "hbar_cs": 0.07,
+    "F_definition": "bessel_K0_sum",
+    "notes": "PROVISIONAL \u2014 not for quoting as a final meV in papers. Uses Corrections (r=0.335 nm, R=13.4 nm) with E_vac=(1/4\u03c0\u00b2)(\u0127c_s/r)F(2\u03c0r/R). Geometry and \u0127c_s still open.",
+    "status": "provisional",
+    "geometry_label": "corrections_moire",
+    "nmax": 500
+  },
+  "evaluation": {
+    "x": 0.15707963267948966,
+    "F": 8.09740676963111,
+    "E_old_casimir_meV": 5385.7887733062535,
+    "E_corrected_self_energy_meV": 42.85874528602627,
+    "claimed_preprint_meV": 0.244,
+    "old_reproduces_0.244": false
+  },
+  "preprint_0p244_audit": {
+    "r_um": 0.008,
+    "R_um": 0.05,
+    "hbar_cs": 0.07,
+    "x": 1.0053096491487339,
+    "F": 0.5806751779874608,
+    "E_old_meV": 2.5270362279386474,
+    "claimed_meV": 0.244,
+    "claim_reproduced": false,
+    "audit": "FAIL_CLAIM: preprint 0.244 meV is NOT reproduced by old Casimir formula on stated preprint geometry"
+  },
+  "warning": "If status is 'provisional', do NOT quote E_vac meV as a final paper result. See docs/VACUUM_FREEZE_SPEC.md."
+}

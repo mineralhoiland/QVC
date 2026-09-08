@@ -1,0 +1,24 @@
+% Graphical abstract: Option A* pipeline (TikZ, Okabe--Ito)
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  box/.style={draw=#1, line width=0.8pt, rounded corners=2pt,
+    fill=#1!8, align=center, inner sep=5pt, text width=2.55cm,
+    minimum height=1.55cm},
+  arr/.style={-{Latex}, thick, oiBlue}
+]
+\node[box=oiBlue] (geom) {\textbf{Fat torus}\\$(r,R)=(8,50)$\,nm\\$x=2\pi r/R\approx 1.005$};
+\node[box=oiGreen, right=0.55cm of geom] (form) {\textbf{Tier-C vacuum}\\$E_{\mathrm{vac}}=\frac{\hbar c_s}{4\pi^2 r}F$\\$F=\Flock$};
+\node[box=oiOrange, right=0.55cm of form] (bridge) {\textbf{Derived bridge}\\$\alpha=\lambda E_{\mathrm{vac}}/\Delta_0$\\$\ell(r)=\elllock$};
+\node[box=oiVerm, right=0.55cm of bridge] (fold) {\textbf{Fold, not BKT}\\$\alpha_c=\alphac$\\$\lambda\le\lfold$};
+\node[box=oiPurple, below=0.85cm of fold] (star) {\textbf{Working $\lambda^\star$}\\$\lambda^\star=\lstar$\\$\Delta^\star=\Deltastar$ (\redstar)};
+\node[box=oiSky, left=0.55cm of star] (par) {\textbf{Parallel channels}\\fold $\parallel$ catalyzon $\parallel$ GPE\\not stacked};
+\node[box=oiGreen!80!black, left=0.55cm of par] (hon) {\textbf{Honest dynamics}\\truncated GPE + DCE\\live $\Delta[\psi]$};
+\draw[arr] (geom) -- (form);
+\draw[arr] (form) -- (bridge);
+\draw[arr] (bridge) -- (fold);
+\draw[arr] (fold) -- (star);
+\draw[arr] (star) -- (par);
+\draw[arr] (par) -- (hon);
+\node[font=\sffamily\scriptsize, oiVerm, above=0.12cm of form] {replaces $0.244$\,meV};
+\node[font=\sffamily\scriptsize, oiVerm, above=0.12cm of star] {max static \redmax; no $92\%$};
+\end{tikzpicture}

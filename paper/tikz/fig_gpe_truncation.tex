@@ -1,0 +1,19 @@
+% Honest TQGL truncation
+\begin{tikzpicture}[
+  font=\sffamily\footnotesize,
+  on/.style={draw=oiGreen, line width=0.8pt, fill=oiGreen!12, rounded corners=2pt,
+    align=center, inner sep=5pt, text width=3.3cm, minimum height=1.15cm},
+  off/.style={draw=oiVerm, line width=0.8pt, fill=oiVerm!10, rounded corners=2pt,
+    align=center, inner sep=5pt, text width=3.3cm, minimum height=1.15cm, dashed},
+]
+\node[font=\sffamily\small\bfseries] (h1) at (0,3.35) {In the EOM};
+\node[font=\sffamily\small\bfseries] (h2) at (5.5,3.35) {Not in the EOM};
+\node[on] (a) at (0,2.15) {2D cubic--quintic GPE};
+\node[on] (b) at (0,0.75) {toroidal $V_{\mathrm{ZPF}}\propto E_{\mathrm{vac}}$};
+\node[on] (c) at (0,-0.65) {coupled DCE amplitude ODE};
+\node[on] (d) at (0,-2.05) {live $\Delta=\Delta_0\sqrt{n_w/n_{\mathrm{ref}}}$};
+\node[off] (e) at (5.5,2.15) {Chern--Simons $\mathbf{a}\wedge d\mathbf{a}$};
+\node[off] (f) at (5.5,0.75) {Berry $\Omega(\mathbf{k})\cdot\mathbf{j}$};
+\node[off] (g) at (5.5,-0.65) {Skyrme $|\nabla^2\Psi|^2$};
+\node[off] (h) at (5.5,-2.05) {prescribed $\Delta(t)$ stages};
+\end{tikzpicture}

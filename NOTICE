@@ -1,0 +1,11 @@
+Third-party notices
+
+Three.js (r175 and vendor-umd copies under sim/)
+  Copyright (c) 2010-2024 three.js authors
+  License: MIT
+  https://github.com/mrdoob/three.js
+
+OrbitControls.js and related examples (MIT, Three.js examples).
+
+Any other vendored files retain their original licenses. QVC source code
+remains MIT; manuscript and figures remain CC BY 4.0.

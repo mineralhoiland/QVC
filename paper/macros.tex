@@ -1,0 +1,205 @@
+% Shared macros for QVC arXiv v4 (main + TQGL supplement)
+% Locked Option A* numbers (fat torus, Tier-C form, frozen-cavity bridge).
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage[section]{placeins}   % FloatBarrier at every \section
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,decorations.pathmorphing,positioning,shapes.geometric,calc,3d,fit,backgrounds}
+\usepackage{tikz-3dplot}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage{bm}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[expansion=false]{microtype}
+
+\geometry{margin=1in}
+
+% Okabe--Ito (colorblind-safe)
+\definecolor{oiOrange}{HTML}{E69F00}
+\definecolor{oiSky}{HTML}{56B4E9}
+\definecolor{oiGreen}{HTML}{009E73}
+\definecolor{oiYellow}{HTML}{F0E442}
+\definecolor{oiBlue}{HTML}{0072B2}
+\definecolor{oiVerm}{HTML}{D55E00}
+\definecolor{oiPurple}{HTML}{CC79A7}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=oiBlue,
+  citecolor=oiVerm,
+  urlcolor=oiBlue
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{hypothesis}{Hypothesis}
+
+\newcommand{\TEVC}{\textsc{TEVC}}
+\newcommand{\QVC}{\textsc{QVC}}
+\newcommand{\TQGL}{\textsc{TQGL}}
+\newcommand{\BKT}{\textsc{BKT}}
+\newcommand{\MATBG}{\textsc{MATBG}}
+\newcommand{\DCE}{\textsc{DCE}}
+\newcommand{\TDVT}{\textsc{TDVT}}
+\newcommand{\GPE}{\textsc{GPE}}
+
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\norm}[1]{\left\|#1\right\|}
+\newcommand{\dd}[1]{\,\mathrm{d}#1}
+
+% Locked Option A* (fat torus, Tier-C form, frozen-cavity bridge)
+\newcommand{\Evac}{0.1287\,\mathrm{meV}}
+\newcommand{\Flock}{0.58068}
+\newcommand{\elllock}{-2.7958}
+\newcommand{\ellcorr}{-2.791}
+\newcommand{\alphac}{0.1818}
+\newcommand{\Deltac}{0.109\,\mathrm{meV}}
+\newcommand{\Deltaex}{0.600\,\mathrm{meV}}
+\newcommand{\lfold}{0.8475}
+\newcommand{\lstar}{0.7628}
+\newcommand{\Deltastar}{0.2324\,\mathrm{meV}}
+\newcommand{\hbarcs}{0.07\,\mathrm{meV\cdot\mu m}}
+\newcommand{\etaret}{0.137} % a_H evaluation; unique-lock pair is \etaretaH and \etaretph
+\newcommand{\etaretaH}{0.137}
+\newcommand{\etaretph}{2}
+\newcommand{\etaretalt}{3.1}
+\newcommand{\xiph}{117\,\mathrm{nm}}
+\newcommand{\xialt}{181\,\mathrm{nm}}
+\newcommand{\aHlock}{8\,\mathrm{nm}}
+\newcommand{\kappaGL}{3.84\times 10^{-5}\,\mathrm{meV\cdot\mu m}^{2}}
+\newcommand{\alphaGL}{-0.600\,\mathrm{meV}}
+\newcommand{\betaGL}{0.694\,\mathrm{meV}}
+\newcommand{\nrefhopf}{0.864}
+\newcommand{\alphastar}{0.1636}
+\newcommand{\kappaSansatz}{2.46\times 10^{-9}\,\mathrm{meV\cdot\mu m}^{4}}
+\newcommand{\Deltacat}{0.502\,\mathrm{meV}}
+\newcommand{\gzerofold}{0.109\,\mathrm{meV}}
+\newcommand{\pctcat}{16.4\%}
+\newcommand{\pctcatfold}{18.2\%}
+\newcommand{\hatbarrier}{30\%}
+\newcommand{\RwsMatch}{2.18\,\mu\mathrm{m}}
+\newcommand{\RwsAlt}{0.91\,\mu\mathrm{m}}
+\newcommand{\dsigmaH}{3.87\times 10^{-6}\,\mathrm{S}}
+\newcommand{\gzeroeff}{1.365\times 10^{-4}}
+\newcommand{\relfroG}{0.0667}
+\newcommand{\gzeroeffring}{5.472\times 10^{-4}}
+\newcommand{\relfroGring}{0.1564}
+\newcommand{\specGws}{\bigl(-1.568,-1.568,-1.162,-1.160,+5.458\bigr)\times 10^{-4}}
+\newcommand{\specGring}{\bigl(-7.385,-7.247,-4.326,-2.930,+21.888\bigr)\times 10^{-4}}
+\newcommand{\Deltataufive}{0.5720\,\mathrm{meV}}
+\newcommand{\gonetaufive}{0.7102}
+\newcommand{\Deltatautwenty}{0.6152\,\mathrm{meV}}
+\newcommand{\gonetautwenty}{0.8351}
+\newcommand{\Deltataufifty}{0.6248\,\mathrm{meV}}
+\newcommand{\gonetaufifty}{0.8639}
+\newcommand{\Deltanumonly}{0.5697\,\mathrm{meV}}
+\newcommand{\gonumonly}{0.8806}
+\newcommand{\Deltadephonly}{0.6309\,\mathrm{meV}}
+\newcommand{\godephonly}{0.7031}
+\newcommand{\Deltafrozencoherent}{0.6623\,\mathrm{meV}}
+\newcommand{\gofrozencoherent}{0.1075}
+\newcommand{\Deltafrozentaufive}{0.0872\,\mathrm{meV}}
+\newcommand{\gofrozentaufive}{0.0102}
+\newcommand{\Deltafrozentautwenty}{0.3920\,\mathrm{meV}}
+\newcommand{\gofrozentautwenty}{0.0812}
+\newcommand{\Deltafrozentaufifty}{0.4761\,\mathrm{meV}}
+\newcommand{\gofrozentaufifty}{0.0032}
+\newcommand{\gzeroscaled}{0.0527\,\mathrm{meV}}
+\newcommand{\lamcat}{0.410}
+\newcommand{\redstar}{61.3\%}
+\newcommand{\redmax}{81.8\%}
+% Coupled GPE / DCE suite (live gap from psi)
+\newcommand{\Deltaliveone}{0.6305\,\mathrm{meV}}
+\newcommand{\goneps}{0.8832}
+\newcommand{\AoneAc}{0.9811}
+\newcommand{\AresAc}{0.9117}
+\newcommand{\AdetAc}{0.8800}
+\newcommand{\Deltassres}{0.2240\,\mathrm{meV}}
+\newcommand{\Deltassdet}{0.2461\,\mathrm{meV}}
+\newcommand{\gzerostar}{0.0982\,\mathrm{meV}}
+\newcommand{\Epair}{0.1963\,\mathrm{meV}}
+\newcommand{\Tstar}{118.7\,\mathrm{mK}}
+\newcommand{\BerryR}{0.908}
+\newcommand{\AcSch}{8.571\,\mu\mathrm{m}^{-1}}
+\newcommand{\Acfold}{1.5582\,\mu\mathrm{m}^{-1}}
+\newcommand{\gzerohess}{0.0185\,\mathrm{meV}}
+\newcommand{\taudark}{662\,\mathrm{ps}}
+\newcommand{\taubright}{10.1\,\mathrm{ps}}
+\newcommand{\tauratio}{65}
+\newcommand{\fluxerr}{3.8\times 10^{-4}}
+\newcommand{\Kcanon}{0.407}
+\newcommand{\ChernQWZ}{0.993}
+\newcommand{\kgeomQWZ}{0.0430\,\mathrm{meV}}
+\newcommand{\kgeomfloor}{0.0955\,\mathrm{meV}}
+\newcommand{\kconvuv}{0.382\,\mathrm{meV}}
+\newcommand{\kappauvtoy}{0.425\,\mathrm{meV}}
+\newcommand{\etauv}{0.050}
+\newcommand{\etauvsw}{0.053}
+\newcommand{\QhopfSthree}{0.9998}
+\newcommand{\attachrms}{3.8\times 10^{-16}}
+\newcommand{\tlamoverU}{0.379}
+\newcommand{\UoverWgap}{0.111}
+\newcommand{\KuvTstar}{41.6}
+\newcommand{\KfoldTstar}{5.44}
+\newcommand{\tlammeV}{0.227\,\mathrm{meV}}
+\newcommand{\Wmoire}{5.38\,\mathrm{meV}}
+\newcommand{\massdriftcs}{8.3\times 10^{-6}}
+\newcommand{\kappafoldtoy}{0.0556\,\mathrm{meV}}
+\newcommand{\mstaroverme}{0.99}
+\newcommand{\hwphaH}{8.75\,\mathrm{meV}}
+\newcommand{\csBog}{1.06\times 10^{5}\,\mathrm{m/s}}
+\newcommand{\cLA}{2.14\times 10^{4}\,\mathrm{m/s}}
+\newcommand{\nuGPE}{0.290\,\mathrm{THz}}
+\newcommand{\omegaGPEps}{1.82\,\mathrm{ps}^{-1}}
+\newcommand{\nuStar}{0.112\,\mathrm{THz}}
+\newcommand{\qstarLA}{0.0330\,\mathrm{nm}^{-1}}
+\newcommand{\lamresLA}{190\,\mathrm{nm}}
+\newcommand{\qoverKM}{0.102}
+\newcommand{\lamresCS}{0.95\,\mu\mathrm{m}}
+\newcommand{\Cvkmin}{0.430\,\mathrm{meV}}
+\newcommand{\kappauvfloor}{0.477\,\mathrm{meV}}
+\newcommand{\Kuvfloor}{46.7}
+\newcommand{\Kfoldfloor}{10.57}
+\newcommand{\Fmoire}{1.119}
+\newcommand{\Fmoir}{\mathcal{F}_{\text{moir\'{e}}}}
+\newcommand{\Ageom}{1.839\,\mu\mathrm{m}^{-1}}
+\newcommand{\AgeomF}{2.058\,\mu\mathrm{m}^{-1}}
+\newcommand{\lfoldF}{0.7573}
+\newcommand{\lstarF}{0.6816}
+\newcommand{\DeltaStarF}{0.2914\,\mathrm{meV}}
+\newcommand{\GammaschHz}{5.30\times 10^{2}\,\mathrm{Hz}}
+\newcommand{\schexp}{19.20}
+\newcommand{\qIRpaper}{3.65\times 10^{3}\,\mu\mathrm{m}^{-1}}
+\newcommand{\LambdaUV}{125\,\mu\mathrm{m}^{-1}}
+\newcommand{\qgapIR}{8.57\,\mu\mathrm{m}^{-1}}
+
+\graphicspath{{figures/}}
+
+% Status tags (use sparingly in running text)
+\newcommand{\statusproven}{\textup{\textsc{proven}}}
+\newcommand{\statuscomputed}{\textup{\textsc{computed}}}
+\newcommand{\statusworking}{\textup{\textsc{frozen working}}}
+\newcommand{\statusprogram}{\textup{\textsc{program}}}
+\newcommand{\statusconjecture}{\textup{\textsc{conjecture}}}
+\newcommand{\statusansatz}{\textup{\textsc{ansatz}}}
+\newcommand{\statusmatched}{\textup{\textsc{matched}}}
+\newcommand{\statuslocked}{\textup{\textsc{locked}}}
+\newcommand{\statusderived}{\textup{\textsc{derived here}}}
+\newcommand{\statustruncated}{\textup{\textsc{truncated}}}
+\newcommand{\statusdiag}{\textup{\textsc{diagnostic}}}
