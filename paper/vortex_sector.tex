@@ -6,9 +6,9 @@ The excitonic order parameter admits a polar decomposition before any renormaliz
 \Psi(\mathbf{r})=\rho(\mathbf{r})\,e^{i\theta(\mathbf{r})}.
 \label{eq:polar}
 \end{equation}
-The locked gap map of Section~\ref{sec:gap} lives in the amplitude $\rho$. The vortex sector of the theory lives in the phase $\theta$. Together the two sectors furnish a competing-scale structure: a saddle-node fold in $\rho$, and a Kosterlitz--Thouless unbinding surface in the stiffness of $\theta$. When a physical drive reaches the KT surface first, the implied gap closing is a Berezinskii--Kosterlitz--Thouless essential singularity. That implication is part of the theory; it is stated as hypothesis H-VRG1 and is evaluated below by the computational suite C1--C6.
+The locked gap map of Section~\ref{sec:gap} lives in the amplitude $\rho$. The vortex sector of the theory lives in the phase $\theta$. Together the two sectors furnish a competing-scale structure: a saddle-node fold in $\rho$, and a Kosterlitz--Thouless unbinding surface in the stiffness of $\theta$. When a physical drive reaches the KT surface first, the implied gap closing is a Berezinskii--Kosterlitz--Thouless essential singularity. That implication is part of the theory; it is evaluated below by the stiffness, vortex-core, and correlator calculations of this section.
 
-Option~A* freezes the toroidal cavity, so the vacuum amplitude---and therefore $\alpha$---does not run with the KT scale $\ell=\ln(L/a_c)$. The suite therefore scans frozen $\alpha$ along the locked physical branch $\delta_+(\alpha)$. Kosterlitz's coupling is $K=\kappa/T_{\mathrm{eff}}$, with critical value $K_c=2/\pi$. No bare transition temperature is inserted by hand, and no chain-rule $\beta_\alpha$ is integrated.
+The working fat-torus geometry freezes the toroidal cavity, so the vacuum amplitude---and therefore $\alpha$---does not run with the KT scale $\ell=\ln(L/a_c)$. The suite therefore scans frozen $\alpha$ along the locked physical branch $\delta_+(\alpha)$. Kosterlitz's coupling is $K=\kappa/T_{\mathrm{eff}}$, with critical value $K_c=2/\pi$. No bare transition temperature is inserted by hand, and no chain-rule $\beta_\alpha$ is integrated.
 
 \begin{center}
 \fcolorbox{oiBlue}{oiBlue!6}{%
@@ -44,7 +44,7 @@ The live-gap estimator $\Delta_{\mathrm{live}}[\psi]=\Delta_0\sqrt{n_w[\psi]/n_{
 \label{fig:two_sector}
 \end{figure}
 
-\subsection{C1: phase stiffness}
+\subsection{Phase stiffness}
 \label{sec:stiffness}
 
 The 2D phase stiffness (superfluid density) extracted from Eq.~\eqref{eq:two_sector} is not $\kappa_{\mathrm{GL}}$ itself. Matching $\kappa_{\mathrm{GL}}|\nabla\Psi|^2$ to the conventional $(\rho_s/2)|\nabla\theta|^2$ with $\Psi=\sqrt{n_0}\,\rho\,e^{i\theta}$ gives
@@ -59,7 +59,7 @@ where $\kappa_{\mathrm{GL}}=\Delta_0 a_H^2$ follows from the truncated GPE kinet
 \end{equation}
 treated as an ansatz: it is not a Brillouin-zone integral of the TEVC quantum metric, and it need not vanish with $\delta$. From here on in this section, $\kappa$ means the stiffness~\eqref{eq:kappa}. A uniform phase-twist check on the same conventional piece agrees with $2 n_0\kappa_{\mathrm{GL}}\langle\rho^2\rangle$ to machine precision.
 
-On this primary vortex-RG closure---healing-disk $n_0$ plus the frozen geometric floor~\eqref{eq:kappa_geom}---one finds $\kappa_{\mathrm{UV}}\approx\kappauvfloor$ at $\alpha=0$ and $\kappa(\alpha_c)\approx 0.108$\,meV at the fold. With $T_{\mathrm{eff}}=T^*=\Tstar$ the Kosterlitz couplings are $K(\alpha=0,T^*)\approx\Kuvfloor$ and $K(\alpha_c,T^*)\approx\Kfoldfloor$, both far above $K_c=2/\pi\approx 0.637$. A Qi--Wu--Zhang toy metric (Section~\ref{sec:c1_trackb}) is a second labeled C1 estimator ($\kappa_{\mathrm{UV}}^{\mathrm{toy}}=\kappauvtoy$, $K_{\mathrm{fold}}(T^*)=\KfoldTstar$); both miss KT at $T^*$ before the fold. A conventional-only variant with $\kappa_{\mathrm{geom}}=0$ is retained as a labeled alternative; its ultraviolet stiffness is $2\Delta_0/\pi\approx 0.382$\,meV. The energy of an isolated 2D phase vortex in a system of size $L$ with core cutoff $a_c$ is
+On this primary vortex-RG closure---healing-disk $n_0$ plus the frozen geometric floor~\eqref{eq:kappa_geom}---one finds $\kappa_{\mathrm{UV}}\approx\kappauvfloor$ at $\alpha=0$ and $\kappa(\alpha_c)\approx 0.108$\,meV at the fold. With $T_{\mathrm{eff}}=T^*=\Tstar$ the Kosterlitz couplings are $K(\alpha=0,T^*)\approx\Kuvfloor$ and $K(\alpha_c,T^*)\approx\Kfoldfloor$, both far above $K_c=2/\pi\approx 0.637$. A Qi--Wu--Zhang toy metric (Section~\ref{sec:c1_trackb}) is a second labeled stiffness estimator ($\kappa_{\mathrm{UV}}^{\mathrm{toy}}=\kappauvtoy$, $K_{\mathrm{fold}}(T^*)=\KfoldTstar$); both miss KT at $T^*$ before the fold. A conventional-only variant with $\kappa_{\mathrm{geom}}=0$ is retained as a labeled alternative; its ultraviolet stiffness is $2\Delta_0/\pi\approx 0.382$\,meV. The energy of an isolated 2D phase vortex in a system of size $L$ with core cutoff $a_c$ is
 \begin{equation}
 E_v=\pi\kappa\ln(L/a_c)+E_{\mathrm{core}}.
 \label{eq:Ev}
@@ -89,7 +89,7 @@ with spin-wave piece $S_{\mathrm{sw}}[\theta]=\frac{K}{2}\int(\nabla\theta)^2$. 
 \end{equation}
 has critical point $K_c=2/\pi$. Equivalently, $\pi\kappa/T_{\mathrm{eff}}=\pi K$ equals $2$ on the universal jump~\eqref{eq:universal_jump}. Equation~\eqref{eq:kt_flow} is the vortex-RG sector of the theory. Its derivation from the microscopic \TQGL{} functional proceeds through a Villain reduction, which we state as an ansatz: the phase sector is governed by~\eqref{eq:villain}--\eqref{eq:kt_flow} once amplitude fluctuations have been integrated at the scale $a_c$. The flow equations are derived as an effective theory; the Villain reduction from the full \TQGL{} functional is treated as an ansatz. The fugacity is the textbook form $y=\exp(-E_{\mathrm{core}}/T_{\mathrm{eff}})$.
 
-\subsection{C2: winding-one core}
+\subsection{Isolated winding-one vortex core}
 \label{sec:c2_core}
 
 The defect that enters~\eqref{eq:Ev} is a winding-$1$ radial Gross--Pitaevskii vortex in the moir\'e plane, not a hopfion and not a Chern--Simons fluxon. Integrating the truncated GP energy on a disk and subtracting the infrared logarithm at the healing-length cutoff $a_c=\xi=8$\,nm yields $E_{\mathrm{core}}/\kappa\approx 0.343$, with the cutoff itself an ansatz. That ratio sets the bare fugacity along the branch, $y=\exp\bigl[-(E_{\mathrm{core}}/\kappa)K\bigr]$. Because $E_{\mathrm{core}}/\kappa$ is $\mathcal{O}(1)$ rather than $\mathcal{O}(10)$, finite $y$ can matter even when the bare coupling still lies well above $2/\pi$: the infrared plasma is a separatrix phenomenon, not merely a $K<K_c$ crossing of the ultraviolet data.
@@ -111,16 +111,16 @@ On the Villain target~\eqref{eq:kt_flow} the KT surface is
 K=2/\pi,\qquad y\to 0,
 \label{eq:kt_surface}
 \end{equation}
-with $\Delta\to 0$ only if $\Delta$ tracks a positive power of $\kappa$ after unbinding. Hypothesis H-VRG1 holds if and only if the physical drive path hits the KT surface \emph{before} the fold. If $\kappa(A)$ remains larger than $\kappa_{\mathrm{BKT}}$ at $\alpha=\alpha_c$ and finite-$y$ flow stays bound, the fold wins and the gap map retains a finite $\Delta_c$.
+with $\Delta\to 0$ only if $\Delta$ tracks a positive power of $\kappa$ after unbinding. The vortex-first essential-singularity implication holds if and only if the physical drive path hits the KT surface \emph{before} the fold. If $\kappa(A)$ remains larger than $\kappa_{\mathrm{BKT}}$ at $\alpha=\alpha_c$ and finite-$y$ flow stays bound, the fold wins and the gap map retains a finite $\Delta_c$.
 \end{theorem}
 
 Whether a given protocol satisfies it is a property of $\kappa(\alpha)$, $E_{\mathrm{core}}/\kappa$, and $T_{\mathrm{eff}}$.
 
-\begin{hypothesis}[H-VRG1]
+\begin{hypothesis}[Vortex-first essential singularity]
 Including a 2D phase-vortex fugacity in the RG of $\theta=\arg\Psi$ converts the locked saddle-node fold into a \textup{\BKT{}} essential singularity $\Delta\sim\exp(-C/\sqrt{A_c-A})$ with continuous gap vanishing, whenever the drive path of Theorem~\ref{thm:competing} reaches the KT surface first.
 \end{hypothesis}
 
-H-VRG1 is a conjecture. The C1 stiffness is a computed closure with ansatz inputs, not a Brillouin-zone theorem, so the competing-scale diagram below is the implication of that closure.
+This is a conjecture. The phase-stiffness estimator is a computed closure with modelling assumptions, not a Brillouin-zone theorem, so the competing-scale diagram below is the implication of that closure.
 
 \subsection{Chern--Simons statistics: truncation or anyon plasma}
 \label{sec:anyon}
@@ -140,7 +140,7 @@ K_c^{\mathrm{anyon}}=\frac{2}{\pi}\Bigl(1-\frac{\theta_{\mathrm{stat}}}{\pi}\Big
 \end{equation}
 which for $N=5$ lowers $K_c$ from $2/\pi\approx 0.637$ to $\approx 0.407$. A lower $K_c$ moves the KT surface toward weaker stiffness. Equation~\eqref{eq:Kc_anyon} remains conjectural unless the anyon-Coulomb-gas algebra is derived from the \TQGL{} Chern--Simons term; it is displayed so that the truncation is explicit, and it is never mixed into the truncated default.
 
-\subsection{C3: competing-scale scan}
+\subsection{Competing-scale scan}
 \label{sec:vrg_python}
 
 On the primary closure---healing-disk $n_0$ plus the frozen geometric floor---at $T^*=\Tstar$, Kosterlitz flow at frozen $\alpha$ remains bound all the way to the fold. The infrared coupling at $\alpha_c$ is $K(\alpha_c)\approx 10.57\gg 2/\pi$: the fold is reached first. Restoring the labeled anyon threshold~\eqref{eq:Kc_anyon} does not change the winner on this $\kappa(\alpha)$. The same $E_{\mathrm{core}}/\kappa\approx 0.34$ that would be dangerous near $K\sim 1$ is harmless at $K\sim 10$, because $y=\exp(-0.34 K)$ is then exponentially small.
@@ -152,14 +152,14 @@ Raising $T_{\mathrm{eff}}$ opens a temperature window for the vortex sector even
 \begin{figure}[htbp]
 \centering
 \input{tikz/fig_vortex_rg_flow}
-\caption{\textbf{Kosterlitz flow at frozen $\alpha$ and $T^*$.} Primary-closure trajectories at $\alpha/\alpha_c=0.30$, at $\lambda^\star$, and near the fold all run to $y\to 0$ with $K\gg 2/\pi$ (bound). A conventional-only station at the finite-$y$ onset $\alpha/\alpha_c\approx 0.945$ runs to a plasma. Option~A* holds $\alpha$ fixed; there is no $\beta_\alpha$.}
+\caption{\textbf{Kosterlitz flow at frozen $\alpha$ and $T^*$.} Primary-closure trajectories at $\alpha/\alpha_c=0.30$, at $\lambda^\star$, and near the fold all run to $y\to 0$ with $K\gg 2/\pi$ (bound). A conventional-only station at the finite-$y$ onset $\alpha/\alpha_c\approx 0.945$ runs to a plasma. The working cavity holds $\alpha$ fixed; there is no $\beta_\alpha$.}
 \label{fig:vrg_flow}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \input{tikz/fig_competing_scales}
-\caption{\textbf{Competing-scale diagram at $T^*$.} Kosterlitz $K=\kappa/T^*$ along the locked physical branch for the primary C1 closure and the conventional-only variant. The bosonic line $K=2/\pi$ and the labeled anyon line lie far below the primary curve; the fold is reached first. Conventional-only unbinding is a finite-$y$ infrared plasma at $\alpha/\alpha_c\approx 0.945$, marked, not a bare $K<2/\pi$ crossing.}
+\caption{\textbf{Competing-scale diagram at $T^*$.} Kosterlitz $K=\kappa/T^*$ along the locked physical branch for the primary stiffness closure and the conventional-only variant. The bosonic line $K=2/\pi$ and the labeled anyon line lie far below the primary curve; the fold is reached first. Conventional-only unbinding is a finite-$y$ infrared plasma at $\alpha/\alpha_c\approx 0.945$, marked, not a bare $K<2/\pi$ crossing.}
 \label{fig:competing_scales}
 \end{figure}
 
@@ -170,7 +170,7 @@ Raising $T_{\mathrm{eff}}$ opens a temperature window for the vortex sector even
 \label{fig:teff_window}
 \end{figure}
 
-\subsection{C4: vacuum driving and the essential-singularity implication}
+\subsection{Vacuum driving and the essential-singularity implication}
 \label{sec:unbinding_mech}
 
 On the primary $T^*$ scan the flow stays bound, so the locked finite $\Delta_c$ stands: there is no vortex-driven continuous $\Delta\to 0$ on that closure. When a protocol does pass Theorem~\ref{thm:competing}---as the conventional-only variant does at $T^*$---increasing the vacuum amplitude $A$ (equivalently $\alpha$) walks the system along $\delta_+(\alpha)\searrow\delta_c$ while $\kappa$ and $E_{\mathrm{core}}$ fall and $y$ rises. Unbinding occurs if the finite-$y$ separatrix, or $K=2/\pi$, is reached while $\alpha$ is still less than $\alpha_c$. Identifying the KT correlation length with a gap,
@@ -183,7 +183,7 @@ then produces the essential singularity
 \Delta(A)\sim\exp\bigl(-C/\sqrt{A_c-A}\bigr)
 \label{eq:v9}
 \end{equation}
-whenever $\Delta$ tracks $\sqrt{\kappa}$ or an equivalent stiffness collapse. Equation~\eqref{eq:delta_xi} is a conjectural identification; Eq.~\eqref{eq:v9} is the \BKT{} implication of the vortex sector (H-VRG1). It is a physical prediction for a protocol that passes Theorem~\ref{thm:competing}, not a replacement of the locked amplitude fold.
+whenever $\Delta$ tracks $\sqrt{\kappa}$ or an equivalent stiffness collapse. Equation~\eqref{eq:delta_xi} is a conjectural identification; Eq.~\eqref{eq:v9} is the \BKT{} implication of the vortex sector. It is a physical prediction for a protocol that passes Theorem~\ref{thm:competing}, not a replacement of the locked amplitude fold.
 
 \subsection{Finite-size phase correlations}
 \label{sec:gr}
@@ -213,49 +213,49 @@ approaches $1/4$ at a putative KT point and rises when vortices proliferate. On 
 \label{fig:eta_eff}
 \end{figure}
 
-\subsection{C5: fold versus essential singularity}
+\subsection{Fold versus essential singularity}
 \label{sec:c5}
 
-On the locked physical branch, $\delta-\delta_c\sim\sqrt{t_A}$ with $t_A=(\alpha_c-\alpha)/\alpha_c$ is a theorem of the amplitude map. A Gaussian comparison of $\tfrac12\ln t_A$ against $1/\sqrt{t_A}$ on $\ln(\delta-\delta_c)$ over $\gtrsim 1.5$ decades in $t_A$ returns a free slope $0.542$ (versus the theorem value $1/2$) and prefers the square root by $\Delta\ell\ell\approx +431$. That comparison is a consistency check on fold data. Vortex-implied $\Delta$ from Eq.~\eqref{eq:delta_xi} is not available on the primary $T^*$ scan, which never unbinds, so the essential-singularity curve in Fig.~\ref{fig:delta_tA} is the H-VRG1 target overlaid on a map that does not contain vortices. The preference for $\sqrt{t_A}$ confirms the locked fold; it is not a statement that a KT surface cannot be hit on a different closure or at a higher $T_{\mathrm{eff}}$.
+On the locked physical branch, $\delta-\delta_c\sim\sqrt{t_A}$ with $t_A=(\alpha_c-\alpha)/\alpha_c$ is a theorem of the amplitude map. A Gaussian comparison of $\tfrac12\ln t_A$ against $1/\sqrt{t_A}$ on $\ln(\delta-\delta_c)$ over $\gtrsim 1.5$ decades in $t_A$ returns a free slope $0.542$ (versus the theorem value $1/2$) and prefers the square root by $\Delta\ell\ell\approx +431$. That comparison is a consistency check on fold data. Vortex-implied $\Delta$ from Eq.~\eqref{eq:delta_xi} is not available on the primary $T^*$ scan, which never unbinds, so the essential-singularity curve in Fig.~\ref{fig:delta_tA} is the vortex-first target overlaid on a map that does not contain vortices. The preference for $\sqrt{t_A}$ confirms the locked fold; it is not a statement that a KT surface cannot be hit on a different closure or at a higher $T_{\mathrm{eff}}$.
 
 \begin{figure}[htbp]
 \centering
 \input{tikz/fig_delta_tA}
-\caption{\textbf{Amplitude-map scaling on the locked branch.} Physical $\delta(t_A)$ follows $\delta_c+B\sqrt{t_A}$. The dotted essential singularity is the H-VRG1 target of the vortex sector; vortex-implied $\Delta$ is not constructed on the primary $T^*$ scan.}
+\caption{\textbf{Amplitude-map scaling on the locked branch.} Physical $\delta(t_A)$ follows $\delta_c+B\sqrt{t_A}$. The dotted essential singularity is the vortex-first target of this section; vortex-implied $\Delta$ is not constructed on the primary $T^*$ scan.}
 \label{fig:delta_tA}
 \end{figure}
 
-\subsection{C6: thermal versus quantum unbinding}
+\subsection{Thermal versus quantum unbinding}
 \label{sec:thermal_quantum}
 
 Classical KT flow requires $T>0$. The TEVC condensation window is $\lesssim 1$\,K; the Schwinger crossover is $T^*=\Tstar$; the live GPE of Section~\ref{sec:dynamics} is $T=0$. At strictly zero temperature the thermal fugacity $y=e^{-E_{\mathrm{core}}/T}$ vanishes and textbook KT does not run. Quantum phase slips, the 2D Bose--Hubbard/Villain dual~\cite{FisherWeichman1989}, or dissipative Ambegaokar--Halperin--Nelson--Siggia (AHNS) dynamics~\cite{Ambegaokar1980,HalperinNelson1978} are then the relevant mechanisms.
 
-\begin{hypothesis}[H-VRG2]
+\begin{hypothesis}[Overdamped vortex mobility]
 Phonon drag in a Gao--Khalaf-type moir\'e electron--phonon bath places 2D phase vortices in an overdamped regime $\hbar/\tau_v\gtrsim\pi\kappa$, converting a universal jump into a rounded crossover rather than a textbook thermal KT transition.
 \end{hypothesis}
 
-Two labeled mobility estimates are compared with the primary $\kappa(\alpha)$ at $T^*$. The phonon amplitude already present in the truncated GPE is $\hbar/\tau_v\sim g_{\mathrm{ph}}=0.1\Delta_0$. An Eliashberg-type OOM with $\lambda_{\mathrm{ep}}=1$ is $\hbar/\tau_v\sim 2\pi\lambda_{\mathrm{ep}}k_BT$. Along the primary branch both give $(\hbar/\tau_v)/(\pi\kappa)\sim 0.04$--$0.19<1$: the vortices are underdamped. A sharp stiffness jump could therefore survive if a KT surface were hit. H-VRG2 is not forced by these estimates; it remains a conjecture pending a microscopically computed vortex mobility.
+Two labeled mobility estimates are compared with the primary $\kappa(\alpha)$ at $T^*$. The phonon amplitude already present in the truncated GPE is $\hbar/\tau_v\sim g_{\mathrm{ph}}=0.1\Delta_0$. An Eliashberg-type order-of-magnitude estimate with $\lambda_{\mathrm{ep}}=1$ is $\hbar/\tau_v\sim 2\pi\lambda_{\mathrm{ep}}k_BT$. Along the primary branch both give $(\hbar/\tau_v)/(\pi\kappa)\sim 0.04$--$0.19<1$: the vortices are underdamped. A sharp stiffness jump could therefore survive if a KT surface were hit. Overdamped mobility is not forced by these estimates; it remains a conjecture pending a microscopically computed vortex mobility.
 
 \subsection{Observables, acceptance, and closures}
 \label{sec:vrg_obs}
 
 \begin{table}[htbp]
 \centering
-\caption{Fold versus vortex-RG observables, as tested by suite C1--C6. Acceptance of H-VRG1 on a given protocol requires the essential-singularity comparison on vortex-inclusive data over $\gtrsim 1.5$ decades in $t_A=(A_c-A)/A_c$, together with $\eta\to 1/4$ in $g(r)$.}
+\caption{Fold versus vortex-RG observables. Confirming the vortex-first essential singularity on a given protocol requires the essential-singularity comparison on vortex-inclusive data over $\gtrsim 1.5$ decades in $t_A=(A_c-A)/A_c$, together with $\eta\to 1/4$ in $g(r)$.}
 \label{tab:vrg_obs}
 \small
 \begin{tabular}{@{}llll@{}}
 \toprule
-Observable & Fold (established) & Vortex RG (conjectured) & Present suite \\
+Observable & Fold (established) & Vortex RG (conjectured) & Present calculation \\
 \midrule
-$\Delta(A)$ & ends at $\Delta_c$; $\sqrt{t_A}$ & $\Delta\to 0$; $e^{-C/\sqrt{t_A}}$ & C4 bound at $T^*$; C5 on fold data \\
-$\kappa$ & need not jump & universal jump~\eqref{eq:universal_jump} & C1 two-sector $\kappa(\alpha)$ \\
+$\Delta(A)$ & ends at $\Delta_c$; $\sqrt{t_A}$ & $\Delta\to 0$; $e^{-C/\sqrt{t_A}}$ & Bound at $T^*$; fold data prefer $\sqrt{t_A}$ \\
+$\kappa$ & need not jump & universal jump~\eqref{eq:universal_jump} & Two-sector $\kappa(\alpha)$ \\
 $g(r)$ & amplitude death first & algebraic $\to$ exponential & spin-wave at primary $K$ \\
-vortex density & not required & proliferates above $A_c$ & C2 core; C3 plasma flag \\
-mobility & --- & jump vs AHNS crossover & C6 underdamped at $T^*$ \\
-specific heat & mean-field anomaly possible & no latent heat & program \\
+vortex density & not required & proliferates above $A_c$ & Isolated core; plasma flag \\
+mobility & --- & jump vs AHNS crossover & Underdamped at $T^*$ \\
+specific heat & mean-field anomaly possible & no latent heat & Not computed \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-The vortex-RG sector is closed by the following statements. The Villain reduction from the \TQGL{} functional is an ansatz. The C1 identity~\eqref{eq:kappa} is derived given the healing-disk $n_0$ and the frozen geometric floor, both of which are ansatzes. Hypothesis H-VRG1 is a conjecture: if the drive path satisfies Theorem~\ref{thm:competing}, the gap closing takes the essential-singularity form~\eqref{eq:v9}. On the primary closure at $T^*$ the fold is reached first; conventional-only stiffness, and the primary closure at $T_{\mathrm{eff}}\sim 0.5$--$1$\,K, populate the KT side of the diagram as finite-$y$ plasmas. Chern--Simons remains truncated from the default scan unless Eq.~\eqref{eq:Kc_anyon} is restored as a labeled option. The locked amplitude fold is the mean-field backbone of the static theory and is independent of whether a given protocol realizes H-VRG1.
+The vortex-RG sector is closed by the following statements. The Villain reduction from the \TQGL{} functional is a modelling assumption. The stiffness identity~\eqref{eq:kappa} is derived given the healing-disk $n_0$ and the frozen geometric floor, both of which are modelling assumptions. The vortex-first essential singularity is a conjecture: if the drive path satisfies Theorem~\ref{thm:competing}, the gap closing takes the essential-singularity form~\eqref{eq:v9}. On the primary closure at $T^*$ the fold is reached first; conventional-only stiffness, and the primary closure at $T_{\mathrm{eff}}\sim 0.5$--$1$\,K, populate the KT side of the diagram as finite-$y$ plasmas. Chern--Simons remains truncated from the default scan unless Eq.~\eqref{eq:Kc_anyon} is restored as a labeled option. The locked amplitude fold is the mean-field backbone of the static theory and is independent of whether a given protocol realizes the vortex-first scenario.

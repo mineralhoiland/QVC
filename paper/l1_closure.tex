@@ -1,4 +1,4 @@
-\section{Catalyzon linearization and L1 closures}
+\section{Catalyzon linearization and algebraic closures}
 \label{sec:l1_closure}
 
 The dictionary of Section~\ref{sec:l1_dictionary} fixes the meV scale of the catalyzon by $g_0^\star=\lambda^\star E_{\mathrm{vac}}$. This section linearizes truncated \TQGL{} about the hopfion and records additional algebraic closures: a Chern--Simons covariant kinetic equation, a two-band quantum-metric stiffness on the physical fold branch, a Hubbard-scale matching, a Villain dualization with a finite-lattice $g(r)$, and the $S^3$ Hopf--Whitehead integral. A Cartan-torsion origin of $G_{ij}$ is not evaluated.
@@ -36,27 +36,27 @@ The lowest eigenvalue is the discrete Goldstone, lifted by the grid and the fini
 
 Off-diagonal entries of the amplitude block of $H$, with vanishing diagonal as in the catalyzon convention, define a Hessian coupling $G^{(H)}$ in meV. The mean off-diagonal is $g_{0,\mathrm{eff}}^{(H)}=\gzerohess$, of the same order as the bridge $g_0^\star$ but not equal to it (ratio $\approx 0.19$). Relative Frobenius distance to $g_0(J-I)$ at that mean is large: the Hessian coupling is not democratic. The meV catalyzon gap therefore remains $\Delta_{\mathrm{cat}}=\Delta_0-g_0^\star$ from Section~\ref{sec:l1_dictionary}; $G^{(H)}$ is a fluctuation pattern, not a replacement of the bridge.
 
-\subsection{Dark versus bright envelopes (H-CAT1)}
+\subsection{Dark versus bright envelopes}
 \label{sec:hcat1}
 
-On the Galerkin frequencies $\omega_k$ of~\eqref{eq:hess_spec}, a radiation kernel $\gamma_k=\gamma_0(\omega_k/\omega_{\mathrm{ref}})^2$ with $\gamma_0=0.05$\,ps$^{-1}$ assigns a larger decay rate to the stiffest mode. Evolving $c_k(t)=c_k(0)e^{-\gamma_k t}$ yields envelope times $\tau_{\mathrm{dark}}=\taudark$ and $\tau_{\mathrm{bright}}=\taubright$ (ratio $\tau_{\mathrm{dark}}/\tau_{\mathrm{bright}}\approx\tauratio$). Under that kernel the Helmert intuition of hypothesis H-CAT1---that dark sum-zero weight outlives the bright eigenvalue---is realized. The kernel is an ansatz: uniform $\gamma$ would not distinguish the subspaces, and the existing GPE Lindblad of Section~\ref{sec:lindblad_dict} acts on $\psi$, not on a mode basis. Figure~\ref{fig:hcat1} shows the envelopes.
+On the Galerkin frequencies $\omega_k$ of~\eqref{eq:hess_spec}, a radiation kernel $\gamma_k=\gamma_0(\omega_k/\omega_{\mathrm{ref}})^2$ with $\gamma_0=0.05$\,ps$^{-1}$ assigns a larger decay rate to the stiffest mode. Evolving $c_k(t)=c_k(0)e^{-\gamma_k t}$ yields envelope times $\tau_{\mathrm{dark}}=\taudark$ and $\tau_{\mathrm{bright}}=\taubright$ (ratio $\tau_{\mathrm{dark}}/\tau_{\mathrm{bright}}\approx\tauratio$). Under that kernel the dark (sum-zero) weight outlives the bright eigenvalue, as expected if radiation damps stiffer modes more strongly. The kernel is an ansatz: uniform $\gamma$ would not distinguish the subspaces, and the existing GPE Lindblad of Section~\ref{sec:lindblad_dict} acts on $\psi$, not on a mode basis. Figure~\ref{fig:hcat1} shows the envelopes.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.72\linewidth]{closure_figs/fig_hcat1.png}
-\caption{\textbf{H-CAT1 envelopes.} Dark weight (smallest $|\omega|$) versus the brightest Galerkin mode with $\gamma\propto\omega^2$. The ratio of $1/e$ times is $\tauratio$ under that rate kernel.}
+\caption{\textbf{Dark and bright envelopes.} Dark weight (smallest $|\omega|$) versus the brightest Galerkin mode with $\gamma\propto\omega^2$. The ratio of $1/e$ times is $\tauratio$ under that rate kernel.}
 \label{fig:hcat1}
 \end{figure}
 
-\subsection{Torsion proxy (H-TOR1)}
+\subsection{Torsion-overlap proxy}
 \label{sec:htor1_comp}
 
-Hypothesis H-TOR1---that democratic $G_{ij}$ arises as a Cartan torsion overlap on hopfion modes---is not accepted on the present evidence and is parked as an ansatz for future development. A two-dimensional proxy using the phase Jacobian of $\psi_0$ as a Hopf-density stand-in $q_H$ and a weight $T=\lvert\nabla q_H\rvert$ produces overlaps $G_{ij}=\int\Phi_i^* T\Phi_j$ that are not near-democratic. A three-dimensional Weitzenb\"ock quadrature on true hopfion torsion is not performed. Democratic $\mathrm{Spec}(G)$ remains locked algebra; the Wigner--Seitz $K_0$ kernel of Section~\ref{sec:gij_dict} remains a distinct computed overlap; the bridge $g_0^\star$ is independent of this proxy. Figure~\ref{fig:htor1g} records the parked matrix.
+The conjecture that democratic $G_{ij}$ arises as a Cartan torsion overlap on hopfion modes is not supported by the present evidence and is left open. A two-dimensional proxy using the phase Jacobian of $\psi_0$ as a Hopf-density stand-in $q_H$ and a weight $T=\lvert\nabla q_H\rvert$ produces overlaps $G_{ij}=\int\Phi_i^* T\Phi_j$ that are not near-democratic. A three-dimensional Weitzenb\"ock quadrature on true hopfion torsion is not performed. Democratic $\mathrm{Spec}(G)$ remains an algebraic identity; the Wigner--Seitz $K_0$ kernel of Section~\ref{sec:gij_dict} remains a distinct computed overlap; the bridge $g_0^\star$ is independent of this proxy. Figure~\ref{fig:htor1g} records the proxy matrix.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.55\linewidth]{closure_figs/fig_htor1_G.png}
-\caption{\textbf{H-TOR1 two-dimensional proxy $G_{ij}$, parked.} The pattern is not $g_0(J-I)$. A 3D Weitzenb\"ock quadrature is left for future development and is not used to set $G_{ij}$ or $g_0^\star$.}
+\caption{\textbf{Two-dimensional torsion-proxy $G_{ij}$.} The pattern is not $g_0(J-I)$. A 3D Weitzenb\"ock quadrature is left for future development and is not used to set $G_{ij}$ or $g_0^\star$.}
 \label{fig:htor1g}
 \end{figure}
 
@@ -67,7 +67,7 @@ The mode spectral density
 \begin{equation}
 A_{\mathrm{cat}}(\omega)=\sum_k |c_k|^2\frac{\Gamma_k/\pi}{(\omega-\omega_k)^2+\Gamma_k^2}
 \end{equation}
-with $\Gamma_k=\hbar\gamma_k$ from the H-CAT1 kernel is shown in Fig.~\ref{fig:Acat}. It is the Galerkin-pole mix, not a tunneling lineshape. The two-particle phonon threshold $\omega_0=2\Delta/\hbar$ of Section~\ref{sec:phonons} remains a distinct energy from these Hessian poles.
+with $\Gamma_k=\hbar\gamma_k$ from the $\gamma\propto\omega^2$ kernel is shown in Fig.~\ref{fig:Acat}. It is the Galerkin-pole mix, not a tunneling lineshape. The two-particle phonon threshold $\omega_0=2\Delta/\hbar$ of Section~\ref{sec:phonons} remains a distinct energy from these Hessian poles.
 
 \begin{figure}[htbp]
 \centering
@@ -95,11 +95,11 @@ The two-sector identity
 \kappa(\alpha)=2\kappa_{\mathrm{GL}}n_0\bigl[\delta_+(\alpha)\bigr]^2+\kappa_{\mathrm{geom}}
 \label{eq:c1id}
 \end{equation}
-is derived given a density unit $n_0$ and a geometric weight $\kappa_{\mathrm{geom}}$. Option A* fixes $\kappa_{\mathrm{GL}}=\Delta_0 a_H^2$. The healing-disk $n_0=1/(\pi a_H^2)$ remains ansatz and implies $\kappa_{\mathrm{conv}}(\alpha=0)=2\Delta_0/\pi=\kconvuv$. A uniform phase-twist check of that conventional piece on a periodic box agrees with~\eqref{eq:c1id} to machine precision.
+is derived given a density unit $n_0$ and a geometric weight $\kappa_{\mathrm{geom}}$. The working fat-torus geometry fixes $\kappa_{\mathrm{GL}}=\Delta_0 a_H^2$. The healing-disk $n_0=1/(\pi a_H^2)$ remains ansatz and implies $\kappa_{\mathrm{conv}}(\alpha=0)=2\Delta_0/\pi=\kconvuv$. A uniform phase-twist check of that conventional piece on a periodic box agrees with~\eqref{eq:c1id} to machine precision.
 
 A Qi--Wu--Zhang two-band Chern insulator at mass $m=-1$ on a $48\times 48$ Brillouin-zone grid returns Chern number $C=\ChernQWZ$ and a Peotta--T\"orm\"a geometric weight $\kappa_{\mathrm{geom}}^{\mathrm{QWZ}}=\kgeomQWZ$ from the Brillouin-zone mean of $\mathrm{tr}\,g_{ij}$. This is a \emph{labeled C1 estimator}, not a replacement of the vortex-sector primary floor $\kappa_{\mathrm{geom}}=\Delta_0/(2\pi)$ of Eq.~\eqref{eq:kappa_geom} (Section~\ref{sec:vortex_rg}), whose ultraviolet values are $\kappa_{\mathrm{UV}}\approx\kappauvfloor$ and $K(\alpha_c,T^*)\approx\Kfoldfloor$. The previous frozen floor in this section was $\Delta_0/(2\pi)=\kgeomfloor$. Adding the toy metric to the conventional ultraviolet piece gives $\kappa_{\mathrm{UV}}^{\mathrm{toy}}=\kappauvtoy$. The toy is not a magic-angle continuum integral.
 
-Scanning~\eqref{eq:c1id} along the locked physical fold branch $\delta_+(\alpha)$ with frozen toy geometry yields $\kappa(\alpha=0)=\kappauvtoy$ and $\kappa(\alpha\to\alpha_c)=\kappafoldtoy$ (Fig.~\ref{fig:kappabranch}). The Kosterlitz coupling $K=\kappa/T_{\mathrm{eff}}$ at the twin-channel $T^\star$ is $K_{\mathrm{UV}}=\KuvTstar$ and $K_{\mathrm{fold}}=\KfoldTstar$, both above $K_c=2/\pi$. There is no KT hit before the fold at $T^\star$ on this C1 estimator. A tracks-gap variant $\kappa_{\mathrm{geom}}\propto\delta_+$ and a conventional-only variant likewise remain above $K_c$ at $T^\star$. That miss does not disprove hypothesis H-VRG1 as a vortex-RG implication; it means the present $n_0$ plus QWZ toy do not by themselves force unbinding before $\alpha_c$.
+Scanning~\eqref{eq:c1id} along the locked physical fold branch $\delta_+(\alpha)$ with frozen toy geometry yields $\kappa(\alpha=0)=\kappauvtoy$ and $\kappa(\alpha\to\alpha_c)=\kappafoldtoy$ (Fig.~\ref{fig:kappabranch}). The Kosterlitz coupling $K=\kappa/T_{\mathrm{eff}}$ at the twin-channel $T^\star$ is $K_{\mathrm{UV}}=\KuvTstar$ and $K_{\mathrm{fold}}=\KfoldTstar$, both above $K_c=2/\pi$. There is no KT hit before the fold at $T^\star$ on this stiffness estimator. A tracks-gap variant $\kappa_{\mathrm{geom}}\propto\delta_+$ and a conventional-only variant likewise remain above $K_c$ at $T^\star$. That miss does not disprove the vortex-first essential-singularity implication; it means the present $n_0$ plus QWZ toy do not by themselves force unbinding before $\alpha_c$.
 
 \begin{figure}[htbp]
 \centering
@@ -108,10 +108,10 @@ Scanning~\eqref{eq:c1id} along the locked physical fold branch $\delta_+(\alpha)
 \label{fig:kappabranch}
 \end{figure}
 
-\subsection{Track B Hubbard-scale matching}
+\subsection{Healing-scale Hubbard matching}
 \label{sec:track_b}
 
-Track B does not replace Track A and does not perform a Bistritzer--MacDonald Schrieffer--Wolff projection. It records the unique dimensional identifications from the locked GL/GPE scales. The healing identification $t_{\mathrm{heal}}\equiv\kappa_{\mathrm{GL}}/a_H^2=\Delta_0$ forces $t_{\mathrm{heal}}/U=1$ when the on-site scale is matched to the gap, $U\leftrightarrow\Delta_0$. If the tight-binding lattice constant is taken to be the moir\'e period $\lambda_M=13$\,nm instead,
+This matching does not replace the Ginzburg--Landau coefficients and does not perform a Bistritzer--MacDonald Schrieffer--Wolff projection. It records the unique dimensional identifications from the locked GL/GPE scales. The healing identification $t_{\mathrm{heal}}\equiv\kappa_{\mathrm{GL}}/a_H^2=\Delta_0$ forces $t_{\mathrm{heal}}/U=1$ when the on-site scale is matched to the gap, $U\leftrightarrow\Delta_0$. If the tight-binding lattice constant is taken to be the moir\'e period $\lambda_M=13$\,nm instead,
 \begin{equation}
 t_\lambda=\kappa_{\mathrm{GL}}/\lambda_M^2=\Delta_0\,(a_H/\lambda_M)^2=\tlammeV,
 \end{equation}
@@ -127,7 +127,7 @@ Polar substitution $\Psi=\rho e^{i\theta}$ in~\eqref{eq:Ftrunc} with $\rho$ froz
 \end{equation}
 with Kosterlitz $K=\kappa/T_{\mathrm{eff}}$ and $K_c=2/\pi$ as an effective theory and as a property of TEVC. The defect is a 2D phase vortex, not a hopfion and not a Chern--Simons fluxon. Spin-wave theory on the XY magnet gives $\eta_{\mathrm{sw}}=1/(2\pi K)$, hence $\eta=1/4$ at the jump.
 
-Checkerboard Metropolis XY on an $L=20$ torus at a large-$K$ coupling (capped at $K=3$, since the physical $K(T^\star)=\KuvTstar$ lies far into the spin-wave regime) returns $g(r)$ with log-fit exponent $\eta_{\mathrm{UV}}=\etauv$ against $\eta_{\mathrm{sw}}=\etauvsw$. At $K=2/\pi$ the same finite lattice is not a thermodynamic-limit measurement of $\eta\to 1/4$. Figure~\ref{fig:grc7} records the two correlators; Fig.~\ref{fig:etaK} records $\eta(K)$ against the spin-wave line. Hypothesis H-VRG1 is not upgraded.
+Checkerboard Metropolis XY on an $L=20$ torus at a large-$K$ coupling (capped at $K=3$, since the physical $K(T^\star)=\KuvTstar$ lies far into the spin-wave regime) returns $g(r)$ with log-fit exponent $\eta_{\mathrm{UV}}=\etauv$ against $\eta_{\mathrm{sw}}=\etauvsw$. At $K=2/\pi$ the same finite lattice is not a thermodynamic-limit measurement of $\eta\to 1/4$. Figure~\ref{fig:grc7} records the two correlators; Fig.~\ref{fig:etaK} records $\eta(K)$ against the spin-wave line. The vortex-first essential-singularity conjecture is not upgraded by this finite-lattice scan.
 
 \begin{figure}[htbp]
 \centering
@@ -154,7 +154,7 @@ Q=\frac{1}{4\pi^2}\int_{S^3}A\wedge dA=1
 \end{equation}
 exactly. A Haar quadrature returns $Q=\QhopfSthree$ (absolute error $2\times 10^{-4}$). The domain volume $\int_{S^3}\mathrm{vol}=2\pi^2$ is recovered to the same order. String-free $\mathbb{R}^3$ Whitehead integrals (Coulomb-gauge padded FFT, and the pullback Hopf connection of the stereographic spinor) remain box-truncated and do not replace~\eqref{eq:hopfS3} or the lock $Q_H=1/N$. An $N$-wound toroidal ansatz is a labeled probe, not a derivation of $1/N$.
 
-\subsection{Summary of L1 closures}
+\subsection{Summary of algebraic closures}
 \label{sec:closure_review}
 
-The preceding calculations establish the following results on their stated truncations: the Galerkin Hessian yields a single discrete Goldstone and a non-democratic meV coupling $G^{(H)}$; H-CAT1 dark envelopes outlive bright ones under $\gamma\propto\omega^2$; the covariant Chern--Simons kinetic equation~\eqref{eq:HkinCS} implements $a$ in the stepper with analytic flux-attachment residual $\attachrms$; the QWZ Chern number and toy $\kappa_{\mathrm{geom}}$ track the physical branch~\eqref{eq:c1id}; Track~B matching gives $t_{\mathrm{heal}}/U=1$ and $t_\lambda/U=\tlamoverU$; Villain dualization~\eqref{eq:villainCG} reproduces ultraviolet $\eta$ tracking $1/(2\pi K)$; and the $S^3$ Hopf integral~\eqref{eq:hopfS3} closes to machine precision. Several questions remain open: H-FN1 (five soft modes) is not realized on this truncation, H-TOR1 is parked and not accepted pending a 3D Weitzenb\"ock quadrature, a transported-edge Hall simulation is not performed, MATBG quantum-metric and Bistritzer--MacDonald Hubbard coefficients are not computed, thermodynamic $\eta=1/4$ is not resolved on $L=20$, and the $\mathbb{R}^3$ hopfion quadrature does not replace the linking result $Q_H=1/N$. Crucially, the locked fold, Option~A* vacuum, bridge $g_0^\star$, democratic $\mathrm{Spec}(G)$, and $Q_H=1/N$ are algebraic identities independent of these open questions.
+The preceding calculations establish the following results on their stated truncations: the Galerkin Hessian yields a single discrete Goldstone and a non-democratic meV coupling $G^{(H)}$; dark envelopes outlive bright ones under $\gamma\propto\omega^2$; the covariant Chern--Simons kinetic equation~\eqref{eq:HkinCS} implements $a$ in the stepper with analytic flux-attachment residual $\attachrms$; the QWZ Chern number and toy $\kappa_{\mathrm{geom}}$ track the physical branch~\eqref{eq:c1id}; the healing-scale Hubbard matching gives $t_{\mathrm{heal}}/U=1$ and $t_\lambda/U=\tlamoverU$; Villain dualization~\eqref{eq:villainCG} reproduces ultraviolet $\eta$ tracking $1/(2\pi K)$; and the $S^3$ Hopf integral~\eqref{eq:hopfS3} closes to machine precision. Several questions remain open: five independent hopfion Goldstone modes are not realized on this truncation; a Cartan-torsion origin of $G_{ij}$ is not supported pending a 3D Weitzenb\"ock quadrature; a transported-edge Hall simulation is not performed; MATBG quantum-metric and Bistritzer--MacDonald Hubbard coefficients are not computed; thermodynamic $\eta=1/4$ is not resolved on $L=20$; and the $\mathbb{R}^3$ hopfion quadrature does not replace the linking result $Q_H=1/N$. The fold, the frozen-cavity vacuum, the bridge $g_0^\star$, democratic $\mathrm{Spec}(G)$, and $Q_H=1/N$ are algebraic identities independent of these open questions.

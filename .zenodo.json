@@ -1,0 +1,30 @@
+{
+  "title": "Quantum Vacuum Catalyzation in Topological Excitonic Systems",
+  "version": "0.4.1",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "description": "<p>Preprint compilation of Quantum Vacuum Catalyzation (QVC) in topological excitonic vacuum crystals (TEVC), with working fat-torus geometry (r, R) = (8, 50) nm.</p><p>The deposit includes the September 2026 manuscript (TeX, figures, bibliography, supplements), frozen numerical parameters, Python verification and dynamics codes, crystal structures, and visualization suites. Vacuum fluctuations are treated as a catalyst, not an energy source.</p><p>Software under compute/ and sim/ is MIT. Manuscript, figures, locks, and documentation are CC BY 4.0.</p>",
+  "creators": [
+    {
+      "name": "Hoiland, Mineral",
+      "affiliation": "Independent Researcher",
+      "orcid": "0009-0001-2696-644X"
+    }
+  ],
+  "keywords": [
+    "QVC",
+    "TEVC",
+    "topological excitonic vacuum crystal",
+    "magic-angle twisted bilayer graphene",
+    "gap fold",
+    "Casimir",
+    "Chern-Simons",
+    "hopfion",
+    "Ginzburg-Landau",
+    "analogue gravity"
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "language": "eng",
+  "notes": "Code (compute/, sim/) is MIT; text and figures are CC BY 4.0. Correspondence: mineralhoilandphysics@gmail.com. ORCID: 0009-0001-2696-644X."
+}

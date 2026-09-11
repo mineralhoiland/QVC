@@ -12,9 +12,11 @@
 \large A Theoretical Framework for Zero-Point Restructured Energy Barriers}
 
 \author{Mineral Hoiland\\
-\textit{Applied Vacuum Dynamics Labs}}
+\textit{Independent Researcher}\\
+\href{mailto:mineralhoilandphysics@gmail.com}{mineralhoilandphysics@gmail.com}\\
+ORCID: \href{https://orcid.org/0009-0001-2696-644X}{0009-0001-2696-644X}}
 
-\date{August 2026}
+\date{8 September 2026}
 
 \maketitle
 \begin{abstract}
@@ -60,7 +62,7 @@ The Casimir energy is neither a small perturbation (because moiré flat bands qu
 
 \subsection{Organization}
 
-The paper is organized as follows. Sections~\ref{sec:tevc}--\ref{sec:bridge} introduce the \TEVC{} platform, the self-consistent gap equation and its fold, the toroidal vacuum energy, and the participation bridge $\alpha=\lambda E_{\mathrm{vac}}/\Delta_0$. Section~\ref{sec:vortex_rg} treats the phase sector as a two-dimensional vortex renormalization-group problem. Sections~\ref{sec:phonons}--\ref{sec:dynamics} develop the catalyzon, the topological Ginzburg--Landau functional, the matched coefficient dictionary, and time-dependent dynamics. Sections~\ref{sec:experiments}--\ref{sec:implications} collect experimental signatures, numerical predictions, and implications. The remaining sections treat cavity QED, Schwinger pair production, dynamical Casimir saturation, Berry phase, kinematics, and the topological and analogue-gravity extensions. Conventions and provenance are recorded in Section~\ref{sec:l1_dictionary} and Appendix~\ref{app:status}.
+The paper is organized as follows. Sections~\ref{sec:tevc}--\ref{sec:bridge} introduce the \TEVC{} platform, the self-consistent gap equation and its fold, the toroidal vacuum energy, and the participation bridge $\alpha=\lambda E_{\mathrm{vac}}/\Delta_0$. Section~\ref{sec:vortex_rg} treats the phase sector as a two-dimensional vortex renormalization-group problem. Sections~\ref{sec:phonons}--\ref{sec:dynamics} develop the catalyzon, the topological Ginzburg--Landau functional, the matched coefficient dictionary, and time-dependent dynamics. Sections~\ref{sec:experiments}--\ref{sec:implications} collect experimental signatures, numerical predictions, and implications. The remaining sections treat cavity QED, Schwinger pair production, dynamical Casimir saturation, Berry phase, kinematics, and the topological and analogue-gravity extensions. Matched lengths, Ginzburg--Landau coefficients, and Hall conventions are recorded in Section~\ref{sec:l1_dictionary}; Appendix~\ref{app:status} classifies which results are algebraic, numerical, or still conjectural.
 
 \section{The \TEVC{} Platform and Symmetry-Breaking Cascade}
 \label{sec:tevc}
@@ -169,11 +171,11 @@ The structure of Eq.~\eqref{eq:gap} is closely related to self-consistent gap eq
 \begin{equation}
 \Delta(A_{\text{ZPF}}) \sim \exp\left( -\frac{C}{\sqrt{A_{\text{ZPF}}^c - A_{\text{ZPF}}}} \right), \quad A_{\text{ZPF}} \to A_{\text{ZPF}}^c,
 \end{equation}
-whenever the physical drive reaches the KT surface before the fold (Section~\ref{sec:vortex_rg}, Theorem~\ref{thm:competing}, hypothesis H-VRG1). Experimental discrimination between square-root fold softening and essential-singularity collapse is a key test of which infrared surface is realized.
+whenever the physical drive reaches the KT surface before the fold (Section~\ref{sec:vortex_rg}, Theorem~\ref{thm:competing}). In that event the gap would close as a Berezinskii--Kosterlitz--Thouless essential singularity rather than as the square-root fold of the amplitude map. Experimental discrimination between square-root fold softening and essential-singularity collapse is a key test of which infrared surface is realized.
 
 \subsection{Static fold, catalyzon, and Gross--Pitaevskii dynamics}
 
-The static fold, the catalyzon Mexican-hat, and truncated Gross--Pitaevskii evolution probe distinct operators and are not combined as additive percentages of one baseline. They share the same vacuum $E_{\mathrm{vac}}$ and participation $\lambda^\star$. On the amplitude map~\eqref{eq:dimless_gap_sketch}, unit $\lambda$ lies beyond the fold, $\lambda^\star$ sits on the physical branch at $\Delta^\star=\Deltastar$, and the branches merge at $\Delta_c=\Deltac$. The catalyzon channel is the democratic spectrum of $G=g_0(J-I)$ at $g_0^\star=\lambda^\star E_{\mathrm{vac}}$, giving $\Delta_{\mathrm{cat}}=\Delta_0-g_0^\star$ and a well-depth ratio $(\Delta_{\mathrm{cat}}/\Delta_0)^2$ that corresponds to a $\hatbarrier$ barrier reduction at fixed Track~A quartic (Section~\ref{sec:mexican_dict}). The GPE channel uses an attractive $V_{\mathrm{ZPF}}$: over $1$\,ps the live gap \emph{increases} to $\Deltaliveone$ and the corresponding well \emph{deepens}. Increasing $\alpha$ on the static map suppresses $\delta$ because $\ell<0$; that is opposite in sign to BCS pairing, in which an attractive kernel opens a gap. The Landau potential of the catalyzon channel,
+The static fold, the catalyzon Mexican-hat, and truncated Gross--Pitaevskii evolution probe distinct operators and are not combined as additive percentages of one baseline. They share the same vacuum $E_{\mathrm{vac}}$ and participation $\lambda^\star$. On the amplitude map~\eqref{eq:dimless_gap_sketch}, unit $\lambda$ lies beyond the fold, $\lambda^\star$ sits on the physical branch at $\Delta^\star=\Deltastar$, and the branches merge at $\Delta_c=\Deltac$. The catalyzon channel is the democratic spectrum of $G=g_0(J-I)$ at $g_0^\star=\lambda^\star E_{\mathrm{vac}}$, giving $\Delta_{\mathrm{cat}}=\Delta_0-g_0^\star$ and a well-depth ratio $(\Delta_{\mathrm{cat}}/\Delta_0)^2$ that corresponds to a $\hatbarrier$ barrier reduction at the matched Ginzburg--Landau quartic (Section~\ref{sec:mexican_dict}). The GPE channel uses an attractive $V_{\mathrm{ZPF}}$: over $1$\,ps the live gap \emph{increases} to $\Deltaliveone$ and the corresponding well \emph{deepens}. Increasing $\alpha$ on the static map suppresses $\delta$ because $\ell<0$; that is opposite in sign to BCS pairing, in which an attractive kernel opens a gap. The Landau potential of the catalyzon channel,
 \begin{equation}
 U_{\text{eff}}(|\Psi|) = \alpha_{\mathrm{GL}} |\Psi|^2 + \frac{\beta}{2} |\Psi|^4,
 \end{equation}
@@ -182,7 +184,7 @@ is shallower when $|\alpha_{\mathrm{GL}}|$ tracks $\Delta_{\mathrm{cat}}$ and de
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.72\textwidth]{figures/gap_fold_collapse.pdf}
-\caption{\textbf{Self-consistent gap map.} Numerical physical and unstable branches of $\delta=1+\alpha(\ln\delta+\ell)$ terminate in a saddle-node fold at finite $\delta_c$ with square-root scaling $\delta-\delta_c\sim\pm\sqrt{\alpha_c-\alpha}$. The dotted curve is the vortex-sector essential-singularity form of hypothesis H-VRG1 (Section~\ref{sec:vortex_rg}).}
+\caption{\textbf{Self-consistent gap map.} Numerical physical and unstable branches of $\delta=1+\alpha(\ln\delta+\ell)$ terminate in a saddle-node fold at finite $\delta_c$ with square-root scaling $\delta-\delta_c\sim\pm\sqrt{\alpha_c-\alpha}$. The dotted curve is the vortex-sector essential-singularity form that would apply if the Kosterlitz--Thouless surface were reached first (Section~\ref{sec:vortex_rg}).}
 \label{fig:bkt_collapse}
 \end{figure}
 
@@ -516,7 +518,7 @@ At sub-Kelvin temperatures ($T \ll \Delta_{\text{ex}}/k_B \sim 7$ K), thermal ac
 
 \subsection{Scope of the five-mode model}
 
-The five-mode Hamiltonian is a resonant model for $\mathrm{Spec}(G)$, not a Goldstone theorem. Truncated \TQGL{} about the hopfion supplies one discrete Goldstone (Section~\ref{sec:lin_tqgl}). Democratic $\mathrm{Spec}(G)$ is exact algebra at the bridge value $g_0^\star$; Wigner--Seitz $K_0$ and Hessian overlaps $G^{(H)}$ are computed kernels, neither equal to $g_0(J-I)$ in meV. A Cartan-torsion origin for $G_{ij}$ (hypothesis H-TOR1) is not evaluated here. Theorem~6.1 still guarantees that any nonzero off-diagonal vacuum coupling of the democratic algebra produces a dark eigenvalue $\lambda_{\min}=-g_0$. That statement concerns $\mathrm{Spec}(G)$, not the number of hopfion soft modes.
+The five-mode Hamiltonian is a resonant model for $\mathrm{Spec}(G)$, not a Goldstone theorem. Truncated \TQGL{} about the hopfion supplies one discrete Goldstone (Section~\ref{sec:lin_tqgl}). Democratic $\mathrm{Spec}(G)$ is exact algebra at the bridge value $g_0^\star$; Wigner--Seitz $K_0$ and Hessian overlaps $G^{(H)}$ are computed kernels, neither equal to $g_0(J-I)$ in meV. A Cartan-torsion origin for $G_{ij}$ is not evaluated here. Theorem~6.1 still guarantees that any nonzero off-diagonal vacuum coupling of the democratic algebra produces a dark eigenvalue $\lambda_{\min}=-g_0$. That statement concerns $\mathrm{Spec}(G)$, not the number of hopfion soft modes.
 
 \section{Topological Ginzburg-Landau Functional}
 \label{sec:tqgl}
@@ -536,7 +538,7 @@ with
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{figures/mexican_hat_3d_catalyzon.pdf}
-\caption{\textbf{Mexican-hat potential reshaping (3D visualization).} (\textit{Left}) Bare quadratic-quartic $V(\rho)=\alpha_{\mathrm{GL}}\rho^2+(\beta/2)\rho^4$ of the Track~A family (Section~\ref{sec:l1_dictionary}). (\textit{Center}) The same potential with Landau mass tracking the catalyzon gap $\Delta_{\mathrm{cat}}=\Deltacat$. (\textit{Right}) Radial cut: well-depth reduction $B_{\mathrm{cat}}/B_0=(\Delta_{\mathrm{cat}}/\Delta_0)^2$ is \hatbarrier{} from the matched $V(\rho)$, while the parallel catalyzon pathway is the \pctcat{} gap reduction $\Delta_{\mathrm{ex}}\to\Delta_{\mathrm{cat}}$.}
+\caption{\textbf{Mexican-hat potential reshaping (3D visualization).} (\textit{Left}) Bare quadratic-quartic $V(\rho)=\alpha_{\mathrm{GL}}\rho^2+(\beta/2)\rho^4$ of the matched Ginzburg--Landau family (Section~\ref{sec:l1_dictionary}). (\textit{Center}) The same potential with Landau mass tracking the catalyzon gap $\Delta_{\mathrm{cat}}=\Deltacat$. (\textit{Right}) Radial cut: well-depth reduction $B_{\mathrm{cat}}/B_0=(\Delta_{\mathrm{cat}}/\Delta_0)^2$ is \hatbarrier{} from the matched $V(\rho)$, while the parallel catalyzon pathway is the \pctcat{} gap reduction $\Delta_{\mathrm{ex}}\to\Delta_{\mathrm{cat}}$.}
 \label{fig:mexican}
 \end{figure}
 
@@ -636,7 +638,7 @@ where $\theta_j$ is the condensate phase on layer $j$ and $a_i^{(j)}$ is the eme
 
 \subsection{Time-Dependent Simulation}
 
-We solve the quantum time-dependent \TQGL{} equation using a split-step Fourier method. The equation of motion actually integrated is the \emph{truncated} Gross--Pitaevskii equation of \texttt{qvc.tqgl.gpe},
+We solve the time-dependent \TQGL{} equation using a split-step Fourier method. The equation of motion actually integrated is the \emph{truncated} Gross--Pitaevskii equation
 \begin{equation}
 i\hbar \frac{\partial \psi}{\partial t}
 =
@@ -809,7 +811,7 @@ $T^*$ & 118.7 mK & Schwinger crossover ($E_{\mathrm{pair}}=0.1963$ meV) \\
 \label{tab:parameters}
 \end{table}
 
-The static gap $\Delta^\star=\Deltastar$ at working participation $\lambda^\star$ is a $\redstar$ reduction from the bare exchange scale. Catalyzon hybridization through the dark eigenvalue $\lambda_{\min}=-g_0$ is an independent reduction channel. Coherent GPE dynamics produce a live gap $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$ with $g^{(1)}=\goneps$; that increase is a dynamical effect, not a static fold crossing. Strong number-loss Lindblad evolution at $\tau_{\mathrm{dec}}=5$\,ps on a frozen potential can drive the live gap below $\Delta_c$ and is therefore unphysical on the static branch (Section~\ref{sec:lindblad_dict}). In the vortex sector, the fold is reached before Kosterlitz--Thouless unbinding at $T^*$ on the primary stiffness closure. If a different material reached the KT surface first, an essential-singularity gap closing would replace the square-root fold (hypothesis H-VRG1).
+The static gap $\Delta^\star=\Deltastar$ at working participation $\lambda^\star$ is a $\redstar$ reduction from the bare exchange scale. Catalyzon hybridization through the dark eigenvalue $\lambda_{\min}=-g_0$ is an independent reduction channel. Coherent GPE dynamics produce a live gap $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$ with $g^{(1)}=\goneps$; that increase is a dynamical effect, not a static fold crossing. Strong number-loss Lindblad evolution at $\tau_{\mathrm{dec}}=5$\,ps on a frozen potential can drive the live gap below $\Delta_c$ and is therefore unphysical on the static branch (Section~\ref{sec:lindblad_dict}). In the vortex sector, the fold is reached before Kosterlitz--Thouless unbinding at $T^*$ on the primary stiffness closure. If a different material reached the KT surface first, an essential-singularity gap closing would replace the square-root fold.
 
 Numerical evaluations of the gap map, Bessel sum, catalyzon well, Schwinger rate, and Hopf charge are collected in Appendix~\ref{app:verification}. Source code is available in the accompanying repository.
 
@@ -1111,7 +1113,7 @@ A^* / A_c^{\mathrm{fold}} &=\AresAc \quad\text{(resonant)},\qquad
 A^* / A_c^{\mathrm{fold}} &=\AdetAc \quad\text{(detuned)},\qquad
 \Delta_{\mathrm{ss}}=\Deltassdet.
 \end{align}
-The Lorentzian is not parked at zero in the detuned run ($L(0)=0.20$).
+The Lorentzian does not vanish at zero frequency in the detuned run ($L(0)=0.20$).
 The approach to $A^*$ follows exponential relaxation with characteristic time $\tau_{\text{relax}} \approx 25$ ps after the initial cosh-growth phase ($\sim$10 ps). The total transient from pump-on to steady state is $\sim$35 ps.
 
 \textit{Operating regimes.}---Three distinct regimes emerge:
@@ -1124,7 +1126,7 @@ The approach to $A^*$ follows exponential relaxation with characteristic time $\
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.7\textwidth]{figures/computed_A_vs_time.pdf}
-\caption{\textbf{DCE amplitude dynamics $A(t)$.} Teal: fold-slaved resonant drive. Coral: detuning-feedback drive (Lorentzian not parked at zero). Horizontal markers: $A_c^{\mathrm{fold}}$ (gold dashed) and $A(\lambda^\star)$ (blue dotted). Both drives saturate: $A^*/A_c^{\mathrm{fold}} = \AresAc$ (resonant) and $\AdetAc$ (detuned), confirming the DCE self-limiting theorem. The Lorentzian detuning provides the negative-feedback mechanism that prevents runaway parametric amplification.}
+\caption{\textbf{DCE amplitude dynamics $A(t)$.} Teal: fold-slaved resonant drive. Coral: detuning-feedback drive (Lorentzian finite at zero frequency). Horizontal markers: $A_c^{\mathrm{fold}}$ (gold dashed) and $A(\lambda^\star)$ (blue dotted). Both drives saturate: $A^*/A_c^{\mathrm{fold}} = \AresAc$ (resonant) and $\AdetAc$ (detuned), confirming the DCE self-limiting theorem. The Lorentzian detuning provides the negative-feedback mechanism that prevents runaway parametric amplification.}
 \label{fig:A_vs_time}
 \end{figure}
 
@@ -1210,7 +1212,7 @@ where $\gamma_i$ is the Berry phase of each constituent mode and $\gamma_{\text{
 \section{Mode Degeneracy Tolerance and Self-Tuning}
 \label{sec:tolerance}
 
-A key question for the robustness of the phenomenological catalyzon algebra is how precisely the five model modes must sit at $\omega_0 = 2\Delta/\hbar$. That five-mode count is not an accepted Goldstone theorem (H-FN1). If exact degeneracy of the ansatz were required, the algebra would apply only at fine-tuned parameter values. We show here that the dark eigenvalue of $G=g_0(J-I)$ survives substantial splitting, and propose a self-tuning mechanism by which the condensate can adjust toward near-resonance.
+A key question for the robustness of the phenomenological catalyzon algebra is how precisely the five model modes must sit at $\omega_0 = 2\Delta/\hbar$. That five-mode count is a resonant-model ansatz, not a Goldstone theorem: truncated \TQGL{} about the hopfion yields a single discrete $U(1)$ mode (Section~\ref{sec:lin_tqgl}). If exact degeneracy of the ansatz were required, the algebra would apply only at fine-tuned parameter values. We show here that the dark eigenvalue of $G=g_0(J-I)$ survives substantial splitting, and propose a self-tuning mechanism by which the condensate can adjust toward near-resonance.
 
 \subsection{Tolerance Analysis}
 
@@ -1267,7 +1269,7 @@ The self-tuning mechanism provides a natural explanation for the experimentally 
 An important technical clarification concerns the velocity parameter entering the gap equation and Casimir calculations. Two velocities appear, and they are not identified (Section~\ref{sec:kinematics_dict}):
 
 \begin{enumerate}
-\item \textbf{Locked package velocity} $c_s=\csBog$ from $\hbar c_s=\hbarcs$. This enters the Casimir prefactor $E_{\mathrm{vac}}=(1/4\pi^2)(\hbar c_s/r)F$, the gap map, retardation~\eqref{eq:eta_ret_lock}, Track~B $W=\hbar c_s/\lambda_M$, and the Goldstone condition $k^*=2\Delta/(\hbar c_s)$ (wavelength $\lamresCS$ at $\Delta^\star$). The healing identification then gives $\hbar c_s/a_H=\hwphaH$.
+\item \textbf{Locked package velocity} $c_s=\csBog$ from $\hbar c_s=\hbarcs$. This enters the Casimir prefactor $E_{\mathrm{vac}}=(1/4\pi^2)(\hbar c_s/r)F$, the gap map, retardation~\eqref{eq:eta_ret_lock}, the healing-scale Hubbard bandwidth $W=\hbar c_s/\lambda_M$, and the Goldstone condition $k^*=2\Delta/(\hbar c_s)$ (wavelength $\lamresCS$ at $\Delta^\star$). The healing identification then gives $\hbar c_s/a_H=\hwphaH$.
 \item \textbf{Graphene longitudinal acoustic velocity} $c_{\mathrm{LA}}=\cLA$, used only to place the two-particle threshold in the moiré Brillouin zone: $q^*=\omega_0/c_{\mathrm{LA}}=\qstarLA$ at $\Delta^\star$, $\lambda_{\mathrm{res}}=\lamresLA$, $q^*/K_M=\qoverKM$.
 \end{enumerate}
 
@@ -1279,12 +1281,12 @@ A third, slower estimate $c_s^{(\mathrm{Bog})}\sim 10^4$\,m/s from a schematic s
 \section{Torsion-Derived Microscopic Coupling Matrix}
 \label{sec:torsion_derivation}
 
-The phenomenological coupling matrix $G_{ij}$ (Section~\ref{sec:catalyzon}) has a candidate microscopic origin in Cartan torsion of the hopfion lattice (hypothesis H-TOR1). The $N$-layer TEVC crystal hosts a Weitzenb\"ock connection with torsion tensor~\cite{Nissinen2020,Nissinen2019}:
+The phenomenological coupling matrix $G_{ij}$ (Section~\ref{sec:catalyzon}) has a candidate microscopic origin in Cartan torsion of the hopfion lattice. The $N$-layer TEVC crystal hosts a Weitzenb\"ock connection with torsion tensor~\cite{Nissinen2020,Nissinen2019}:
 \begin{equation}
 T^{\mu}{}_{\nu\rho} = \frac{\kappa_{\text{tor}}}{4\pi^2}\, \varepsilon^{\mu}{}_{\nu\rho\sigma}\, \partial^{\sigma} q_H,
 \label{eq:cartan_torsion}
 \end{equation}
-where $q_H(\mathbf{r})$ is the local Hopf charge density and $\kappa_{\text{tor}}$ is a dimensionless torsion coupling. Hypothesis H-TOR1 proposes $\kappa_{\text{tor}}\approx 0.25$ as a working vertex strength; that number is not used to compute $G_{ij}$ in this paper.
+where $q_H(\mathbf{r})$ is the local Hopf charge density and $\kappa_{\text{tor}}$ is a dimensionless torsion coupling. A working estimate $\kappa_{\text{tor}}\approx 0.25$ is sometimes quoted as a vertex strength; that number is not used to compute $G_{ij}$ in this paper.
 
 \subsection{From Torsion to Coupling Matrix}
 
@@ -1298,7 +1300,7 @@ For a maximally symmetric configuration the \emph{algebra} of a democratic matri
 \begin{equation}
 G_{ij} = g_0 (1 - \delta_{ij}),
 \end{equation}
-with spectrum $\lambda_{\max}=(N-1)g_0$ (bright; multiplicity~1) and $\lambda_{\min}=-g_0$ (dark/catalyzon; multiplicity~$N-1$). Identifying the prefactor with $\kappa_{\text{tor}} Q_H/(4\pi^2 a_{\mathrm{lat}}^3)$ remains hypothesis H-TOR1 and is left for a future three-dimensional Weitzenb\"ock quadrature (Section~\ref{sec:l1_closure}). The Wigner--Seitz $K_0$ kernel of Section~\ref{sec:gij_dict} is a distinct computed overlap.
+with spectrum $\lambda_{\max}=(N-1)g_0$ (bright; multiplicity~1) and $\lambda_{\min}=-g_0$ (dark/catalyzon; multiplicity~$N-1$). Identifying the prefactor with $\kappa_{\text{tor}} Q_H/(4\pi^2 a_{\mathrm{lat}}^3)$ remains a conjecture and is left for a future three-dimensional Weitzenb\"ock quadrature (Section~\ref{sec:l1_closure}). The Wigner--Seitz $K_0$ kernel of Section~\ref{sec:gij_dict} is a distinct computed overlap.
 
 \begin{figure}[htbp]
 \centering
@@ -1353,14 +1355,14 @@ with spectrum $\lambda_{\max}=(N-1)g_0$ (bright; multiplicity~1) and $\lambda_{\
 \section{\TDVT--\QVC{} Unification}
 \label{sec:tdvt}
 
-The Topological Dynamic Vacuum Torsion (\TDVT) program shares the hopfion/$Q_H=1/N$ invariant with \QVC{} (hypothesis H-SHARE1) and supplies a candidate microscopic origin for $G_{ij}$. The interface is an action-level coupling together with three analogue platforms. Einstein equations, a cosmological constant, and the identification of spacetime with a hopfion lattice belong to Layer L3 and are stated as ideation.
+The Topological Dynamic Vacuum Torsion (\TDVT) program shares the hopfion invariant $Q_H=1/N$ with \QVC{} and supplies a candidate microscopic origin for $G_{ij}$. The interface is an action-level coupling together with three analogue platforms. Einstein equations, a cosmological constant, and the identification of spacetime with a hopfion lattice are outlook statements, not inputs of the condensed-matter calculation.
 
-\subsection{Layered reading}
+\subsection{How to read the analogue layer}
 
 \begin{itemize}
-\item \textbf{L1 (\QVC{} condensed matter).} Gap map, frozen-cavity vacuum, catalyzon, truncated \TQGL{}, Hall staircase. This is the core of the present paper.
-\item \textbf{L2 (topology and analogue gravity).} Lens-space $Q_H=1/N$, a proposed Cartan-torsion origin of $G_{ij}$ (hypothesis H-TOR1, not evaluated), acoustic Unruh--Visser metric and $T_H\leftrightarrow T^*$ matching (hypothesis H-HAWK1).
-\item \textbf{L3 (spacetime ontology).} Holographic dictionary for \TQGL{} coefficients and any claim that hopfion phonons derive Einstein dynamics. Status: ideation; not used as a numerical lock.
+\item \textbf{Condensed-matter core.} Gap map, frozen-cavity vacuum, catalyzon, truncated \TQGL{}, Hall staircase. This is the content of the present paper.
+\item \textbf{Topology and analogue gravity.} Lens-space $Q_H=1/N$; a proposed Cartan-torsion origin of $G_{ij}$ (not evaluated here); the Unruh--Visser acoustic metric and the matching of analogue Hawking temperature to the Schwinger crossover $T_H=T^*$.
+\item \textbf{Spacetime ontology (outlook).} A holographic dictionary for \TQGL{} coefficients, and any claim that hopfion phonons derive Einstein dynamics. These identifications are not used as numerical locks.
 \end{itemize}
 
 \subsection{\TDVT{} action}
@@ -1460,13 +1462,13 @@ where $C$ is a universal constant. For $N = 5$: $E_{\min} \geq 0.299\,C$. Consis
 \section{Holographic Dictionary for \TQGL{} Coefficients}
 \label{sec:holographic_dict}
 
-The hopfion spacetime programme treats the \TEVC{} moir\'e superlattice as a conformal boundary of a $(3+1)$-dimensional bulk hopfion crystal. In AdS/CFT-inspired language, each \TQGL{} coefficient would correspond to the boundary value of a bulk field. This section is Layer~L3 matching: it is not an L1 lock, and it does not derive $\kappa_{\mathrm{GL}}$ or $g_0^\star$ of Section~\ref{sec:l1_dictionary}.
+The hopfion-spacetime construction treats the \TEVC{} moir\'e superlattice as a conformal boundary of a $(3+1)$-dimensional bulk hopfion crystal. In AdS/CFT-inspired language, each \TQGL{} coefficient would correspond to the boundary value of a bulk field. This section is an outlook matching: it does not derive $\kappa_{\mathrm{GL}}$ or $g_0^\star$ of Section~\ref{sec:l1_dictionary}.
 
 \subsection{Bulk-Boundary Correspondence}
 
 \begin{table}[htbp]
 \centering
-\caption{Holographic dictionary mapping bulk hopfion fields to boundary \TQGL{} coefficients (Layer L3 matching; not an L1 lock).}
+\caption{Holographic dictionary mapping bulk hopfion fields to boundary \TQGL{} coefficients (outlook matching; not used to lock the condensed-matter coefficients).}
 \begin{tabular}{lll}
 \toprule
 \textbf{\TQGL{} coefficient} & \textbf{Bulk field} & \textbf{Holographic relation} \\
@@ -1499,13 +1501,13 @@ After including the quantum metric correction factor $|C|^2 \lambda_M^2 / (4\pi^
 \begin{equation}
 \gamma_{\text{QM}} \approx 3.73\,\text{meV}\cdot\text{nm}^2,
 \end{equation}
-consistent in form with the Peotta--T\"orm\"a formula for flat-band superfluid weight\cite{PeottaTorma2015,Huhtinen2022,Julku2020}. This $\gamma_{\mathrm{QM}}$ is an L3 matching. It is not $\kappa_{\mathrm{GL}}=\kappaGL$ of Track~A, and it is not imported as a Ginzburg--Landau lock.
+consistent in form with the Peotta--T\"orm\"a formula for flat-band superfluid weight\cite{PeottaTorma2015,Huhtinen2022,Julku2020}. This $\gamma_{\mathrm{QM}}$ is an analogue matching. It is not $\kappa_{\mathrm{GL}}=\kappaGL$ of the matched Ginzburg--Landau set, and it is not imported as a Ginzburg--Landau lock.
 
 %-------------------------------------------------------------------
 \section{Acoustic Hawking Temperature and Schwinger Unification}
 \label{sec:acoustic_hawking}
 
-The Unruh-Visser acoustic metric for the excitonic superfluid reveals an acoustic horizon at the Wigner-Seitz cell boundary. Hypothesis H-HAWK1 matches the analogue Hawking temperature to the Schwinger crossover $T^*$, thereby fixing $R_{\mathrm{WS}}$; it is not a bulk/boundary duality.
+The Unruh--Visser acoustic metric for the excitonic superfluid reveals an acoustic surface at the Wigner--Seitz cell boundary. Matching the analogue Hawking temperature to the Schwinger crossover $T^*$ then fixes $R_{\mathrm{WS}}$; the matching is a temperature-scale identification, not a bulk/boundary duality.
 
 \subsection{Emergent Acoustic Metric}
 
@@ -1529,14 +1531,14 @@ The Hawking temperature is:
 T_H = \frac{\hbar \kappa_{\text{surface}}}{2\pi k_B} = \frac{\hbar c_s}{\pi k_B R_{\text{WS}}}.
 \end{equation}
 
-Setting $T_H = T^*=\Tstar$ (diagnostic with $E_{\mathrm{pair}}=\Epair$) and solving for $R_{\mathrm{WS}}$ is the matching of hypothesis H-HAWK1:
+Setting $T_H = T^*=\Tstar$ (diagnostic with $E_{\mathrm{pair}}=\Epair$) and solving for $R_{\mathrm{WS}}$ is that Hawking--Schwinger matching:
 \begin{equation}
 R_{\text{WS}} = \frac{\hbar c_s}{\pi k_B T^*} =\RwsMatch.
 \label{eq:Rws_hawking}
 \end{equation}
 The same matching at $T^*=285$\,mK returns $R_{\mathrm{WS}}=\RwsAlt$. The Berry Monte Carlo ratio $R_{\mathrm{mean}}=\BerryR$ is not $R_{\mathrm{WS}}$ (Section~\ref{sec:l1_dictionary}). The analogue horizon sits at the Wigner--Seitz boundary, well outside the hopfion core of radius $R=50$\,nm.
 
-\subsection{Hawking--Schwinger matching (H-HAWK1)}
+\subsection{Hawking--Schwinger temperature matching}
 
 The identity $T^* = T_H$ is a matching that determines $R_{\mathrm{WS}}$. It does not identify Schwinger pair production in the condensate with Hawking radiation as dual descriptions of one bulk/boundary system. Both temperatures are analogue diagnostics on the locked $g_0^\star$.
 
@@ -1570,7 +1572,7 @@ The identity $T^* = T_H$ is a matching that determines $R_{\mathrm{WS}}$. It doe
 \draw[<->, thick] (0,-3.5,0) -- (3,-3.5,0) node[midway, below] {\small $R_{\text{WS}} =\RwsMatch$};
 \node at (0,0,3.8) {\small $T_H = T^* =\Tstar$ (matching)};
 \end{tikzpicture}
-\caption{\textbf{3D Wigner-Seitz cell with acoustic horizon.} The superfluid velocity $v(r) = c_s(r/R_{\text{WS}})^2$ (red arrows, length proportional to speed) reaches the sound velocity $c_s$ at the cell boundary (orange circle, $R_{\text{WS}} =\RwsMatch$), forming an acoustic horizon by the matching $T_H=T^*$ of hypothesis H-HAWK1. The central hopfion core (purple) sits well inside the horizon at $r \ll R_{\text{WS}}$.}
+\caption{\textbf{3D Wigner-Seitz cell with acoustic horizon.} The superfluid velocity $v(r) = c_s(r/R_{\text{WS}})^2$ (red arrows, length proportional to speed) reaches the sound velocity $c_s$ at the cell boundary (orange circle, $R_{\text{WS}} =\RwsMatch$), forming an acoustic surface by the matching $T_H=T^*$. The central hopfion core (purple) sits well inside that surface at $r \ll R_{\mathrm{WS}}$.}
 \label{fig:ws_horizon_3d}
 \end{figure}
 
@@ -1592,14 +1594,14 @@ Several aspects of the \QVC{} framework require further development:
 
 \begin{enumerate}
     \item \textbf{Microscopic coupling matrix $G_{ij}$.} Democratic $\mathrm{Spec}(G)$ is algebra. The Wigner--Seitz $K_0$ kernel of Section~\ref{sec:gij_dict} is a computed overlap. Truncated \TQGL{} about the hopfion yields a single discrete Goldstone; a torsion evaluation of $G_{ij}$ is not performed. The meV scale remains $g_0^\star=\lambda^\star E_{\mathrm{vac}}$.
-    \item \textbf{\TQGL{} coefficients.} Track~A values of $\alpha_{\mathrm{GL}}$, $\beta$, $\kappa_{\mathrm{GL}}$, and $\lambda^\star$ are collected in Section~\ref{sec:l1_dictionary}. Track~B of Section~\ref{sec:track_b} is a healing-scale matching $t_{\mathrm{heal}}/U=1$ together with $t_\lambda/U=\tlamoverU$.
+    \item \textbf{\TQGL{} coefficients.} Matched values of $\alpha_{\mathrm{GL}}$, $\beta$, $\kappa_{\mathrm{GL}}$, and $\lambda^\star$ are collected in Section~\ref{sec:l1_dictionary}. A separate healing-scale Hubbard matching (Section~\ref{sec:track_b}) gives $t_{\mathrm{heal}}/U=1$ together with $t_\lambda/U=\tlamoverU$.
     \item \textbf{Fractional Hopf charge.} $Q_H = 1/N$ follows from Chern--Simons/linking on $L(N,1)$. Numerical integration on a discretized toroidal grid converges to $Q_H = 0.20 \pm 0.01$ at $N_{\mathrm{grid}} \geq 64$, and the $1/N$ scaling holds for $N = 2$--$8$.
     \item \textbf{Decoherence.} The live-gap GPE is coherent, with $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$. Strong number-loss Lindblad evolution at $\tau_{\mathrm{dec}}=5$\,ps on a frozen potential can drive the gap below $\Delta_c$ and is then unphysical on the static branch.
-    \item \textbf{Vortex sector.} Periodic THz driving would render the gap map Floquet. Whether a laboratory protocol sits on the fold or the Kosterlitz--Thouless surface remains a joint question of stiffness closure and temperature (hypothesis H-VRG1).
+    \item \textbf{Vortex sector.} Periodic THz driving would render the gap map Floquet. Whether a laboratory protocol sits on the fold or the Kosterlitz--Thouless surface remains a joint question of stiffness closure and temperature: if the KT surface is reached first, the gap would close as an essential singularity rather than a square-root fold.
     \item \textbf{Experimental realization.} Sub-Kelvin temperatures, twist-angle control, and sample quality remain demanding. The Schwinger crossover $T^*=\Tstar$ is accessible in a dilution refrigerator.
 \end{enumerate}
 
-Two further open theoretical questions arise at the interface with the \TDVT{} layer and deserve explicit acknowledgment. First, the acoustic Hawking matching H-HAWK1 ($T_H = T^*$) as formulated in Section~\ref{sec:tdvt} identifies the surface $|\mathbf{v}| = c_s$ in a purely azimuthal (circulating) superflow; however, such a surface constitutes an \textit{ergosurface}---a locus where co-rotating observers cannot remain stationary---rather than a true one-way acoustic horizon capable of Hawking emission\cite{Barcelo2005}. A genuine analogue horizon requires a transonic \textit{radial} inflow component, as in the ``draining bathtub'' geometry originally proposed by Unruh, so that ingoing phonon modes cross a point of no return. The H-HAWK1 matching $T_H = T^*$ therefore remains a target design equation: it specifies the temperature scale at which the Hawking signal would equal the Schwinger crossover, but an explicit radial transonic velocity profile must be constructed (e.g., via vortex-sink boundary conditions in the \TQGL{} dynamics) before the analogue-gravity prediction becomes sharp. Second, the BCC hopfion crystal of the \TDVT{} lattice breaks multiple continuous symmetries, and the naive counting of five Nambu--Goldstone soft modes (H-FN1) does not account for the Watanabe--Murayama theorem\cite{WatanabeMurayama2012}: the number of independent gapless modes is $N_{\mathrm{NG}} = N_{\mathrm{broken}} - \tfrac{1}{2}\,\mathrm{rank}\,\rho$, where $\rho_{ab} = -i\langle [Q_a, Q_b]\rangle / V$ is the charge-density matrix of broken generators. If the internal fiber generators (associated with the Hopf $S^1$ and the $\mathrm{SU}(2)$ orientational degrees of freedom) carry nonzero commutator expectation values in the ordered ground state, type-B Goldstone modes with quadratic dispersion $\omega \propto k^2$ appear, reducing the independent mode count below five and modifying the low-temperature specific heat from $C \propto T^{5/2}$ (five linear modes in 3D) to a form reflecting the mixed type-A/type-B spectrum. Resolving both issues---constructing the radial transonic profile and computing $\mathrm{rank}\,\rho$ for the hopfion crystal---constitutes necessary future work before the \TDVT{} predictions can be placed on the same quantitative footing as the condensed-matter core of \QVC{}.
+Two further open theoretical questions arise at the interface with analogue gravity and deserve explicit statement. First, the acoustic matching $T_H = T^*$ of Section~\ref{sec:tdvt} identifies the surface $|\mathbf{v}| = c_s$ in a purely azimuthal (circulating) superflow; however, such a surface constitutes an \textit{ergosurface}---a locus where co-rotating observers cannot remain stationary---rather than a true one-way acoustic horizon capable of Hawking emission\cite{Barcelo2005}. A genuine analogue horizon requires a transonic \textit{radial} inflow component, as in the ``draining bathtub'' geometry originally proposed by Unruh, so that ingoing phonon modes cross a point of no return. The matching $T_H = T^*$ therefore remains a target design equation: it specifies the temperature scale at which a Hawking signal would equal the Schwinger crossover, but an explicit radial transonic velocity profile must be constructed (e.g., via vortex-sink boundary conditions in the \TQGL{} dynamics) before the analogue-gravity prediction becomes sharp. Second, the body-centred-cubic hopfion crystal breaks multiple continuous symmetries, and a naive count of five Nambu--Goldstone modes does not account for the Watanabe--Murayama theorem\cite{WatanabeMurayama2012}: the number of independent gapless modes is $N_{\mathrm{NG}} = N_{\mathrm{broken}} - \tfrac{1}{2}\,\mathrm{rank}\,\rho$, where $\rho_{ab} = -i\langle [Q_a, Q_b]\rangle / V$ is the charge-density matrix of broken generators. If the internal fiber generators (associated with the Hopf $S^1$ and the $\mathrm{SU}(2)$ orientational degrees of freedom) carry nonzero commutator expectation values in the ordered ground state, type-B Goldstone modes with quadratic dispersion $\omega \propto k^2$ appear, reducing the independent mode count below five and modifying the low-temperature specific heat from $C \propto T^{5/2}$ (five linear modes in 3D) to a form reflecting the mixed type-A/type-B spectrum. Resolving both issues---constructing the radial transonic profile and computing $\mathrm{rank}\,\rho$ for the hopfion crystal---is necessary before analogue-gravity claims can be placed on the same quantitative footing as the condensed-matter core of \QVC{}.
 
 \section{Conclusions}
 \label{sec:conclusions}
@@ -1612,53 +1614,53 @@ If the Hall staircase and the THz triple-coincidence test of Section~\ref{sec:ex
 
 \section*{Acknowledgments}
 
-The author thanks computational resources and helpful discussions. No funding to declare.
+The author acknowledges non-dilutive grant support, provided without equity, for engineering, prototyping, and experimental projects. The theoretical analysis reported here received no additional institutional funding.
 
 %% =====================================================================
 %% APPENDICES
 %% =====================================================================
 \appendix
 
-\section{Epistemic Status of Results}
+\section{Status of results}
 \label{app:status}
 
-Table~\ref{tab:epistemic} classifies principal results by provenance: defining inputs of the frozen-cavity geometry; algebraic identities derived in the text; quantities obtained from a stated numerical solver; identifications imposed between sectors; closure assumptions; and conjectures requiring future derivation or experiment.
+Table~\ref{tab:epistemic} classifies principal results by provenance: geometry inputs; algebraic identities derived in the text; quantities obtained from a stated numerical solver; identifications imposed between sectors; modelling assumptions; and conjectures requiring future derivation or experiment.
 
 \begin{table}[htbp]
 \centering
-\caption{Epistemic classification of principal results. L~=~locked, D~=~derived, C~=~computed, M~=~matched, A~=~ansatz, H~=~hypothesis/conjecture.}
-\begin{tabular}{lll}
+\caption{Status of principal results.}
+\small
+\begin{tabular}{p{0.46\linewidth}p{0.28\linewidth}l}
 \hline
-\textbf{Result} & \textbf{Category} & \textbf{Section} \\
+\textbf{Result} & \textbf{Status} & \textbf{Section} \\
 \hline
-Input parameters ($J$, $\hbar c_s$, $a_H$, $R$, $N$) & L & \ref{sec:casimir} \\
-Bessel mode sum $F(x)=\Flock$ & C, L & \ref{sec:casimir} \\
-Vacuum energy $E_{\mathrm{vac}}=\Evac$ (toroidal spectral form) & C, L & \ref{sec:casimir} \\
-Gap map $\delta=1+\alpha(\ln\delta+\ell)$ & defining equation & \ref{sec:gap} \\
-Phonon-loop IR cutoff vs.\ $\Lambda$ & computed (inconsistent as written) & \ref{sec:gap} \\
-Fold critical point $\alpha_c=\alphac$ & D & \ref{sec:bridge} \\
-Working participation $\lambda^\star=\lstar$ & defining choice & \ref{sec:bridge} \\
-Static gap $\Delta^\star=\Deltastar$ & C & \ref{sec:bridge} \\
-Cavity $\mathcal{F}_{\text{moir\'{e}}}$ on $A_{\mathrm{geom}}$; $\lambda^\star_F=\lstarF$ & C (cavity channel) & \ref{sec:cavity_qvc} \\
-Fractional Hopf charge $Q_H=1/N$ & D & \ref{sec:lens_space_proof} \\
-Democratic spectrum $\lambda_{\max}=(N-1)g_0$, $\lambda_{\min}=-g_0$ & D & \ref{sec:catalyzon} \\
-Catalyzon gap $\Delta_{\mathrm{cat}}=\Deltacat$; Mexican-hat $\hatbarrier$ & D & \ref{sec:l1_dictionary} \\
-Live gap $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$ & C & \ref{sec:dynamics} \\
-Lindblad $\tau=5$\,ps, frozen $V_{\mathrm{ZPF}}$ ($\Delta<\Delta_c$) & C (unphysical branch) & \ref{sec:lindblad_dict} \\
-DCE saturation $A^*/A_c^{\mathrm{fold}}=\AresAc$ & C & \ref{sec:dce_selflimit} \\
-Schwinger $\Gamma=\omega_0\alpha^\star e^{-\pi/\alpha^\star}$; $T^*=\Tstar$ & C & \ref{sec:schwinger_twin} \\
-Berry ratio $R_{\mathrm{mean}}=\BerryR$ & C & \ref{sec:berry_enhancement} \\
-Hall step $\delta\sigma_{xy}=e^2/(2Nh)$ & D & \ref{sec:l1_dictionary} \\
-Chern--Simons level $k=2N$ & D & \ref{sec:l1_dictionary} \\
-GL coefficients ($\alpha_{\mathrm{GL}}$, $\beta$, $\kappa_{\mathrm{GL}}$) & D, M & \ref{sec:l1_dictionary} \\
-Acoustic Hawking radius $R_{\mathrm{WS}}=\RwsMatch$ & M & \ref{sec:l1_dictionary} \\
-Skyrme coefficient $\kappa_S$ & A & \ref{sec:l1_dictionary} \\
-Healing-disk $n_0=1/(\pi a_H^2)$ & A & \ref{sec:l1_closure} \\
-H-FN1 (five soft modes) & H (not realized on truncation) & \ref{sec:l1_closure} \\
-H-VRG1 (essential-singularity gap closing) & H & \ref{sec:vortex_rg} \\
-H-TOR1 (torsion origin of $G_{ij}$) & A (not evaluated) & \ref{sec:l1_closure} \\
-H-HAWK1 ($T_H=T^*$ matching) & M & \ref{sec:l1_dictionary} \\
-Devil's staircase fractal structure & H & \ref{sec:devils_staircase} \\
+Input parameters ($J$, $\hbar c_s$, $a_H$, $R$, $N$) & Geometry input & \ref{sec:casimir} \\
+Bessel mode sum $F(x)=\Flock$ & Numerical & \ref{sec:casimir} \\
+Vacuum energy $E_{\mathrm{vac}}=\Evac$ & Numerical on frozen cavity & \ref{sec:casimir} \\
+Gap map $\delta=1+\alpha(\ln\delta+\ell)$ & Defining equation & \ref{sec:gap} \\
+Phonon-loop IR cutoff vs.\ $\Lambda$ & Numerical (inconsistent as written) & \ref{sec:gap} \\
+Fold critical point $\alpha_c=\alphac$ & Algebraic identity & \ref{sec:bridge} \\
+Working participation $\lambda^\star=\lstar$ & Working choice & \ref{sec:bridge} \\
+Static gap $\Delta^\star=\Deltastar$ & Numerical & \ref{sec:bridge} \\
+Cavity $\mathcal{F}_{\text{moir\'{e}}}$ on $A_{\mathrm{geom}}$; $\lambda^\star_F=\lstarF$ & Numerical (cavity channel) & \ref{sec:cavity_qvc} \\
+Fractional Hopf charge $Q_H=1/N$ & Algebraic identity & \ref{sec:lens_space_proof} \\
+Democratic spectrum $\lambda_{\max}=(N-1)g_0$, $\lambda_{\min}=-g_0$ & Algebraic identity & \ref{sec:catalyzon} \\
+Catalyzon gap $\Delta_{\mathrm{cat}}=\Deltacat$; Mexican-hat $\hatbarrier$ & Derived & \ref{sec:l1_dictionary} \\
+Live gap $\Delta_{\mathrm{live}}(1\,\mathrm{ps})=\Deltaliveone$ & Numerical & \ref{sec:dynamics} \\
+Lindblad $\tau=5$\,ps, frozen $V_{\mathrm{ZPF}}$ ($\Delta<\Delta_c$) & Numerical (unphysical branch) & \ref{sec:lindblad_dict} \\
+DCE saturation $A^*/A_c^{\mathrm{fold}}=\AresAc$ & Numerical & \ref{sec:dce_selflimit} \\
+Schwinger $\Gamma=\omega_0\alpha^\star e^{-\pi/\alpha^\star}$; $T^*=\Tstar$ & Numerical & \ref{sec:schwinger_twin} \\
+Berry ratio $R_{\mathrm{mean}}=\BerryR$ & Numerical & \ref{sec:berry_enhancement} \\
+Hall step $\delta\sigma_{xy}=e^2/(2Nh)$ & Derived & \ref{sec:l1_dictionary} \\
+Chern--Simons level $k=2N$ & Derived & \ref{sec:l1_dictionary} \\
+GL coefficients ($\alpha_{\mathrm{GL}}$, $\beta$, $\kappa_{\mathrm{GL}}$) & Derived / matched & \ref{sec:l1_dictionary} \\
+Acoustic matching $T_H=T^*$ fixing $R_{\mathrm{WS}}$ & Temperature-scale matching & \ref{sec:l1_dictionary} \\
+Skyrme coefficient $\kappa_S$ & Estimate & \ref{sec:l1_dictionary} \\
+Healing-disk $n_0=1/(\pi a_H^2)$ & Modelling assumption & \ref{sec:l1_closure} \\
+Five independent hopfion Goldstone modes & Conjecture (not realized on truncation) & \ref{sec:l1_closure} \\
+KT-first essential-singularity gap closing & Conjecture & \ref{sec:vortex_rg} \\
+Cartan-torsion origin of $G_{ij}$ & Conjecture (not evaluated) & \ref{sec:l1_closure} \\
+Devil's staircase fractal structure & Conjecture & \ref{sec:devils_staircase} \\
 \hline
 \end{tabular}
 \label{tab:epistemic}
@@ -1696,7 +1698,7 @@ The phonon-loop cutoff of row~2 is kinematically inconsistent as written, which 
 \subsection{Data and Code Availability}
 \label{app:data}
 
-All numerical computations, parameter sweeps, and figure-generation scripts referenced in this paper are available in the private compilation repository \url{https://github.com/mineralhoiland/QVC} (to be made public with a Zenodo DOI at preprint submission). The locked Option~A* chain, TQGL solver, L1 dictionary, vortex-sector codes, and verification suite live under \texttt{compute/} and \texttt{locks/}. Correspondence regarding the code should be directed to the author.
+Source code, locked numerical parameters, figure-generation scripts, crystal-structure files, and verification reports accompanying this paper are available at \url{https://github.com/mineralhoiland/QVC}, licensed MIT (software) and CC~BY~4.0 (text and figures). Correspondence: \href{mailto:mineralhoilandphysics@gmail.com}{mineralhoilandphysics@gmail.com}.
 
 \bibliographystyle{unsrt}
 \bibliography{qvc_refs}

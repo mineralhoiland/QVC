@@ -1,4 +1,4 @@
-% Fold √ scaling vs H-VRG1 essential singularity (C5)
+% Fold √ scaling vs vortex-first essential singularity
 \begin{tikzpicture}
 \begin{axis}[
   width=0.92\linewidth,
@@ -21,7 +21,7 @@
 \addlegendentry{$\delta_c+B\sqrt{t_A}$}
 \addplot[oiVerm, densely dotted, line width=1.5pt]
   table[x index=0, y index=3, skip first n=1] {data/delta_vs_tA.dat};
-\addlegendentry{H-VRG1 $e^{-C/\sqrt{t_A}}$}
+\addlegendentry{vortex-first $e^{-C/\sqrt{t_A}}$}
 \addplot[oiOrange, densely dotted, line width=0.8pt]
   coordinates {(1e-3,0.1818) (1,0.1818)};
 \end{axis}

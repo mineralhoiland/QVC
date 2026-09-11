@@ -6,14 +6,17 @@ authors:
   - family-names: Hoiland
     given-names: Mineral
     affiliation: Independent Researcher
-license: "MIT AND CC-BY-4.0"
-version: "0.4.0"
-date-released: "2026-09-08"
+    orcid: "https://orcid.org/0009-0001-2696-644X"
+    email: mineralhoilandphysics@gmail.com
+license: CC-BY-4.0
+version: "0.4.1"
+date-released: "2026-09-10"
 abstract: >-
-  Compilation of the QVC / TEVC arXiv v4 preprint: TeX sources, bibliography,
-  figures, frozen Option A* vacuum and gap-fold numerics, TQGL solvers, L1
-  dictionary and vortex-sector codes, crystal structures, and visualization
-  suites. Code is MIT; manuscript, figures, and locked tables are CC BY 4.0.
+  Compilation of the QVC / TEVC preprint: TeX sources, bibliography, figures,
+  frozen vacuum and gap-fold numerics, solvers, dictionary and vortex-sector
+  codes, crystal structures, and visualization suites. Code under compute/ and
+  sim/ is MIT; manuscript, figures, and locked tables are CC BY 4.0. Zenodo
+  records the compilation under CC BY 4.0.
 keywords:
   - QVC
   - TEVC
@@ -29,7 +32,7 @@ preferred-citation:
   authors:
     - family-names: Hoiland
       given-names: Mineral
+      orcid: "https://orcid.org/0009-0001-2696-644X"
   title: "Quantum Vacuum Catalyzation in Topological Excitonic Vacuum Crystals"
   year: 2026
   url: https://github.com/mineralhoiland/QVC
-  journal: Independent preprint
